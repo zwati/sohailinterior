@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Dashboard — Sohail Interior</title>
+  <meta name="description" content="Admin panel for managing and uploading portfolio project photos and designs straight to Google Drive.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,500&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/common.css">
+  <link rel="icon" type="image/png" href="/logo/SI_square.png">
+  <link rel="stylesheet" href="/css/admin.css">
+</head>
+<body>
+
+  <!-- Page Loader curtain -->
+  <div class="loader glass-loader" id="pageLoader" role="status" aria-label="Loading Sohail Interior">
+    <div class="loader-stage">
+      <div class="lc-word" id="lcWord"><span>Sohail&nbsp;Interior</span></div>
+      <div class="lc-rule"></div>
+      <div class="lc-caption">Design &amp; Materials</div>
+    </div>
+  </div>
+
+  <!-- Announcement Bar -->
+  <div class="announce" id="announce">
+    Free Site Visit &amp; Material Consultation — Sahiwal &amp; Lahore
+    <button aria-label="Close Announcement">&minus; close</button>
+  </div>
+
+  <!-- Header -->
+  <header class="site-header">
+    <div class="header-row">
+      <div class="social-icons">
+        <a href="#" title="Facebook" aria-label="Facebook">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
+        </a>
+        <a href="#" title="Instagram" aria-label="Instagram">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
+        </a>
+        <a href="#" title="YouTube" aria-label="YouTube">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22.54 6.42a2.78 2.78 0 0 0-1.94-2C18.88 4 12 4 12 4s-6.88 0-8.6.46a2.78 2.78 0 0 0-1.94 2A29 29 0 0 0 1 11.75a29 29 0 0 0 .46 5.33A2.78 2.78 0 0 0 3.4 19c1.72.46 8.6.46 8.6.46s6.88 0 8.6-.46a2.78 2.78 0 0 0 1.94-2 29 29 0 0 0 .46-5.25 29 29 0 0 0-.46-5.33z"/><polygon points="9.75 15.02 15.5 11.75 9.75 8.48 9.75 15.02"/></svg>
+        </a>
+      </div>
+      <div class="brand" onclick="window.location.href='/'">
+        <img src="/logo/SI_square.png" alt="Sohail Interior Logo" class="brand-mark" style="object-fit: contain;">
+        <div>
+          <div class="brand-name">Sohail Interior</div>
+          <div class="brand-sub mono">Design &amp; Materials</div>
+        </div>
+      </div>
+      <div class="header-actions">
+        <button class="icon-btn" title="Search" aria-label="Search">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        </button>
+        <button class="icon-btn" title="Admin Dashboard" aria-label="Admin" onclick="window.location.href='/admin'">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4.4 3.6-8 8-8s8 3.6 8 8"/></svg>
+        </button>
+        <button class="icon-btn" title="Saved materials" aria-label="Saved materials">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.6l-1-1a5.5 5.5 0 1 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8z"/></svg>
+          <span class="badge">2</span>
+        </button>
+        <button class="icon-btn" title="Quote list" aria-label="Quote list">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+          <span class="badge">3</span>
+        </button>
+      </div>
+    </div>
+    <!-- Navigation Menu (Populated dynamically via common.js) -->
+    <nav class="main-nav" id="mainNav">
+      <a href="/">Home</a>
+      <a href="/materials">Materials Catalog</a>
+      <a href="/portfolio">Portfolio</a>
+      <a href="/gallery">Gallery</a>
+    </nav>
+  </header>
+
+  <!-- Main Content -->
+  <main>
+    
+    <!-- Login Screen -->
+    <div class="login-wrap" id="loginStage">
+      <div class="blob b1" style="opacity:.12; width: 240px; height: 240px; position: absolute; border-radius: 50%; filter: blur(2px); background: linear-gradient(135deg, var(--sky), var(--blue)); top: -50px; right: 6%;"></div>
+      <div class="login-card" id="loginCard">
+        <img src="/logo/SI_square.png" alt="Sohail Interior Square Logo" class="brand-mark" style="object-fit: contain; margin:0 auto 16px;">
+        <h2>Admin sign in</h2>
+        <p class="sub">Publish new articles &mdash; Sohail's account, not the client's.</p>
+        <div class="field">
+          <label for="adminEmail">Email</label>
+          <input type="email" id="adminEmail" placeholder="sohail@sohailinterior.com">
+        </div>
+        <div class="field">
+          <label for="adminPassword">Password</label>
+          <input type="password" id="adminPassword" placeholder="••••••••••">
+        </div>
+        <button class="btn btn-primary" style="width:100%; justify-content:center;" onclick="enterDashboard()">Sign in &rarr;</button>
+        <div class="divider mono">backend status</div>
+        <button class="drive-btn" disabled>🔒 Google Drive &middot; connected via service account</button>
+      </div>
+    </div>
+
+    <!-- Dashboard Panel -->
+    <div class="login-wrap stage-dash dash" id="dashStage" style="display: none;">
+      <div class="dash-top">
+        <h2>Sohail's Dashboard</h2>
+        <div class="conn-pill"><span class="dotpulse"></span>Drive synced &middot; index.json up to date</div>
+      </div>
+      <div class="dash-grid">
+        <!-- Publish New Card -->
+        <div class="upload-card">
+          <h3>Publish new article</h3>
+          <p class="hint">Uploads push straight to Drive &mdash; full resolution, no loss.</p>
+          <div class="dropzone" id="dropzone">
+            ⤒ Drop photos here, or tap to browse<br>
+            <span style="opacity:.6;">full resolution, no limit</span>
+          </div>
+          <input type="file" id="fileInput" multiple style="display:none;">
+          <div id="filePreviews" style="display:flex; gap:8px; margin-bottom:12px; overflow-x:auto;"></div>
+          <div class="select-row">
+            <input type="text" id="projectTitle" placeholder="Project title" aria-label="Project title">
+          </div>
+          <div class="select-row">
+            <select id="projectCategory" aria-label="Category Selection">
+              <option value="Residential">Residential</option>
+              <option value="Commercial">Commercial</option>
+              <option value="Ceiling Work">Ceiling Work</option>
+            </select>
+          </div>
+          <button class="btn btn-primary" id="uploadBtn" style="width:100%; justify-content:center;" onclick="uploadArticle()">Publish to Gallery</button>
+          <p id="uploadStatus" style="font-size:11px; margin-top:8px; text-align:center; font-family:monospace;"></p>
+        </div>
+        <!-- Sync Asset Grid Table -->
+        <div class="table-card" id="adminTableContainer">
+          <div class="thead">
+            <span>Article</span>
+            <span>Category</span>
+            <span>Status</span>
+          </div>
+          <!-- Rows will populate dynamically -->
+        </div>
+        <div id="adminPagination" class="pagination-container"></div>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- Footer -->
+  <footer class="site-footer">
+    <div class="footer-grid">
+      <div>
+        <h5>Get in touch</h5>
+        <div class="contact-line">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 6-9 12-9 12S3 16 3 10a9 9 0 0 1 18 0Z"/><circle cx="12" cy="10" r="3"/></svg>
+          Farid Town, Sahiwal, Punjab, Pakistan
+        </div>
+        <div class="contact-line">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16v16H4z"/><path d="m4 4 8 8 8-8"/></svg>
+          hello@sohailinterior.pk
+        </div>
+        <div class="contact-line">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3 19.5 19.5 0 0 1-6-6 19.8 19.8 0 0 1-3-8.7A2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1 1 .3 2 .6 3a2 2 0 0 1-.5 2.1L8 10a16 16 0 0 0 6 6l1.2-1.2a2 2 0 0 1 2.1-.5c1 .3 2 .5 3 .6a2 2 0 0 1 1.7 2Z"/></svg>
+          0300-111-22-33
+        </div>
+      </div>
+      <div class="footer-links">
+        <h5>Information</h5>
+        <a href="/portfolio">Portfolio</a>
+        <a href="/gallery">Gallery</a>
+        <a href="/admin">Admin Sign In</a>
+        <a href="#">About Sohail Interior</a>
+        <a href="#">Contact Us</a>
+      </div>
+      <div>
+        <h5>Newsletter Signup</h5>
+        <p style="font-size:12.5px; color:#3c5470; margin:0;">Get new material drops and finished projects, straight to your inbox.</p>
+        <div class="newsletter-row">
+          <input type="email" placeholder="Your email address" aria-label="Email address">
+          <button>Subscribe</button>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">&copy; 2026 Sohail Interior. All rights reserved. &mdash; Sahiwal, Pakistan</div>
+  </footer>
+
+  <script src="/js/common.js" defer></script>
+  <script src="/js/pagination.js" defer></script>
+  <script src="/js/admin.js" defer></script>
+</body>
+</html>

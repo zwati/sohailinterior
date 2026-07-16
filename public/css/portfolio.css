@@ -1,0 +1,87 @@
+/* Portfolio Page Specific Styling */
+
+.page-band {
+  background: var(--gray-band);
+  color: #fff;
+  text-align: center;
+  padding: 20px;
+  font-size: 14px;
+  letter-spacing: .02em;
+}
+
+.page-band .crumb {
+  font-size: 11px;
+  opacity: .7;
+  margin-bottom: 3px;
+}
+
+.portfolio-coming-soon {
+  max-width: 1220px;
+  margin: 0 auto;
+  padding: 80px 40px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 40vh;
+}
+
+.coming-soon-card {
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: 20px;
+  padding: 50px 40px;
+  max-width: 600px;
+  text-align: center;
+  box-shadow: var(--shadow);
+}
+
+.coming-soon-card .accent-icon {
+  width: 60px;
+  height: 60px;
+  border-radius: 16px;
+  background: linear-gradient(135deg, var(--navy), var(--blue));
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 26px;
+  margin: 0 auto 24px;
+}
+
+.coming-soon-card h2 {
+  font-size: 28px;
+  color: var(--navy);
+  margin: 0 0 12px;
+  font-weight: 500;
+}
+
+.coming-soon-card p {
+  font-size: 14.5px;
+  line-height: 1.7;
+  color: #6b7f97;
+  margin: 0 0 32px;
+}
+
+.coming-soon-actions {
+  display: flex;
+  gap: 16px;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+@media (max-width: 640px) {
+  .portfolio-coming-soon {
+    padding: 40px 20px;
+  }
+  .coming-soon-card {
+    padding: 30px 20px;
+  }
+  .coming-soon-actions {
+    flex-direction: column;
+    width: 100%;
+  }
+  .coming-soon-actions .btn {
+    width: 100%;
+  }
+}
