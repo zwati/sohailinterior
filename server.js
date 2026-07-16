@@ -1,6 +1,7 @@
 require("dotenv").config();
 const express = require("express");
 const multer = require("multer");
+const nodemailer = require("nodemailer");
 const { google } = require("googleapis");
 const { Readable } = require("stream");
 const path = require("path");
@@ -152,6 +153,50 @@ app.get("/api/categories", async (req, res) => {
   } catch (err) {
     console.error("[GET /api/categories] Error:", err.message);
     res.status(500).json({ ok: false, error: err.message });
+  }
+});
+
+// POST Newsletter subscriptions
+app.post("/api/subscribe", async (req, res) => {
+  try {
+    const { email } = req.body;
+    if (!email || typeof email !== "string") {
+      return res.status(400).json({ ok: false, error: "Valid email is required." });
+    }
+
+    const recipient = process.env.SUBSCRIBE_RECIPIENT || "abdullahramzan8942@gmail.com";
+    const smtpUser = process.env.EMAIL_USER;
+    const smtpPass = process.env.EMAIL_PASS;
+    const smtpHost = process.env.SMTP_HOST || "smtp.gmail.com";
+    const smtpPort = Number(process.env.SMTP_PORT || 465);
+
+    if (!smtpUser || !smtpPass) {
+      console.error("Email transport is not configured. Set EMAIL_USER and EMAIL_PASS in .env.");
+      return res.status(500).json({ ok: false, error: "Email service is not configured." });
+    }
+
+    const transporter = nodemailer.createTransport({
+      host: smtpHost,
+      port: smtpPort,
+      secure: smtpPort === 465,
+      auth: {
+        user: smtpUser,
+        pass: smtpPass,
+      },
+    });
+
+    await transporter.sendMail({
+      from: smtpUser,
+      to: recipient,
+      subject: "New newsletter signup - Sohail Interior",
+      text: `New subscriber: ${email}`,
+      html: `<p>New subscriber: <strong>${email}</strong></p>`,
+    });
+
+    res.json({ ok: true });
+  } catch (err) {
+    console.error("[POST /api/subscribe] Error:", err.message);
+    res.status(500).json({ ok: false, error: "Failed to send subscription notification." });
   }
 });
 

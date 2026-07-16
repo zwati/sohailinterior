@@ -1,73 +1,5 @@
 // Materials Page Specific Logic
 
-// 1. Pagination helper utility
-const Pagination = {
-  generateHTML(currentPage, totalPages, onClickFunction, delta = 1) {
-    if (totalPages <= 1) return '';
-
-    let html = `
-      <button class="pagination-btn" onclick="${onClickFunction}(${currentPage - 1})" ${currentPage === 1 ? 'disabled' : ''}>
-        Back
-      </button>
-      <div class="pagination-numbers">
-    `;
-
-    const range = [];
-    for (let i = 1; i <= totalPages; i++) {
-      if (
-        i === 1 || 
-        i === totalPages || 
-        (i >= currentPage - delta && i <= currentPage + delta)
-      ) {
-        range.push(i);
-      }
-    }
-
-    let l;
-    for (let i of range) {
-      if (l) {
-        if (i - l === 2) {
-          html += `<button class="pagination-number" onclick="${onClickFunction}(${l + 1})">${l + 1}</button>`;
-        } else if (i - l !== 1) {
-          html += `<span class="pagination-ellipsis">...</span>`;
-        }
-      }
-      html += `
-        <button class="pagination-number ${i === currentPage ? 'active' : ''}" onclick="${onClickFunction}(${i})">
-          ${i}
-        </button>
-      `;
-      l = i;
-    }
-
-    html += `
-      </div>
-      <button class="pagination-btn" onclick="${onClickFunction}(${currentPage + 1})" ${currentPage === totalPages ? 'disabled' : ''}>
-        Next
-      </button>
-    `;
-
-    return html;
-  },
-
-  paginate(items, page = 1, itemsPerPage = 8) {
-    const totalPages = Math.ceil(items.length / itemsPerPage);
-    const currentPage = Math.max(1, Math.min(page, totalPages));
-    const startIndex = (currentPage - 1) * itemsPerPage;
-    const endIndex = startIndex + itemsPerPage;
-    const paginatedItems = items.slice(startIndex, endIndex);
-
-    return {
-      items: paginatedItems,
-      currentPage,
-      totalPages,
-      totalItems: items.length,
-      hasNextPage: currentPage < totalPages,
-      hasPrevPage: currentPage > 1
-    };
-  }
-};
-
 // 2. Static Approved Materials Dataset
 const materialsData = [
   {id:'BLN-01', name:'Window Blinds', cat:'blinds', catLabel:'Blinds', price: 250, priceText:'Rs.250 - Rs.360 / sqft', texture:'t-blinds', desc:'Premium window blinds. Available in Roller (Rs.250/sf), Zebra (Rs.360/sf), and Bamboo (Rs.250/sf).', finishes:['Roller','Zebra','Bamboo'], colors:['#eaf2fa','#c9d6e4','#aebfd2']},
@@ -128,7 +60,7 @@ function pcardHTML(m) {
   const isNew = ['PW8-01', 'PUC-01'].includes(m.id);
   const swatchHTML = m.colors.map(c => `<span style="background:${c}"></span>`).join('');
   return `
-    <div class="pcard reveal" onclick="openDetail('${m.id}')">
+    <div class="pcard reveal" data-material-id="${m.id}">
       <div class="thumb ${m.texture}">
         ${isNew ? '<div class="new-pill mono">New</div>' : ''}
       </div>
@@ -174,6 +106,7 @@ function renderCatalog() {
   
   // Pagination navigation links
   paginationContainer.innerHTML = Pagination.generateHTML(paginated.currentPage, paginated.totalPages, "changeCatalogPage");
+  bindCatalogClicks();
   
   if (window.revealCheck) window.revealCheck();
 }
@@ -268,6 +201,20 @@ window.stepQty = function(delta) {
   currentQty = Math.max(1, currentQty + delta);
   document.getElementById('dQty').textContent = currentQty;
 };
+
+function bindCatalogClicks() {
+  const grid = document.getElementById('catalogGrid');
+  if (!grid) return;
+  grid.removeEventListener('click', onCatalogItemClick);
+  grid.addEventListener('click', onCatalogItemClick);
+}
+
+function onCatalogItemClick(event) {
+  const card = event.target.closest('.pcard');
+  if (!card) return;
+  const id = card.dataset.materialId;
+  if (id) openDetail(id);
+}
 
 // Initial startup tasks
 document.addEventListener("DOMContentLoaded", () => {

@@ -2,8 +2,84 @@
 
 // 1. Dynamic Navbar & Google Drive Categories Loader
 let globalCategories = [];
+let mainNav = null;
+let mobileNav = null;
+
+const Pagination = {
+  generateHTML(currentPage, totalPages, onClickFunction, delta = 1) {
+    if (totalPages <= 1) return '';
+
+    let html = `
+      <button class="pagination-btn" onclick="${onClickFunction}(${currentPage - 1})" ${currentPage === 1 ? 'disabled' : ''}>
+        Back
+      </button>
+      <div class="pagination-numbers">
+    `;
+
+    const range = [];
+    for (let i = 1; i <= totalPages; i++) {
+      if (
+        i === 1 ||
+        i === totalPages ||
+        (i >= currentPage - delta && i <= currentPage + delta)
+      ) {
+        range.push(i);
+      }
+    }
+
+    let l;
+    for (let i of range) {
+      if (l) {
+        if (i - l === 2) {
+          html += `<button class="pagination-number" onclick="${onClickFunction}(${l + 1})">${l + 1}</button>`;
+        } else if (i - l !== 1) {
+          html += `<span class="pagination-ellipsis">...</span>`;
+        }
+      }
+      html += `
+        <button class="pagination-number ${i === currentPage ? 'active' : ''}" onclick="${onClickFunction}(${i})">
+          ${i}
+        </button>
+      `;
+      l = i;
+    }
+
+    html += `
+      </div>
+      <button class="pagination-btn" onclick="${onClickFunction}(${currentPage + 1})" ${currentPage === totalPages ? 'disabled' : ''}>
+        Next
+      </button>
+    `;
+
+    return html;
+  },
+
+  paginate(items, page = 1, itemsPerPage = 8) {
+    const totalPages = Math.ceil(items.length / itemsPerPage);
+    const currentPage = Math.max(1, Math.min(page, totalPages));
+    const startIndex = (currentPage - 1) * itemsPerPage;
+    const endIndex = startIndex + itemsPerPage;
+    const paginatedItems = items.slice(startIndex, endIndex);
+
+    return {
+      items: paginatedItems,
+      currentPage,
+      totalPages,
+      totalItems: items.length,
+      hasNextPage: currentPage < totalPages,
+      hasPrevPage: currentPage > 1
+    };
+  }
+};
+
+function getNavContainers() {
+  if (!mainNav) mainNav = document.getElementById("mainNav");
+  if (!mobileNav) mobileNav = document.getElementById("mobileNav");
+  return { mainNav, mobileNav };
+}
 
 async function loadGlobalNavbar() {
+  renderNavbar();
   try {
     const res = await fetch("/api/categories");
     const json = await res.json();
@@ -16,14 +92,54 @@ async function loadGlobalNavbar() {
     }
   } catch (err) {
     console.error("Failed to load Google Drive categories:", err);
-    // Render static navbar fallback
     renderNavbar();
   }
 }
 
+function setupSubscribeForm() {
+  const form = document.getElementById('subscribeForm');
+  const emailInput = document.getElementById('subscribeEmail');
+  const statusEl = document.getElementById('subscribeStatus');
+  if (!form || !emailInput || !statusEl) return;
+
+  form.addEventListener('submit', async (event) => {
+    event.preventDefault();
+    const email = emailInput.value.trim();
+    if (!email) {
+      statusEl.textContent = 'Please enter a valid email address.';
+      statusEl.style.color = 'red';
+      return;
+    }
+
+    statusEl.textContent = 'Subscribing...';
+    statusEl.style.color = 'var(--navy)';
+
+    try {
+      const response = await fetch('/api/subscribe', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email })
+      });
+      const result = await response.json();
+
+      if (result.ok) {
+        statusEl.textContent = 'Thanks! You are now subscribed.';
+        statusEl.style.color = 'green';
+        form.reset();
+      } else {
+        statusEl.textContent = result.error || 'Unable to subscribe right now.';
+        statusEl.style.color = 'red';
+      }
+    } catch (err) {
+      statusEl.textContent = 'Network error. Please try again later.';
+      statusEl.style.color = 'red';
+    }
+  });
+}
+
 function renderNavbar() {
-  const nav = document.getElementById("mainNav");
-  if (!nav) return;
+  const { mainNav, mobileNav } = getNavContainers();
+  if (!mainNav && !mobileNav) return;
 
   const path = window.location.pathname;
   const searchParams = new URLSearchParams(window.location.search);
@@ -35,27 +151,44 @@ function renderNavbar() {
   const isPortfolio = path.includes("/portfolio");
   const isGallery = path.includes("/gallery");
 
-  const homeBtn = `<a href="/" class="${isHome ? 'active' : ''}">Home</a>`;
-  const materialsBtn = `<a href="/materials" class="${isMaterials ? 'active' : ''}">Materials Catalog</a>`;
-  const portfolioBtn = `<a href="/portfolio" class="${isPortfolio ? 'active' : ''}">Portfolio</a>`;
+  const getActive = (isActive) => isActive ? 'active' : '';
+
+  // Desktop Links
+  const homeBtn = `<a href="/" class="${getActive(isHome)}">Home</a>`;
+  const materialsBtn = `<a href="/materials" class="${getActive(isMaterials)}">Materials Catalog</a>`;
+  const portfolioBtn = `<a href="/portfolio" class="${getActive(isPortfolio)}">Portfolio</a>`;
 
   // Folders dynamically fetched from Google Drive
-  const folderBtns = globalCategories.map(cat => {
+  let folderBtns = '';
+  for (let i = 0; i < globalCategories.length; i++) {
+    const cat = globalCategories[i];
     const isCatActive = isGallery && activeCategory === cat.slug;
-    return `<a href="/gallery?category=${cat.slug}" class="${isCatActive ? 'active' : ''}">${cat.name}</a>`;
-  }).join("");
+    folderBtns += `<a href="/gallery?category=${cat.slug}" class="${getActive(isCatActive)}">${cat.name}</a>`;
+  }
 
   const galleryDropdown = `
     <div class="dropdown">
-      <a href="/gallery" class="${isGallery ? 'active' : ''}">Gallery ▾</a>
+      <a href="/gallery" class="${getActive(isGallery)}">Gallery ▾</a>
       <div class="dropdown-content">
-        <a href="/gallery" class="${isGallery && !activeCategory ? 'active' : ''}">All Folders</a>
+        <a href="/gallery" class="${getActive(isGallery && !activeCategory)}">All Folders</a>
         ${folderBtns}
       </div>
     </div>
   `;
 
-  nav.innerHTML = homeBtn + materialsBtn + portfolioBtn + galleryDropdown;
+  if (mainNav) {
+    mainNav.innerHTML = homeBtn + materialsBtn + portfolioBtn + galleryDropdown;
+  }
+  
+  if (mobileNav) {
+    mobileNav.innerHTML = homeBtn + materialsBtn + portfolioBtn + galleryDropdown;
+    // Add event listeners to close menu on click for mobile
+    mobileNav.querySelectorAll('a').forEach(a => {
+      a.addEventListener('click', () => {
+        if(window.closeMobileMenu) window.closeMobileMenu();
+      });
+    });
+  }
 }
 
 // 2. Global Lightbox Slideshow Implementation
@@ -103,13 +236,18 @@ function updateLightbox() {
   caption.textContent = `${item.categoryName || 'Gallery'} — ${item.name || 'Sohail Interior'}`;
 }
 
-// Keyboard shortcuts for Lightbox
+// Keyboard shortcuts for Lightbox + mobile sidebar
 document.addEventListener("keydown", (e) => {
   const lightbox = document.getElementById("lightbox");
   if (lightbox && lightbox.classList.contains("active")) {
     if (e.key === "Escape") closeLightbox();
     if (e.key === "ArrowLeft") prevLightboxItem();
     if (e.key === "ArrowRight") nextLightboxItem();
+  }
+
+  const sidebar = document.getElementById("mobileSidebar");
+  if (e.key === "Escape" && sidebar && sidebar.classList.contains("active")) {
+    if (window.closeMobileMenu) window.closeMobileMenu();
   }
 });
 
@@ -127,15 +265,8 @@ window.revealCheck = function () {
 // 4. Initial Startup Tasks
 document.addEventListener("DOMContentLoaded", () => {
   loadGlobalNavbar();
+  setupSubscribeForm();
   window.revealCheck();
-
-  // Close Announcement Bar Handler
-  const announceCloseBtn = document.querySelector(".announce button");
-  if (announceCloseBtn) {
-    announceCloseBtn.addEventListener("click", () => {
-      document.getElementById("announce").classList.add("hide");
-    });
-  }
 });
 
 // 5. Global Page Loader hide controller

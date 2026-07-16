@@ -1,77 +1,10 @@
 // Gallery Page Specific Logic
 
-// 1. Pagination helper utility
-const Pagination = {
-  generateHTML(currentPage, totalPages, onClickFunction, delta = 1) {
-    if (totalPages <= 1) return '';
-
-    let html = `
-      <button class="pagination-btn" onclick="${onClickFunction}(${currentPage - 1})" ${currentPage === 1 ? 'disabled' : ''}>
-        Back
-      </button>
-      <div class="pagination-numbers">
-    `;
-
-    const range = [];
-    for (let i = 1; i <= totalPages; i++) {
-      if (
-        i === 1 || 
-        i === totalPages || 
-        (i >= currentPage - delta && i <= currentPage + delta)
-      ) {
-        range.push(i);
-      }
-    }
-
-    let l;
-    for (let i of range) {
-      if (l) {
-        if (i - l === 2) {
-          html += `<button class="pagination-number" onclick="${onClickFunction}(${l + 1})">${l + 1}</button>`;
-        } else if (i - l !== 1) {
-          html += `<span class="pagination-ellipsis">...</span>`;
-        }
-      }
-      html += `
-        <button class="pagination-number ${i === currentPage ? 'active' : ''}" onclick="${onClickFunction}(${i})">
-          ${i}
-        </button>
-      `;
-      l = i;
-    }
-
-    html += `
-      </div>
-      <button class="pagination-btn" onclick="${onClickFunction}(${currentPage + 1})" ${currentPage === totalPages ? 'disabled' : ''}>
-        Next
-      </button>
-    `;
-
-    return html;
-  },
-
-  paginate(items, page = 1, itemsPerPage = 6) {
-    const totalPages = Math.ceil(items.length / itemsPerPage);
-    const currentPage = Math.max(1, Math.min(page, totalPages));
-    const startIndex = (currentPage - 1) * itemsPerPage;
-    const endIndex = startIndex + itemsPerPage;
-    const paginatedItems = items.slice(startIndex, endIndex);
-
-    return {
-      items: paginatedItems,
-      currentPage,
-      totalPages,
-      totalItems: items.length,
-      hasNextPage: currentPage < totalPages,
-      hasPrevPage: currentPage > 1
-    };
-  }
-};
-
 // Gallery Page States
 let activeGalleryCategory = "all";
 let currentGalleryPage = 1;
 const GALLERY_ITEMS_PER_PAGE = 6;
+let galleryItems = [];
 
 // 2. Populate Drive Folder filters dynamically
 function renderFilters() {
@@ -152,15 +85,13 @@ function renderGalleryGrid() {
   // Apply Pagination
   const paginated = Pagination.paginate(items, currentGalleryPage, GALLERY_ITEMS_PER_PAGE);
 
+  galleryItems = items;
   grid.innerHTML = paginated.items.map((item, idx) => {
     const isVideo = item.type === "video";
     const itemIndexInFullList = (paginated.currentPage - 1) * GALLERY_ITEMS_PER_PAGE + idx;
-    
-    // Stringify item array to pass to lightbox
-    const itemsJSON = JSON.stringify(items).replace(/"/g, '&quot;');
-    
+
     return `
-      <div class="gcard reveal" onclick="openLightbox(${itemIndexInFullList}, ${itemsJSON})">
+      <div class="gcard reveal" data-lightbox-index="${itemIndexInFullList}">
         ${itemIndexInFullList < 2 ? '<div class="new-pill mono">New</div>' : ''}
         ${isVideo 
           ? `<video src="${item.src}" muted playsinline style="width:100%; height:100%; object-fit:cover;"></video>` 
@@ -178,7 +109,23 @@ function renderGalleryGrid() {
   // Paginated navigation links
   paginationContainer.innerHTML = Pagination.generateHTML(paginated.currentPage, paginated.totalPages, "changeGalleryPage");
 
+  bindGalleryClicks();
   if (window.revealCheck) window.revealCheck();
+}
+
+function bindGalleryClicks() {
+  const grid = document.getElementById("galleryGrid");
+  if (!grid) return;
+  grid.removeEventListener('click', onGalleryItemClick);
+  grid.addEventListener('click', onGalleryItemClick);
+}
+
+function onGalleryItemClick(event) {
+  const card = event.target.closest('.gcard');
+  if (!card) return;
+  const index = Number(card.dataset.lightboxIndex);
+  if (!Number.isFinite(index)) return;
+  openLightbox(index, galleryItems);
 }
 
 // Check category parameters on startup
