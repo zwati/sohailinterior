@@ -5,6 +5,7 @@ const nodemailer = require("nodemailer");
 const { google } = require("googleapis");
 const { Readable } = require("stream");
 const path = require("path");
+const fs = require("fs");
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -64,6 +65,38 @@ function clearCache() {
   lastCacheTime = 0;
 }
 
+// ── In-Memory Portfolio Cache ───────────────────────────────────────────────
+let portfolioCache = null;
+let lastPortfolioCacheTime = 0;
+
+function clearPortfolioCache() {
+  portfolioCache = null;
+  lastPortfolioCacheTime = 0;
+}
+
+// ── Local Portfolio Metadata Storage ─────────────────────────────────────────
+const PORTFOLIO_METADATA_FILE = path.join(__dirname, "portfolio_metadata.json");
+
+function readLocalPortfolioMetadata() {
+  try {
+    if (fs.existsSync(PORTFOLIO_METADATA_FILE)) {
+      const raw = fs.readFileSync(PORTFOLIO_METADATA_FILE, "utf8");
+      return JSON.parse(raw);
+    }
+  } catch (err) {
+    console.error("Error reading portfolio_metadata.json:", err.message);
+  }
+  return {};
+}
+
+function writeLocalPortfolioMetadata(data) {
+  try {
+    fs.writeFileSync(PORTFOLIO_METADATA_FILE, JSON.stringify(data, null, 2), "utf8");
+  } catch (err) {
+    console.error("Error writing portfolio_metadata.json:", err.message);
+  }
+}
+
 // ── Category scan logic ──────────────────────────────────────────────────────
 async function scanGoogleDriveFolders() {
   const drive = getDriveClient();
@@ -92,23 +125,43 @@ async function scanGoogleDriveFolders() {
     if (!folder.id || !folder.name) return null;
 
     const filesResponse = await drive.files.list({
-      q: `'${folder.id}' in parents and trashed = false and (mimeType contains 'image/' or mimeType contains 'video/')`,
+      q: `'${folder.id}' in parents and trashed = false`,
       fields: "files(id, name, mimeType)",
       orderBy: "name",
       pageSize: 200,
     });
 
     const files = filesResponse.data.files || [];
-    const items = files.map((file) => {
-      const isVideo = file.mimeType ? file.mimeType.startsWith("video/") : false;
+    
+    // Filter media items
+    const mediaFiles = files.filter(file => {
+      const mime = file.mimeType || "";
+      const name = (file.name || "").toLowerCase();
+      
+      const isMediaMime = mime.startsWith("image/") || mime.startsWith("video/");
+      const isMediaExtension = name.endsWith(".jpg") || name.endsWith(".jpeg") || name.endsWith(".png") || 
+                               name.endsWith(".webp") || name.endsWith(".gif") || name.endsWith(".svg") ||
+                               name.endsWith(".mp4") || name.endsWith(".mkv") || name.endsWith(".mov") || 
+                               name.endsWith(".avi") || name.endsWith(".webm") || name.endsWith(".3gp");
+                               
+      return isMediaMime || isMediaExtension;
+    });
+
+    const items = mediaFiles.map((file) => {
+      const mime = file.mimeType || "";
+      const name = (file.name || "").toLowerCase();
+      
+      const isVideoMime = mime.startsWith("video/");
+      const isVideoExtension = name.endsWith(".mp4") || name.endsWith(".mkv") || name.endsWith(".mov") || 
+                               name.endsWith(".avi") || name.endsWith(".webm") || name.endsWith(".3gp");
+      
+      const isVideo = isVideoMime || isVideoExtension;
       return {
         id: file.id || "",
         name: file.name || "",
         mimeType: file.mimeType || "",
         type: isVideo ? "video" : "image",
-        src: isVideo
-          ? `/api/stream/${file.id}`
-          : `https://lh3.googleusercontent.com/d/${file.id}=w1000`,
+        src: `/api/stream/${file.id}`,
       };
     });
 
@@ -135,6 +188,116 @@ async function scanGoogleDriveFolders() {
   return [...random, ...others];
 }
 
+// ── Portfolio scan logic ─────────────────────────────────────────────────────
+async function scanPortfolioProjects() {
+  const drive = getDriveClient();
+  const portfolioFolderId = process.env.PORTFOLIO_DRIVE_FOLDER_ID;
+
+  if (!portfolioFolderId) {
+    console.warn("PORTFOLIO_DRIVE_FOLDER_ID is not set.");
+    return [];
+  }
+
+  // 1. Get all project folders
+  const folderResponse = await drive.files.list({
+    q: `'${portfolioFolderId}' in parents and mimeType = 'application/vnd.google-apps.folder' and trashed = false`,
+    fields: "files(id, name)",
+    orderBy: "name",
+    pageSize: 100,
+  });
+
+  const folders = folderResponse.data.files || [];
+  const projects = [];
+
+  const localMetadata = readLocalPortfolioMetadata();
+
+  // 2. Fetch items for each subfolder in parallel
+  const projectPromises = folders.map(async (folder) => {
+    if (!folder.id || !folder.name) return null;
+
+    const filesResponse = await drive.files.list({
+      q: `'${folder.id}' in parents and trashed = false`,
+      fields: "files(id, name, mimeType)",
+      orderBy: "name",
+      pageSize: 100,
+    });
+
+    const files = filesResponse.data.files || [];
+
+    // Filter media items
+    const mediaFiles = files.filter(file => {
+      const mime = file.mimeType || "";
+      const name = (file.name || "").toLowerCase();
+      
+      const isMediaMime = mime.startsWith("image/") || mime.startsWith("video/");
+      const isMediaExtension = name.endsWith(".jpg") || name.endsWith(".jpeg") || name.endsWith(".png") || 
+                               name.endsWith(".webp") || name.endsWith(".gif") || name.endsWith(".svg") ||
+                               name.endsWith(".mp4") || name.endsWith(".mkv") || name.endsWith(".mov") || 
+                               name.endsWith(".avi") || name.endsWith(".webm") || name.endsWith(".3gp");
+                               
+      return isMediaMime || isMediaExtension;
+    });
+
+    if (mediaFiles.length === 0) {
+      return null;
+    }
+
+    const items = mediaFiles.map((file) => {
+      const mime = file.mimeType || "";
+      const name = (file.name || "").toLowerCase();
+      
+      const isVideoMime = mime.startsWith("video/");
+      const isVideoExtension = name.endsWith(".mp4") || name.endsWith(".mkv") || name.endsWith(".mov") || 
+                               name.endsWith(".avi") || name.endsWith(".webm") || name.endsWith(".3gp");
+      
+      const isVideo = isVideoMime || isVideoExtension;
+      return {
+        id: file.id || "",
+        name: file.name || "",
+        mimeType: file.mimeType || "",
+        type: isVideo ? "video" : "image",
+        src: `/api/stream/${file.id}`,
+      };
+    });
+
+    // Get metadata from local storage
+    const metadata = localMetadata[folder.id] || {};
+
+    // Map category
+    const categoryKey = metadata.category || "residential";
+    let categoryLabel = metadata.catLabel || "Residential";
+    if (categoryKey.toLowerCase() === "ceiling") categoryLabel = "Ceiling Work";
+    else if (categoryKey.toLowerCase() === "residential") categoryLabel = "Residential";
+    else if (categoryKey.toLowerCase() === "commercial") categoryLabel = "Commercial";
+
+    const firstImage = items.find(item => item.type === "image");
+    const previewMedia = firstImage || items[0];
+
+    return {
+      id: folder.id,
+      name: metadata.name || folder.name,
+      category: categoryKey.toLowerCase(),
+      catLabel: categoryLabel,
+      location: metadata.location || "Sahiwal",
+      desc: metadata.desc || "Completed installation by Sohail Interior.",
+      texture: metadata.texture || "t-pop",
+      previewUrl: previewMedia.src,
+      src: items[0].src,
+      type: items[0].type,
+      items: items
+    };
+  });
+
+  const results = await Promise.all(projectPromises);
+  for (const r of results) {
+    if (r) {
+      projects.push(r);
+    }
+  }
+
+  return projects;
+}
+
 // ── Express Endpoints ────────────────────────────────────────────────────────
 
 // GET Categories & items
@@ -156,6 +319,48 @@ app.get("/api/categories", async (req, res) => {
   }
 });
 
+// GET Portfolio Projects
+app.get("/api/portfolio-projects", async (req, res) => {
+  try {
+    const now = Date.now();
+    if (portfolioCache && now - lastPortfolioCacheTime < CACHE_TTL) {
+      return res.json({ ok: true, projects: portfolioCache });
+    }
+
+    const projects = await scanPortfolioProjects();
+    portfolioCache = projects;
+    lastPortfolioCacheTime = now;
+
+    res.json({ ok: true, projects });
+  } catch (err) {
+    console.error("[GET /api/portfolio-projects] Error:", err.message);
+    res.status(500).json({ ok: false, error: err.message });
+  }
+});
+
+// POST Save Portfolio Project Metadata
+app.post("/api/portfolio-projects/:folderId/metadata", async (req, res) => {
+  try {
+    const { folderId } = req.params;
+    const { name, category, location, desc, texture } = req.body;
+
+    const localMetadata = readLocalPortfolioMetadata();
+    localMetadata[folderId] = {
+      name,
+      category,
+      location,
+      desc,
+      texture,
+    };
+    writeLocalPortfolioMetadata(localMetadata);
+
+    clearPortfolioCache();
+    res.json({ ok: true });
+  } catch (err) {
+    console.error("[POST /api/portfolio-projects/:folderId/metadata] Error:", err.message);
+    res.status(500).json({ ok: false, error: err.message });
+  }
+});
 // POST Newsletter subscriptions
 app.post("/api/subscribe", async (req, res) => {
   try {
@@ -327,7 +532,7 @@ app.post("/api/designs", upload.array("images", 5), async (req, res) => {
             fileId,
             requestBody: { role: "reader", type: "anyone" },
           });
-        } catch (_) {}
+        } catch (_) { }
       }
       return fileId;
     });

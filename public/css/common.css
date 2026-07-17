@@ -809,13 +809,27 @@ nav.main-nav a:not(.active):hover {
   text-transform: uppercase;
   color: rgba(231, 211, 174, .55);
   opacity: 0;
-  animation: capFade .8s ease 1.7s forwards;
+  animation: capFade .6s ease 1.2s forwards;
 }
 
 @keyframes capFade {
   to {
     opacity: 1;
   }
+}
+
+/* Glass loader text animation overrides (to finish by 0.7s) */
+.loader.glass-loader .lc-word {
+  animation: wordFade 0.3s ease 0.05s forwards !important;
+}
+.loader.glass-loader .lc-word span {
+  animation: trackOpen 0.5s cubic-bezier(.19, 1, .22, 1) 0.05s forwards !important;
+}
+.loader.glass-loader .lc-rule {
+  animation: ruleGrow 0.4s cubic-bezier(.19, 1, .22, 1) 0.2s forwards !important;
+}
+.loader.glass-loader .lc-caption {
+  animation: capFade 0.3s ease 0.4s forwards !important;
 }
 
 @media (prefers-reduced-motion: reduce) {

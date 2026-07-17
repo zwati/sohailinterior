@@ -171,3 +171,105 @@
     padding: 0 10px;
   }
 }
+
+/* Blog Header/Author Card Section */
+.blog-header {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 40px 20px;
+}
+
+.blog-label {
+  text-align: center;
+  letter-spacing: 2px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--brass);
+  margin-bottom: 40px;
+  text-transform: uppercase;
+}
+
+.header-content {
+  display: flex;
+  align-items: flex-start;
+  gap: 60px;
+  flex-wrap: wrap;
+}
+
+.hero-image {
+  flex: 2 1 500px;
+}
+
+.hero-image img {
+  width: 100%;
+  height: 550px;
+  object-fit: cover;
+  display: block;
+  background: var(--mist);
+  border-radius: 12px;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.05);
+}
+
+.author-card {
+  flex: 1 1 260px;
+  text-align: center;
+  padding-top: 10px;
+}
+
+.avatar {
+  width: 160px;
+  height: 160px;
+  margin: 0 auto 24px;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 6px solid var(--mist);
+  background: var(--mist);
+  box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+}
+
+.avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.author-name {
+  font-family: 'Fraunces', serif;
+  font-size: 26px;
+  font-weight: 700;
+  color: var(--navy);
+  margin: 0 0 4px;
+}
+
+.author-role {
+  font-size: 15px;
+  color: var(--brass);
+  margin: 0 0 20px;
+  font-weight: 500;
+}
+
+.author-bio {
+  font-size: 14px;
+  line-height: 1.7;
+  color: var(--gray-band);
+  margin: 0 0 30px;
+  padding: 0 10px;
+}
+
+.signature {
+  font-family: 'Dancing Script', 'Brush Script MT', cursive;
+  font-size: 36px;
+  color: var(--navy);
+  margin: 0;
+}
+
+@media (max-width: 768px) {
+  .header-content {
+    flex-direction: column;
+    align-items: center;
+    gap: 30px;
+  }
+  .hero-image img {
+    height: 320px;
+  }
+}

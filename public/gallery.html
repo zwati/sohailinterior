@@ -1,16 +1,21 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Gallery — Sohail Interior</title>
-  <meta name="description" content="View our dynamic gallery of project photos and videos, live synced in high resolution directly from our Google Drive storage.">
+  <meta name="description"
+    content="View our dynamic gallery of project photos and videos, live synced in high resolution directly from our Google Drive storage.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,500&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,500&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap"
+    rel="stylesheet">
   <link rel="stylesheet" href="/css/common.css">
   <link rel="icon" type="image/png" href="/logo/SI_square.png">
   <link rel="stylesheet" href="/css/gallery.css">
 </head>
+
 <body>
 
   <page-loader glass></page-loader>
@@ -22,20 +27,20 @@
     <div class="page active" id="galleryPage">
       <div class="page-band">
         <div class="crumb mono">Home / Gallery</div>
-        Drive Synced Gallery
       </div>
-      
+
       <section class="section" style="padding-top:40px;">
         <!-- Filter chips populated dynamically by gallery.js -->
         <div class="filter-row" id="galleryFilters">
           <div class="chip active" onclick="filterGallery('all', this)">All</div>
         </div>
-        
+
         <!-- Gallery Grid -->
         <div class="gallery" id="galleryGrid">
-          <div style="grid-column: span 3; text-align:center; padding: 60px; color: #6b7f97;">Loading gallery folders from Google Drive...</div>
+          <div style="grid-column: span 3; text-align:center; padding: 60px; color: #6b7f97;">Loading gallery folders
+            from Google Drive...</div>
         </div>
-        
+
         <!-- Pagination -->
         <div class="pagination" id="galleryPagination"></div>
       </section>
@@ -58,4 +63,5 @@
   <script src="/js/common.js" defer></script>
   <script src="/js/gallery.js" defer></script>
 </body>
+
 </html>

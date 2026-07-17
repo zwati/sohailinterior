@@ -547,8 +547,44 @@ document.addEventListener("DOMContentLoaded", () => {
 window.addEventListener('load', () => {
   const loader = document.getElementById('pageLoader');
   if (loader) {
+    const isGlass = loader.classList.contains('glass-loader');
+    const delay = isGlass ? 800 : 2600;
+    
+    if (isGlass) {
+      loader.style.transition = 'opacity 0.4s cubic-bezier(.4, 0, .2, 1), filter 0.4s ease';
+    }
+    
     setTimeout(() => {
       loader.classList.add('done');
-    }, 2600);
+    }, delay);
   }
+});
+
+// Intercept navigation triggers to show the loader during page changes
+document.addEventListener('DOMContentLoaded', () => {
+  document.body.addEventListener('click', (e) => {
+    // 1. Check for standard anchor link clicks
+    const anchor = e.target.closest('a');
+    if (anchor) {
+      const href = anchor.getAttribute('href');
+      if (href && href.startsWith('/') && !href.startsWith('/#') && !href.includes('#') && !anchor.hasAttribute('download') && anchor.target !== '_blank') {
+        const loader = document.getElementById('pageLoader');
+        if (loader) {
+          loader.classList.remove('done');
+        }
+      }
+    }
+    
+    // 2. Check for inline JavaScript redirect triggers (e.g. brand logo click)
+    const clickable = e.target.closest('[onclick]');
+    if (clickable) {
+      const onclickAttr = clickable.getAttribute('onclick') || '';
+      if (onclickAttr.includes('window.location') || onclickAttr.includes('location.href')) {
+        const loader = document.getElementById('pageLoader');
+        if (loader) {
+          loader.classList.remove('done');
+        }
+      }
+    }
+  });
 });
