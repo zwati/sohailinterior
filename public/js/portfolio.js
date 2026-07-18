@@ -63,12 +63,19 @@ document.head.appendChild(slideshowStyles);
 async function loadPortfolioProjects() {
   try {
     const res = await fetch("/api/portfolio-projects");
+    if (!res.ok) {
+      throw new Error(`HTTP error! Status: ${res.status}`);
+    }
     const json = await res.json();
-    if (json.ok && json.projects && json.projects.length > 0) {
-      projectsData = json.projects;
+    if (json.ok) {
+      if (json.projects && json.projects.length > 0) {
+        projectsData = json.projects;
+      } else {
+        console.warn("Portfolio projects from drive are empty.");
+        projectsData = [];
+      }
     } else {
-      console.warn("Portfolio projects from drive are empty.");
-      projectsData = [];
+      throw new Error(json.error || "Unknown server error");
     }
   } catch (err) {
     console.error("Failed to load portfolio projects from Drive:", err);
@@ -88,25 +95,63 @@ function renderFilters() {
     { key: 'ceiling', label: 'Ceiling Work' }
   ];
 
-  container.innerHTML = categories.map(cat => {
-    const isActive = cat.key === activeFilter;
-    return `
-      <button class="chip ${isActive ? 'active' : ''}" onclick="filterPortfolio('${cat.key}', this)">
-        ${cat.label}
-      </button>
-    `;
-  }).join('');
+  const activeLabel = categories.find(c => c.key === activeFilter)?.label || 'All Projects';
+
+  const desktopHTML = `
+    <div class="filter-desktop">
+      ${categories.map(cat => {
+        const isActive = cat.key === activeFilter;
+        return `
+          <button class="chip ${isActive ? 'active' : ''}" onclick="filterPortfolio('${cat.key}')">
+            ${cat.label}
+          </button>
+        `;
+      }).join('')}
+    </div>
+  `;
+
+  const mobileHTML = `
+    <div class="filter-mobile split-dropdown">
+      <div class="split-button-group">
+        <button class="split-main" onclick="filterPortfolio('${activeFilter}')">${activeLabel}</button>
+        <button class="split-arrow" onclick="toggleFilterMenu(event)">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+        </button>
+      </div>
+      <div class="split-menu" id="splitMenu">
+        ${categories.map(cat => {
+          const isActive = cat.key === activeFilter;
+          return `
+            <button class="split-item ${isActive ? 'active' : ''}" onclick="filterPortfolio('${cat.key}')">
+              ${cat.label}
+            </button>
+          `;
+        }).join('')}
+      </div>
+    </div>
+  `;
+
+  container.innerHTML = desktopHTML + mobileHTML;
 }
 
-window.filterPortfolio = function (cat, btn) {
-  activeFilter = cat;
-
-  // Toggle chips styling
-  document.querySelectorAll('#portfolioFilters .chip').forEach(c => c.classList.remove('active'));
-  if (btn) {
-    btn.classList.add('active');
+window.toggleFilterMenu = function(e) {
+  e.stopPropagation();
+  const menu = document.getElementById('splitMenu');
+  if (menu) {
+    menu.classList.toggle('show');
   }
+};
 
+document.addEventListener('click', () => {
+  const menu = document.getElementById('splitMenu');
+  if (menu && menu.classList.contains('show')) {
+    menu.classList.remove('show');
+  }
+});
+
+window.filterPortfolio = function (cat) {
+  activeFilter = cat;
+  renderFilters(); // Re-render to update active classes and dropdown label
   renderPortfolioGrid();
 };
 

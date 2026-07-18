@@ -574,3 +574,5 @@ app.get("*", (req, res) => {
 app.listen(PORT, () => {
   console.log(`[Server] Sohail Interior v2 listening on http://localhost:${PORT}`);
 });
+
+module.exports = app;

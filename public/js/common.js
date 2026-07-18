@@ -93,6 +93,9 @@ async function loadGlobalNavbar() {
   renderNavbar();
   try {
     const res = await fetch("/api/categories");
+    if (!res.ok) {
+      throw new Error(`HTTP error! Status: ${res.status}`);
+    }
     const json = await res.json();
     if (json.ok) {
       globalCategories = json.categories;
@@ -100,6 +103,8 @@ async function loadGlobalNavbar() {
 
       // Dispatch custom event for page-specific scripts that wait for categories
       window.dispatchEvent(new CustomEvent("categoriesLoaded", { detail: globalCategories }));
+    } else {
+      throw new Error(json.error || "Unknown server error");
     }
   } catch (err) {
     console.error("Failed to load Google Drive categories:", err);
@@ -427,7 +432,7 @@ window.QuoteCart = {
     });
     text += "Please let me know the pricing and availability. Thank you!";
     
-    window.open(`https://wa.me/923001112233?text=${encodeURIComponent(text)}`, '_blank');
+    window.open(`https://wa.me/923115813505?text=${encodeURIComponent(text)}`, '_blank');
   }
 };
 

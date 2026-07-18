@@ -156,7 +156,7 @@ window.openDetail = function(id) {
       const colorEl = document.querySelector('#dColors .color-dot.active');
       const selectedTone = colorEl ? colorEl.style.backgroundColor || colorEl.style.background : 'Default';
       const msg = `Hi Sohail Interior, I am interested in the ${m.name} (${m.id}) in finish: ${selectedFinish} and tone: ${selectedTone}. Quantity: ${currentQty}.`;
-      window.open(`https://wa.me/923001112233?text=${encodeURIComponent(msg)}`, '_blank');
+      window.open(`https://wa.me/923115813505?text=${encodeURIComponent(msg)}`, '_blank');
     };
   }
 

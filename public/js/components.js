@@ -194,10 +194,10 @@ class SiteHeader extends HTMLElement {
               <button class="icon-btn" id="searchBtn" title="Search" aria-label="Search">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
               </button>
-              <button class="icon-btn hide-mobile" title="Admin Dashboard" aria-label="Admin" onclick="window.location.href='/admin'">
+              <button class="icon-btn" title="Admin Dashboard" aria-label="Admin" onclick="window.location.href='/admin'">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4.4 3.6-8 8-8s8 3.6 8 8"/></svg>
               </button>
-              <button class="icon-btn hide-mobile" id="wishlistBtn" title="Saved materials" aria-label="Saved materials">
+              <button class="icon-btn" id="wishlistBtn" title="Saved materials" aria-label="Saved materials">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.6l-1-1a5.5 5.5 0 1 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8z"/></svg>
                 <span class="badge" id="wishlistBadge">0</span>
               </button>
@@ -295,15 +295,15 @@ class SiteFooter extends HTMLElement {
             <h5>Get in touch</h5>
             <div class="contact-line">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 6-9 12-9 12S3 16 3 10a9 9 0 0 1 18 0Z"/><circle cx="12" cy="10" r="3"/></svg>
-              Farid Town, Sahiwal, Punjab, Pakistan
+              Furniture Bazar, Sadman Town Sahiwal
             </div>
             <div class="contact-line">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16v16H4z"/><path d="m4 4 8 8 8-8"/></svg>
-              hello@sohailinterior.pk
+              Sohailinteriors7@gmail.com
             </div>
             <div class="contact-line">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3 19.5 19.5 0 0 1-6-6 19.8 19.8 0 0 1-3-8.7A2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1 1 .3 2 .6 3a2 2 0 0 1-.5 2.1L8 10a16 16 0 0 0 6 6l1.2-1.2a2 2 0 0 1 2.1-.5c1 .3 2 .5 3 .6a2 2 0 0 1 1.7 2Z"/></svg>
-              0300-111-22-33
+              0311-581-35-05
             </div>
           </div>
           <div class="footer-links">
@@ -313,15 +313,6 @@ class SiteFooter extends HTMLElement {
             <a href="/admin">Admin Sign In</a>
             <a href="#">About Sohail Interior</a>
             <a href="#">Contact Us</a>
-          </div>
-          <div>
-            <h5>Newsletter Signup</h5>
-            <p style="font-size:12.5px; color:#3c5470; margin:0;">Get new material drops and finished projects, straight to your inbox.</p>
-            <form id="subscribeForm" class="newsletter-row" novalidate>
-              <input id="subscribeEmail" name="email" type="email" placeholder="Your email address" aria-label="Email address" required>
-              <button type="submit">Subscribe</button>
-            </form>
-            <div id="subscribeStatus" class="newsletter-status"></div>
           </div>
         </div>
         <div class="footer-bottom">&copy; 2026 Sohail Interior. All rights reserved. &mdash; Sahiwal, Pakistan</div>
@@ -334,7 +325,7 @@ class WhatsAppFloat extends HTMLElement {
   connectedCallback() {
     this.innerHTML = `
       <div class="wa-float">
-        <a href="https://wa.me/923001112233" target="_blank" rel="noopener noreferrer" class="wa-btn" title="Chat on WhatsApp" aria-label="Chat on WhatsApp">
+        <a href="https://wa.me/923115813505" target="_blank" rel="noopener noreferrer" class="wa-btn" title="Chat on WhatsApp" aria-label="Chat on WhatsApp">
           <svg viewBox="0 0 24 24"><path d="M12 2a10 10 0 0 0-8.5 15.3L2 22l4.9-1.3A10 10 0 1 0 12 2Zm5.4 14.2c-.2.6-1.3 1.2-1.9 1.3-.5.1-1.1.1-1.8-.1-.4-.1-1-.3-1.6-.6-2.9-1.2-4.7-4.1-4.9-4.3-.1-.2-1.2-1.6-1.2-3s.7-2.1 1-2.4c.3-.3.6-.3.8-.3h.6c.2 0 .4 0 .6.5.2.6.8 2 .9 2.1.1.2.1.4 0 .6-.1.2-.2.3-.4.5l-.5.6c-.2.2-.3.4-.1.7.2.3.8 1.3 1.7 2.1 1.2 1 2.2 1.4 2.5 1.5.3.1.5.1.7-.1.2-.2.7-.8.9-1.1.2-.3.4-.2.7-.1.3.1 1.9.9 2.2 1 .3.2.5.2.6.4.1.2.1.9-.1 1.5Z"/></svg>
         </a>
       </div>
