@@ -160,6 +160,16 @@
 .pcard .thumb {
   height: 150px;
   position: relative;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+.gallery-main,
+.gallery-thumbs .th {
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
 }
 
 .pcard .new-pill {

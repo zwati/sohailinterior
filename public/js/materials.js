@@ -1,7 +1,7 @@
 // Materials Page Specific Logic
 
-// 2. Static Approved Materials Dataset
-const materialsData = [
+// 2. Dynamic Materials Dataset with static fallback
+let materialsData = window.materialsData || [
   {id:'BLN-01', name:'Window Blinds', cat:'blinds', catLabel:'Blinds', price: 250, priceText:'Rs.250 - Rs.360 / sqft', texture:'t-blinds', desc:'Premium window blinds. Available in Roller (Rs.250/sf), Zebra (Rs.360/sf), and Bamboo (Rs.250/sf).', finishes:['Roller','Zebra','Bamboo'], colors:['#eaf2fa','#c9d6e4','#aebfd2']},
   {id:'CGY-01', name:'2x2 Ceiling', cat:'ceiling-gypsum', catLabel:'2x2 Ceiling', price: 70, priceText:'Rs.70 / sqft', texture:'t-gypsum', desc:'Clean 2x2 celling paneling — moisture-resistant and durable false ceiling.', finishes:['Standard Grid','Slim Line'], colors:['#f5f8fb','#e4ecf4','#d7e2ee']},
   {id:'FWP-01', name:'Fabric Wallpaper', cat:'fabric-wallpaper', catLabel:'Fabric Wallpaper', price: 45, priceText:'Rs.45 / sqft', texture:'t-fabric', desc:'Woven-texture fabric wallpaper, warm and elegant wall finish.', finishes:['Plain Weave','Textured'], colors:['#f5f0e6','#e7d3ae','#d9c295']},
@@ -27,7 +27,7 @@ window.setGridCols = function(n, btn) {
   btn.classList.add('active');
 };
 
-const filterCategories = [
+let filterCategories = [
   { filter: 'all', label: 'All' },
   { filter: 'blinds', label: 'Blinds' },
   { filter: 'ceiling-gypsum', label: 'Ceiling Gypsum' },
@@ -39,6 +39,14 @@ const filterCategories = [
   { filter: 'pvc-wall-panel-10', label: 'PVC Wall Panel 10"' },
   { filter: 'vinyl', label: 'Vinyl' }
 ];
+
+function updateFiltersList(categories) {
+  if (!categories || categories.length === 0) return;
+  filterCategories = [{ filter: 'all', label: 'All' }];
+  categories.forEach(cat => {
+    filterCategories.push({ filter: cat.slug, label: cat.name });
+  });
+}
 
 function renderMaterialsFilters() {
   const filterRow = document.getElementById("materialsFilters");
@@ -120,9 +128,14 @@ window.changeCatalogPage = function(page) {
 function pcardHTML(m) {
   const isNew = ['PW8-01', 'PUC-01'].includes(m.id);
   const swatchHTML = m.colors.map(c => `<span style="background:${c}"></span>`).join('');
+  
+  const isUrl = m.texture.startsWith('/') || m.texture.startsWith('http');
+  const thumbStyle = isUrl ? `style="background-image: url('${m.texture}'); background-size: cover; background-position: center;"` : '';
+  const thumbClass = isUrl ? 'thumb' : `thumb ${m.texture}`;
+
   return `
     <div class="pcard reveal" data-material-id="${m.id}">
-      <div class="thumb ${m.texture}">
+      <div class="${thumbClass}" ${thumbStyle}>
         ${isNew ? '<div class="new-pill mono">New</div>' : ''}
       </div>
       <div class="pbody">
@@ -188,11 +201,30 @@ window.openDetail = function(id) {
   document.getElementById('dDesc').textContent = m.desc;
   document.getElementById('dSku').textContent = m.id;
   document.getElementById('dCat').textContent = m.catLabel;
-  document.getElementById('dMainImg').className = 'gallery-main ' + m.texture;
+  const mainImg = document.getElementById('dMainImg');
+  if (mainImg) {
+    if (m.texture.startsWith('/') || m.texture.startsWith('http')) {
+      mainImg.className = 'gallery-main';
+      mainImg.style.backgroundImage = `url('${m.texture}')`;
+      mainImg.style.backgroundSize = 'cover';
+      mainImg.style.backgroundPosition = 'center';
+    } else {
+      mainImg.className = 'gallery-main ' + m.texture;
+      mainImg.style.backgroundImage = '';
+    }
+  }
   
-  // Set images thumbnails
-  document.getElementById('dThumbs').innerHTML = [1, 2, 3]
-    .map((n, i) => `<div class="th ${m.texture} ${i === 0 ? 'active' : ''}" style="opacity:${1 - i * 0.15}" onclick="highlightThumb(this)"></div>`)
+  // Set images thumbnails from category items
+  const siblingItems = materialsData.filter(x => x.cat === m.cat).slice(0, 3);
+  document.getElementById('dThumbs').innerHTML = siblingItems
+    .map((thItem, i) => {
+      const isUrl = thItem.texture.startsWith('/') || thItem.texture.startsWith('http');
+      const thumbStyle = isUrl 
+        ? `style="background-image: url('${thItem.texture}'); background-size: cover; background-position: center;"`
+        : `style="opacity:${1 - i * 0.15}"`;
+      const thumbClass = isUrl ? 'th' : `th ${thItem.texture}`;
+      return `<div class="${thumbClass} ${thItem.id === m.id ? 'active' : ''}" ${thumbStyle} onclick="highlightThumb(this); swapDetailImage('${thItem.texture}')"></div>`;
+    })
     .join('');
 
   // Set detailed finishes selector
@@ -311,8 +343,26 @@ function onCatalogItemClick(event) {
   if (id) openDetail(id);
 }
 
+window.swapDetailImage = function(src) {
+  const mainImg = document.getElementById('dMainImg');
+  if (!mainImg) return;
+  if (src.startsWith('/') || src.startsWith('http')) {
+    mainImg.className = 'gallery-main';
+    mainImg.style.backgroundImage = `url('${src}')`;
+  } else {
+    mainImg.className = 'gallery-main ' + src;
+    mainImg.style.backgroundImage = '';
+  }
+};
+
 // Initial startup tasks
 document.addEventListener("DOMContentLoaded", () => {
+  // If categories are already fetched (resolves fast cache race condition)
+  if (window.globalCategories && window.globalCategories.length > 0) {
+    materialsData = window.materialsData;
+    updateFiltersList(window.globalCategories);
+  }
+
   renderMaterialsFilters();
   renderCatalog();
 
@@ -325,5 +375,20 @@ document.addEventListener("DOMContentLoaded", () => {
     openDetail(productId);
   } else if (catFilter) {
     filterMaterials(catFilter);
+  }
+});
+
+// Update when categories are loaded from Google Drive API
+window.addEventListener("categoriesLoaded", (e) => {
+  materialsData = window.materialsData;
+  updateFiltersList(e.detail);
+  renderMaterialsFilters();
+  renderCatalog();
+
+  // Route check by query parameters again to open dynamic product if matched
+  const params = new URLSearchParams(window.location.search);
+  const productId = params.get('id');
+  if (productId) {
+    openDetail(productId);
   }
 });

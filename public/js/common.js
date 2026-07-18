@@ -12,7 +12,7 @@ window.materialsData = [
 ];
 
 // 1. Dynamic Navbar & Google Drive Categories Loader
-let globalCategories = [];
+window.globalCategories = [];
 let mainNav = null;
 let mobileNav = null;
 
@@ -89,6 +89,32 @@ function getNavContainers() {
   return { mainNav, mobileNav };
 }
 
+function formatFileName(filename) {
+  let name = filename.replace(/\.[^/.]+$/, ""); // strip extension
+  name = name.replace(/(?:rs|Rs|RS)\.?\s*\d+\S*/g, ""); // strip Rs price tags
+  name = name.replace(/[-_]+/g, " "); // replace separators
+  name = name.trim();
+  return name.replace(/\b\w/g, c => c.toUpperCase()); // title case
+}
+
+function extractPrice(filename) {
+  let price = 150;
+  let priceText = "Rs.150 / sqft";
+  const priceMatch = filename.match(/(?:rs|Rs|RS)\.?\s*(\d+)/i) || filename.match(/(\d+)\s*(?:rs|Rs|RS)/i);
+  if (priceMatch) {
+    price = parseInt(priceMatch[1], 10);
+    const lowerName = filename.toLowerCase();
+    let unit = "sqft";
+    if (lowerName.includes("sheet")) {
+      unit = "sheet";
+    } else if (lowerName.includes("piece") || lowerName.includes("pc")) {
+      unit = "piece";
+    }
+    priceText = `Rs.${price} / ${unit}`;
+  }
+  return { price, priceText };
+}
+
 async function loadGlobalNavbar() {
   renderNavbar();
   try {
@@ -100,6 +126,34 @@ async function loadGlobalNavbar() {
     if (json.ok) {
       globalCategories = json.categories;
       renderNavbar();
+
+      // Dynamically build materialsData from Google Drive categories response
+      if (globalCategories && globalCategories.length > 0) {
+        const dynamicMaterials = [];
+        globalCategories.forEach(cat => {
+          cat.items.forEach(file => {
+            const cleanName = formatFileName(file.name);
+            const { price, priceText } = extractPrice(file.name);
+
+            dynamicMaterials.push({
+              id: file.id,
+              name: cleanName,
+              cat: cat.slug,
+              catLabel: cat.name,
+              price: price,
+              priceText: priceText,
+              texture: file.src, // Google Drive stream URL
+              desc: `Premium quality ${cleanName} from our ${cat.name} collection. Durable, moisture-resistant, and professionally installed.`,
+              finishes: ['Standard Finish', 'Premium Texture'],
+              colors: ['#eaf2fa', '#c9d6e4', '#aebfd2', '#f5f0e6', '#e7d3ae']
+            });
+          });
+        });
+
+        if (dynamicMaterials.length > 0) {
+          window.materialsData = dynamicMaterials;
+        }
+      }
 
       // Dispatch custom event for page-specific scripts that wait for categories
       window.dispatchEvent(new CustomEvent("categoriesLoaded", { detail: globalCategories }));
