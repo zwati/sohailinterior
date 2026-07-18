@@ -33,7 +33,6 @@
 
       <div class="toolbar">
         <div class="toolbar-left">
-          <div class="filter-toggle">⚙ Filter</div>
           <div class="view-toggle">
             <button class="active" id="viewGrid4" onclick="setGridCols(4, this)" aria-label="4 Column View"><svg
                 viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -64,23 +63,7 @@
       </div>
 
       <!-- Category Filter Chips -->
-      <div class="filter-row">
-        <div class="chip active" data-filter="all" onclick="filterMaterials('all', this)">All</div>
-        <div class="chip" data-filter="blinds" onclick="filterMaterials('blinds', this)">Blinds</div>
-        <div class="chip" data-filter="ceiling-gypsum" onclick="filterMaterials('ceiling-gypsum', this)">Ceiling Gypsum
-        </div>
-        <div class="chip" data-filter="fabric-wallpaper" onclick="filterMaterials('fabric-wallpaper', this)">Fabric
-          Wallpaper</div>
-        <div class="chip" data-filter="fiber-doors" onclick="filterMaterials('fiber-doors', this)">Fiber Doors</div>
-        <div class="chip" data-filter="pvc-wooden-door" onclick="filterMaterials('pvc-wooden-door', this)">PVC Wooden
-          Style Door</div>
-        <div class="chip" data-filter="pvc-wall-panel-8" onclick="filterMaterials('pvc-wall-panel-8', this)">PVC Wall
-          Panel 8"</div>
-        <div class="chip" data-filter="pvc-updown-ceiling" onclick="filterMaterials('pvc-updown-ceiling', this)">PVC
-          Updown Ceiling</div>
-        <div class="chip" data-filter="pvc-wall-panel-10" onclick="filterMaterials('pvc-wall-panel-10', this)">PVC Wall
-          Panel 10"</div>
-        <div class="chip" data-filter="vinyl" onclick="filterMaterials('vinyl', this)">Vinyl</div>
+      <div class="filter-row" id="materialsFilters">
       </div>
 
       <!-- Grid -->

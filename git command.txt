@@ -1,0 +1,1 @@
+feat(UI): apply navy split-dropdown for mobile filters and optimize product grids for 3-column mobile layout

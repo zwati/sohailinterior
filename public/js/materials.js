@@ -27,17 +27,78 @@ window.setGridCols = function(n, btn) {
   btn.classList.add('active');
 };
 
-// 4. Category Filter Selector
-window.filterMaterials = function(cat, chipEl) {
-  document.querySelectorAll('#materialsPage .chip').forEach(c => c.classList.remove('active'));
-  if (chipEl) {
-    chipEl.classList.add('active');
-  } else {
-    const match = document.querySelector(`#materialsPage .chip[data-filter="${cat}"]`);
-    if (match) match.classList.add('active');
+const filterCategories = [
+  { filter: 'all', label: 'All' },
+  { filter: 'blinds', label: 'Blinds' },
+  { filter: 'ceiling-gypsum', label: 'Ceiling Gypsum' },
+  { filter: 'fabric-wallpaper', label: 'Fabric Wallpaper' },
+  { filter: 'fiber-doors', label: 'Fiber Doors' },
+  { filter: 'pvc-wooden-door', label: 'PVC Wooden Style Door' },
+  { filter: 'pvc-wall-panel-8', label: 'PVC Wall Panel 8"' },
+  { filter: 'pvc-updown-ceiling', label: 'PVC Updown Ceiling' },
+  { filter: 'pvc-wall-panel-10', label: 'PVC Wall Panel 10"' },
+  { filter: 'vinyl', label: 'Vinyl' }
+];
+
+function renderMaterialsFilters() {
+  const filterRow = document.getElementById("materialsFilters");
+  if (!filterRow) return;
+
+  const activeLabel = filterCategories.find(c => c.filter === currentFilter)?.label || 'All';
+
+  const desktopHTML = `
+    <div class="filter-desktop">
+      ${filterCategories.map(cat => {
+        const isActive = currentFilter === cat.filter;
+        return `<div class="chip ${isActive ? 'active' : ''}" onclick="filterMaterials('${cat.filter}')">${cat.label}</div>`;
+      }).join('')}
+    </div>
+  `;
+
+  const mobileHTML = `
+    <div class="filter-mobile split-dropdown">
+      <div class="split-button-group">
+        <button class="split-main" onclick="filterMaterials('${currentFilter}')">${activeLabel}</button>
+        <button class="split-arrow" onclick="toggleMaterialsFilterMenu(event)">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+        </button>
+      </div>
+      <div class="split-menu" id="materialsSplitMenu">
+        ${filterCategories.map(cat => {
+          const isActive = cat.filter === currentFilter;
+          return `
+            <button class="split-item ${isActive ? 'active' : ''}" onclick="filterMaterials('${cat.filter}')">
+              ${cat.label}
+            </button>
+          `;
+        }).join('')}
+      </div>
+    </div>
+  `;
+
+  filterRow.innerHTML = desktopHTML + mobileHTML;
+}
+
+window.toggleMaterialsFilterMenu = function(e) {
+  e.stopPropagation();
+  const menu = document.getElementById('materialsSplitMenu');
+  if (menu) {
+    menu.classList.toggle('show');
   }
+};
+
+document.addEventListener('click', () => {
+  const menu = document.getElementById('materialsSplitMenu');
+  if (menu && menu.classList.contains('show')) {
+    menu.classList.remove('show');
+  }
+});
+
+// 4. Category Filter Selector
+window.filterMaterials = function(cat) {
   currentFilter = cat;
   currentCatalogPage = 1;
+  renderMaterialsFilters();
   renderCatalog();
 };
 
@@ -252,6 +313,7 @@ function onCatalogItemClick(event) {
 
 // Initial startup tasks
 document.addEventListener("DOMContentLoaded", () => {
+  renderMaterialsFilters();
   renderCatalog();
 
   // Route check by query parameters

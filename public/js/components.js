@@ -214,7 +214,7 @@ class SiteHeader extends HTMLElement {
           <div class="sidebar-header">
             <div class="brand">
               <img src="/logo/SI_square.png" alt="Sohail Interior Logo" class="brand-mark" style="object-fit: contain; width:24px; height:24px;">
-              <div class="brand-name" style="font-size: 16px;">Menu</div>
+              <div class="brand-name" style="font-size: 16px;">Sohail Interior</div>
             </div>
             <button class="close-sidebar" id="closeSidebar" aria-label="Close Menu">&times;</button>
           </div>

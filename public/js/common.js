@@ -192,12 +192,27 @@ function renderNavbar() {
     </div>
   `;
 
+  const mobileGalleryDropdown = `
+    <div class="mobile-split">
+      <div class="mobile-split-top">
+        <a href="/gallery" class="split-main ${getActive(isGallery && !activeCategory)}">Gallery</a>
+        <button class="split-arrow" onclick="toggleMobileGalleryMenu(event)">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+        </button>
+      </div>
+      <div class="mobile-split-menu" id="mobileGalleryMenu">
+        <a href="/gallery" class="${getActive(isGallery && !activeCategory)}">All Folders</a>
+        ${folderBtns}
+      </div>
+    </div>
+  `;
+
   if (mainNav) {
     mainNav.innerHTML = homeBtn + materialsBtn + portfolioBtn + galleryDropdown;
   }
   
   if (mobileNav) {
-    mobileNav.innerHTML = homeBtn + materialsBtn + portfolioBtn + galleryDropdown;
+    mobileNav.innerHTML = homeBtn + materialsBtn + portfolioBtn + mobileGalleryDropdown;
     // Add event listeners to close menu on click for mobile
     mobileNav.querySelectorAll('a').forEach(a => {
       a.addEventListener('click', () => {
@@ -206,6 +221,15 @@ function renderNavbar() {
     });
   }
 }
+
+window.toggleMobileGalleryMenu = function(e) {
+  e.preventDefault();
+  e.stopPropagation();
+  const menu = document.getElementById('mobileGalleryMenu');
+  if (menu) {
+    menu.classList.toggle('show');
+  }
+};
 
 // 2. Global Lightbox Slideshow Implementation
 let lightboxItems = [];

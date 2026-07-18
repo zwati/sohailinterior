@@ -11,29 +11,64 @@ function renderFilters() {
   const filterRow = document.getElementById("galleryFilters");
   if (!filterRow) return;
 
-  const allChip = `<div class="chip ${activeGalleryCategory === 'all' ? 'active' : ''}" onclick="filterGallery('all', this)">All</div>`;
-  const folderChips = globalCategories.map(cat => {
-    const isActive = activeGalleryCategory === cat.slug;
-    return `<div class="chip ${isActive ? 'active' : ''}" onclick="filterGallery('${cat.slug}', this)">${cat.name}</div>`;
-  }).join("");
+  const categories = [{ slug: 'all', name: 'All' }, ...globalCategories];
+  const activeLabel = categories.find(c => c.slug === activeGalleryCategory)?.name || 'All';
 
-  filterRow.innerHTML = allChip + folderChips;
+  const desktopHTML = `
+    <div class="filter-desktop">
+      ${categories.map(cat => {
+        const isActive = activeGalleryCategory === cat.slug;
+        return `<div class="chip ${isActive ? 'active' : ''}" onclick="filterGallery('${cat.slug}')">${cat.name}</div>`;
+      }).join('')}
+    </div>
+  `;
+
+  const mobileHTML = `
+    <div class="filter-mobile system-theme">
+      <div class="split-button-group">
+        <button class="split-main" onclick="filterGallery('${activeGalleryCategory}')">${activeLabel}</button>
+        <button class="split-arrow" onclick="toggleGalleryFilterMenu(event)">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+        </button>
+      </div>
+      <div class="split-menu" id="gallerySplitMenu">
+        ${categories.map(cat => {
+          const isActive = cat.slug === activeGalleryCategory;
+          return `
+            <button class="split-item ${isActive ? 'active' : ''}" onclick="filterGallery('${cat.slug}')">
+              ${cat.name}
+            </button>
+          `;
+        }).join('')}
+      </div>
+    </div>
+  `;
+
+  filterRow.innerHTML = desktopHTML + mobileHTML;
 }
 
+window.toggleGalleryFilterMenu = function(e) {
+  e.stopPropagation();
+  const menu = document.getElementById('gallerySplitMenu');
+  if (menu) {
+    menu.classList.toggle('show');
+  }
+};
+
+document.addEventListener('click', () => {
+  const menu = document.getElementById('gallerySplitMenu');
+  if (menu && menu.classList.contains('show')) {
+    menu.classList.remove('show');
+  }
+});
+
 // 3. Filter category trigger
-window.filterGallery = function(cat, chip) {
+window.filterGallery = function(cat) {
   // Update state
   activeGalleryCategory = cat;
   currentGalleryPage = 1;
 
-  // Toggle active styling
-  document.querySelectorAll('#galleryFilters .chip').forEach(c => c.classList.remove('active'));
-  if (chip) {
-    chip.classList.add('active');
-  } else {
-    const match = document.querySelector(`#galleryFilters .chip[onclick*="'${cat}'"]`);
-    if (match) match.classList.add('active');
-  }
+  renderFilters();
 
   // Update history query parameter
   const searchParams = new URLSearchParams(window.location.search);

@@ -601,11 +601,47 @@
   .section {
     padding: 40px 16px !important;
   }
-  .pgrid, .feature-grid, .blog-row {
+  .feature-grid, .blog-row {
     grid-template-columns: 1fr !important;
   }
+  .pgrid {
+    grid-template-columns: repeat(3, 1fr) !important;
+    gap: 8px !important;
+  }
+  .pcard {
+    display: flex;
+    flex-direction: column;
+    aspect-ratio: 1 / 1.4;
+  }
+  .pcard .thumb {
+    height: 65% !important;
+    flex: 0 0 65%;
+  }
+  .pcard .pbody {
+    height: 35% !important;
+    padding: 6px !important;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+  .pcard h4 {
+    font-size: 10px !important;
+    line-height: 1.2;
+    margin-bottom: 2px !important;
+  }
+  .pcard .price {
+    font-size: 9px !important;
+    margin-bottom: 4px !important;
+  }
+  .pcard .swatch-dots {
+    gap: 3px;
+  }
+  .pcard .swatch-dots span {
+    width: 8px !important;
+    height: 8px !important;
+  }
   .cat-triad, .cat-grid {
-    grid-template-columns: 1fr 1fr !important;
+    grid-template-columns: repeat(3, 1fr) !important;
     gap: 12px !important;
   }
   .cat-grid .cat-card, .cat-triad .cat-card {

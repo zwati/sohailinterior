@@ -985,13 +985,59 @@ nav.main-nav a:not(.active):hover {
 }
 
 .mobile-nav .dropdown:hover .dropdown-content {
-  display: flex; /* Override static hover behavior */
+  display: flex;
 }
+
+.mobile-split {
+  display: flex;
+  flex-direction: column;
+}
+
+.mobile-split-top {
+  display: flex;
+  border-bottom: 1px solid rgba(18, 52, 92, 0.08);
+}
+
+.mobile-split-top a.split-main {
+  flex: 1;
+  padding: 18px 24px;
   font-size: 15px;
+  font-weight: 700;
+  color: var(--navy);
+  border: none;
+  background: transparent;
+  text-align: left;
+}
+
+.mobile-split-top .split-arrow {
+  width: 54px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: none;
+  border-left: 1px solid rgba(18, 52, 92, 0.08);
+  color: var(--navy);
+  cursor: pointer;
+}
+
+.mobile-split-menu {
+  display: none;
+  flex-direction: column;
+  background: #fafcfd;
+  border-bottom: 1px solid rgba(18, 52, 92, 0.08);
+}
+
+.mobile-split-menu.show {
+  display: flex;
+}
+
+.mobile-split-menu a {
+  padding: 14px 24px 14px 32px;
+  font-size: 14px;
   font-weight: 500;
   color: var(--navy);
-  border-bottom: 1px solid var(--line);
-  transition: background 0.2s;
+  border-bottom: 1px solid rgba(18, 52, 92, 0.04);
 }
 
 .mobile-nav a:hover, .mobile-nav a.active {
