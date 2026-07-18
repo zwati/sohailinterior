@@ -153,9 +153,43 @@ window.openDetail = function(id) {
   if (waBtn) {
     waBtn.onclick = () => {
       const selectedFinish = document.querySelector('#dFinishes .opt-btn.active')?.textContent || 'Standard';
-      const selectedTone = document.querySelector('#dColors .color-dot.active')?.style.background || 'Default';
+      const colorEl = document.querySelector('#dColors .color-dot.active');
+      const selectedTone = colorEl ? colorEl.style.backgroundColor || colorEl.style.background : 'Default';
       const msg = `Hi Sohail Interior, I am interested in the ${m.name} (${m.id}) in finish: ${selectedFinish} and tone: ${selectedTone}. Quantity: ${currentQty}.`;
-      window.open(`https://wa.me/923001112233?text=${encodeURIComponent(msg)}`, '_blank');
+      window.open(`https://wa.me/923115813505?text=${encodeURIComponent(msg)}`, '_blank');
+    };
+  }
+
+  // Setup Add to Quote local cart
+  const addQuoteBtn = document.getElementById('dAddQuoteBtn');
+  if (addQuoteBtn) {
+    addQuoteBtn.onclick = () => {
+      const selectedFinish = document.querySelector('#dFinishes .opt-btn.active')?.textContent || 'Standard';
+      const colorEl = document.querySelector('#dColors .color-dot.active');
+      const selectedTone = colorEl ? colorEl.style.backgroundColor || colorEl.style.background : 'Default';
+      window.QuoteCart.add(m.id, selectedFinish, selectedTone, currentQty);
+      window.openCartDrawer();
+    };
+  }
+
+  // Setup Save to Wishlist local wishlist
+  const wishlistBtn = document.getElementById('dWishlistBtn');
+  if (wishlistBtn) {
+    const updateWishlistBtnText = () => {
+      const saved = window.Wishlist.get();
+      if (saved.includes(m.id)) {
+        wishlistBtn.textContent = '♥ Saved';
+        wishlistBtn.style.color = '#d9534f';
+      } else {
+        wishlistBtn.textContent = '♥ Save';
+        wishlistBtn.style.color = '';
+      }
+    };
+    updateWishlistBtnText();
+
+    wishlistBtn.onclick = () => {
+      window.Wishlist.toggle(m.id);
+      updateWishlistBtnText();
     };
   }
 

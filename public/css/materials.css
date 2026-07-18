@@ -449,12 +449,39 @@
 
 @media (max-width: 640px) {
   .toolbar {
-    padding: 20px;
+    padding: 15px 20px;
   }
   .filter-row {
-    padding: 0 20px 20px;
+    padding: 0 16px 16px;
   }
   .pgrid {
     grid-template-columns: 1fr;
+  }
+  .detail-wrap {
+    padding: 16px 20px;
+  }
+  .qty-row {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+  }
+  .qty-row .qty-stepper {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+  }
+  .qty-row .qty-stepper button {
+    flex: 1;
+    height: 42px;
+  }
+  .qty-row .qty-stepper span {
+    flex: 2;
+    text-align: center;
+    line-height: 42px;
+  }
+  .qty-row .btn {
+    width: 100% !important;
+    margin: 0 !important;
+    padding: 12px 20px;
   }
 }

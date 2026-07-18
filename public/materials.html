@@ -1,16 +1,21 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Materials Catalog — Sohail Interior</title>
-  <meta name="description" content="Browse our catalog of premium window blinds, gypsum ceilings, wallpapers, fiber doors, and PVC paneling. Select styles, colors, and calculate quotes.">
+  <meta name="description"
+    content="Browse our catalog of premium window blinds, gypsum ceilings, wallpapers, fiber doors, and PVC paneling. Select styles, colors, and calculate quotes.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,500&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,500&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap"
+    rel="stylesheet">
   <link rel="stylesheet" href="/css/common.css">
   <link rel="icon" type="image/png" href="/logo/SI_square.png">
   <link rel="stylesheet" href="/css/materials.css">
 </head>
+
 <body>
 
   <page-loader glass></page-loader>
@@ -19,21 +24,35 @@
 
   <!-- Main Content -->
   <main>
-    
+
     <!-- ============ MATERIALS CATALOG VIEW ============ -->
     <div class="page active" id="materialsPage">
       <div class="page-band">
         <div class="crumb mono">Home / Materials</div>
-        Materials Catalog
       </div>
-      
+
       <div class="toolbar">
         <div class="toolbar-left">
           <div class="filter-toggle">⚙ Filter</div>
           <div class="view-toggle">
-            <button class="active" id="viewGrid4" onclick="setGridCols(4, this)" aria-label="4 Column View"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg></button>
-            <button id="viewGrid3" onclick="setGridCols(3, this)" aria-label="3 Column View"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="5" height="18"/><rect x="10" y="3" width="5" height="18"/><rect x="17" y="3" width="4" height="18"/></svg></button>
-            <button id="viewGrid2" onclick="setGridCols(2, this)" aria-label="2 Column View"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="8" height="18"/><rect x="13" y="3" width="8" height="18"/></svg></button>
+            <button class="active" id="viewGrid4" onclick="setGridCols(4, this)" aria-label="4 Column View"><svg
+                viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="3" y="3" width="7" height="7" />
+                <rect x="14" y="3" width="7" height="7" />
+                <rect x="3" y="14" width="7" height="7" />
+                <rect x="14" y="14" width="7" height="7" />
+              </svg></button>
+            <button id="viewGrid3" onclick="setGridCols(3, this)" aria-label="3 Column View"><svg viewBox="0 0 24 24"
+                fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="3" y="3" width="5" height="18" />
+                <rect x="10" y="3" width="5" height="18" />
+                <rect x="17" y="3" width="4" height="18" />
+              </svg></button>
+            <button id="viewGrid2" onclick="setGridCols(2, this)" aria-label="2 Column View"><svg viewBox="0 0 24 24"
+                fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="3" y="3" width="8" height="18" />
+                <rect x="13" y="3" width="8" height="18" />
+              </svg></button>
           </div>
         </div>
         <select class="sort-select" id="sortSelect" onchange="handleSortChange(this.value)">
@@ -48,13 +67,19 @@
       <div class="filter-row">
         <div class="chip active" data-filter="all" onclick="filterMaterials('all', this)">All</div>
         <div class="chip" data-filter="blinds" onclick="filterMaterials('blinds', this)">Blinds</div>
-        <div class="chip" data-filter="ceiling-gypsum" onclick="filterMaterials('ceiling-gypsum', this)">Ceiling Gypsum</div>
-        <div class="chip" data-filter="fabric-wallpaper" onclick="filterMaterials('fabric-wallpaper', this)">Fabric Wallpaper</div>
+        <div class="chip" data-filter="ceiling-gypsum" onclick="filterMaterials('ceiling-gypsum', this)">Ceiling Gypsum
+        </div>
+        <div class="chip" data-filter="fabric-wallpaper" onclick="filterMaterials('fabric-wallpaper', this)">Fabric
+          Wallpaper</div>
         <div class="chip" data-filter="fiber-doors" onclick="filterMaterials('fiber-doors', this)">Fiber Doors</div>
-        <div class="chip" data-filter="pvc-wooden-door" onclick="filterMaterials('pvc-wooden-door', this)">PVC Wooden Style Door</div>
-        <div class="chip" data-filter="pvc-wall-panel-8" onclick="filterMaterials('pvc-wall-panel-8', this)">PVC Wall Panel 8"</div>
-        <div class="chip" data-filter="pvc-updown-ceiling" onclick="filterMaterials('pvc-updown-ceiling', this)">PVC Updown Ceiling</div>
-        <div class="chip" data-filter="pvc-wall-panel-10" onclick="filterMaterials('pvc-wall-panel-10', this)">PVC Wall Panel 10"</div>
+        <div class="chip" data-filter="pvc-wooden-door" onclick="filterMaterials('pvc-wooden-door', this)">PVC Wooden
+          Style Door</div>
+        <div class="chip" data-filter="pvc-wall-panel-8" onclick="filterMaterials('pvc-wall-panel-8', this)">PVC Wall
+          Panel 8"</div>
+        <div class="chip" data-filter="pvc-updown-ceiling" onclick="filterMaterials('pvc-updown-ceiling', this)">PVC
+          Updown Ceiling</div>
+        <div class="chip" data-filter="pvc-wall-panel-10" onclick="filterMaterials('pvc-wall-panel-10', this)">PVC Wall
+          Panel 10"</div>
         <div class="chip" data-filter="vinyl" onclick="filterMaterials('vinyl', this)">Vinyl</div>
       </div>
 
@@ -75,8 +100,8 @@
     <div class="page" id="detailPage" style="display: none;">
       <div class="detail-wrap">
         <div class="crumbline">
-          <a onclick="closeDetailView()">Home</a> &nbsp;/&nbsp; 
-          <a onclick="closeDetailView()">Materials</a> &nbsp;/&nbsp; 
+          <a onclick="closeDetailView()">Home</a> &nbsp;/&nbsp;
+          <a onclick="closeDetailView()">Materials</a> &nbsp;/&nbsp;
           <span id="dCrumbName">Material Detail</span>
         </div>
         <div class="detail-grid">
@@ -87,20 +112,21 @@
           <div class="detail-info">
             <h1 id="dName">Material Name</h1>
             <div class="detail-price" id="dPrice">Rs.0</div>
-            
+
             <div class="opt-label mono">Finish</div>
             <div class="opt-row" id="dFinishes"></div>
-            
+
             <div class="opt-label mono">Tone</div>
             <div class="color-row" id="dColors"></div>
-            
+
             <div class="qty-row">
               <div class="qty-stepper">
                 <button onclick="stepQty(-1)">&minus;</button>
                 <span id="dQty">1</span>
                 <button onclick="stepQty(1)">+</button>
               </div>
-              <button class="btn btn-primary">Add to Quote</button>
+              <button class="btn btn-primary" id="dAddQuoteBtn">Add to Quote</button>
+              <button class="btn btn-ghost" id="dWishlistBtn" title="Save to Wishlist">♥ Save</button>
               <button class="btn btn-ghost" id="dWhatsAppBtn">💬 Enquire on WhatsApp</button>
             </div>
             <p class="detail-desc" id="dDesc">Description.</p>
@@ -127,4 +153,5 @@
   <script src="/js/common.js" defer></script>
   <script src="/js/materials.js" defer></script>
 </body>
+
 </html>

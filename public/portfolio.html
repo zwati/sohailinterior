@@ -1,16 +1,21 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Completed Projects Portfolio — Sohail Interior</title>
-  <meta name="description" content="View our portfolio of residential and commercial interior design installations in Sahiwal and Lahore. Projects gallery coming soon.">
+  <meta name="description"
+    content="View our portfolio of residential and commercial interior design installations in Sahiwal and Lahore. Projects gallery coming soon.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,500&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,500&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Dancing+Script:wght@600&family=Poppins:wght@400;600;700&display=swap"
+    rel="stylesheet">
   <link rel="stylesheet" href="/css/common.css">
   <link rel="icon" type="image/png" href="/logo/SI_square.png">
   <link rel="stylesheet" href="/css/portfolio.css">
 </head>
+
 <body>
 
   <page-loader glass></page-loader>
@@ -22,18 +27,40 @@
     <div class="page active">
       <div class="page-band">
         <div class="crumb mono">Home / Portfolio</div>
-        Completed Projects Portfolio
       </div>
-      
-      <section class="portfolio-coming-soon reveal">
-        <div class="coming-soon-card">
-          <div class="accent-icon">⧉</div>
-          <h2>Our Portfolio is Underway</h2>
-          <p>We are currently compiling high-resolution galleries of our finished residential and commercial projects in Sahiwal and Lahore. Check back soon for inspiration!</p>
-          <div class="coming-soon-actions">
-            <button class="btn btn-primary" onclick="window.location.href='/materials'">Browse Materials</button>
-            <a href="https://wa.me/923001112233" target="_blank" rel="noopener noreferrer" class="btn btn-ghost">💬 Contact on WhatsApp</a>
+      <section class="blog-header">
+
+
+        <div class="header-content">
+          <div class="hero-image">
+            <img id="heroImg" src="/images/sohail-1.jpeg" alt="Featured Project Design" />
           </div>
+
+          <div class="author-card">
+            <div class="avatar">
+              <img id="avatarImg" src="/images/sohail.jpeg" alt="Sohail Mughal" />
+            </div>
+
+            <p class="signature" id="signature">Sohaib Mughal</p>
+            <p class="author-role" id="authorRole">Founder &amp; Creative Director</p>
+
+            <p class="author-bio" id="authorBio">
+              With a passion for custom material selections, ceiling architectural work, and premium installations,
+              Sohaib has transformed numerous residential and commercial spaces across the Province Punjab.
+            </p>
+
+
+          </div>
+        </div>
+      </section>
+
+      <section class="section" id="portfolioPage">
+        <h2>Completed Projects Portfolio</h2>
+        <div class="filter-row" id="portfolioFilters">
+          <!-- Rendered dynamically by portfolio.js -->
+        </div>
+        <div class="portfolio-grid" id="portfolioGrid">
+          <!-- Rendered dynamically by portfolio.js -->
         </div>
       </section>
     </div>
@@ -42,8 +69,18 @@
   <site-footer></site-footer>
   <whatsapp-float></whatsapp-float>
 
+  <!-- Global Lightbox Modal -->
+  <div id="lightbox">
+    <button id="lightbox-close" onclick="closeLightbox()">✕</button>
+    <button id="lightbox-prev" onclick="prevLightboxItem()">‹</button>
+    <button id="lightbox-next" onclick="nextLightboxItem()">›</button>
+    <div id="lightbox-content-box"></div>
+    <div id="lightbox-caption"></div>
+  </div>
+
   <script src="/js/components.js" defer></script>
   <script src="/js/common.js" defer></script>
   <script src="/js/portfolio.js" defer></script>
 </body>
+
 </html>

@@ -137,14 +137,26 @@ function renderSlide(slideIdx) {
       <div class="eyebrow mono"><span class="dot"></span>New This Season</div>
       <h1>${slide.title}</h1>
       <p>${slide.description}</p>
-      <div class="btn-row">
-        <button class="btn btn-primary" onclick="window.location.href='${slide.btnLink}'">${slide.btnText}</button>
-        <button class="btn btn-ghost" onclick="window.location.href='/portfolio'">See it Installed</button>
-      </div>
     `;
 
     // Render media
     visualEl.innerHTML = slide.mediaHTML;
+
+    // Force play video on mobile screens
+    const video = visualEl.querySelector("video");
+    if (video) {
+      video.muted = true;
+      video.playsInline = true;
+      video.play().catch(err => {
+        const playFallback = () => {
+          video.play().catch(() => {});
+          document.removeEventListener('touchstart', playFallback);
+          document.removeEventListener('click', playFallback);
+        };
+        document.addEventListener('touchstart', playFallback, { passive: true });
+        document.addEventListener('click', playFallback, { passive: true });
+      });
+    }
 
     // Toggle background video layout class
     if (banner) {

@@ -45,11 +45,18 @@
     <div class="login-wrap stage-dash dash" id="dashStage" style="display: none;">
       <div class="dash-top">
         <h2>Sohail's Dashboard</h2>
-        <div class="conn-pill"><span class="dotpulse"></span>Drive synced &middot; index.json up to date</div>
+        <div class="conn-pill"><span class="dotpulse"></span>Drive synced &middot; connected</div>
       </div>
+      
+      <!-- Tab Controls -->
+      <div class="admin-tabs" style="display: flex; gap: 12px; margin: 0 auto 24px; max-width: 1220px; width: 100%; border-bottom: 1px solid var(--line); padding-bottom: 12px;">
+        <button class="chip active" id="tabGalleryBtn" onclick="switchAdminTab('gallery')" style="border-radius: 8px; padding: 8px 18px; font-size: 13px; font-weight: 600; cursor: pointer; border: 1px solid var(--line); background: white; transition: all 0.2s;">Gallery Management</button>
+        <button class="chip" id="tabPortfolioBtn" onclick="switchAdminTab('portfolio')" style="border-radius: 8px; padding: 8px 18px; font-size: 13px; font-weight: 600; cursor: pointer; border: 1px solid var(--line); background: white; transition: all 0.2s;">Portfolio Management</button>
+      </div>
+
       <div class="dash-grid">
-        <!-- Publish New Card -->
-        <div class="upload-card">
+        <!-- GALLERY VIEW (UPLOAD CARD + TABLE CARD) -->
+        <div id="galleryUploadContainer" class="upload-card">
           <h3>Publish new article</h3>
           <p class="hint">Uploads push straight to Drive &mdash; full resolution, no loss.</p>
           <div class="dropzone" id="dropzone">
@@ -71,15 +78,78 @@
           <button class="btn btn-primary" id="uploadBtn" style="width:100%; justify-content:center;" onclick="uploadArticle()">Publish to Gallery</button>
           <p id="uploadStatus" style="font-size:11px; margin-top:8px; text-align:center; font-family:monospace;"></p>
         </div>
-        <!-- Sync Asset Grid Table -->
-        <div class="table-card" id="adminTableContainer">
+
+        <div id="galleryTableContainer" class="table-card">
           <div class="thead">
             <span>Article</span>
             <span>Category</span>
             <span>Status</span>
           </div>
+          <div id="galleryTableBody"></div>
           <!-- Rows will populate dynamically -->
         </div>
+
+        <!-- PORTFOLIO VIEW (EDIT CARD + TABLE CARD) -->
+        <div id="portfolioEditContainer" class="upload-card" style="display: none;">
+          <h3>Edit Portfolio Project</h3>
+          <p class="hint">Select a project folder from the table to edit its details. Changes save directly to Google Drive as metadata.json.</p>
+          <input type="hidden" id="editProjectId">
+          
+          <div class="field">
+            <label for="editProjectName">Project Title / Name</label>
+            <input type="text" id="editProjectName" placeholder="e.g. Stepped PVC Updown Ceiling">
+          </div>
+
+          <div class="field">
+            <label for="editProjectLocation">Location</label>
+            <input type="text" id="editProjectLocation" placeholder="e.g. Farid Town, Sahiwal">
+          </div>
+
+          <div class="field">
+            <label for="editProjectCategory">Category</label>
+            <div class="select-row" style="margin-bottom: 0;">
+              <select id="editProjectCategory" style="width: 100%; border-radius: 10px;">
+                <option value="ceiling">Ceiling Work</option>
+                <option value="residential">Residential</option>
+                <option value="commercial">Commercial</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="field" style="margin-top: 14px;">
+            <label for="editProjectTexture">Texture Card Class</label>
+            <div class="select-row" style="margin-bottom: 0;">
+              <select id="editProjectTexture" style="width: 100%; border-radius: 10px;">
+                <option value="t-pop">PVC Updown Ceiling (t-pop)</option>
+                <option value="t-blinds">Window Blinds (t-blinds)</option>
+                <option value="t-fabric">Fabric Wallpaper (t-fabric)</option>
+                <option value="t-fiberdoor">Fiber Doors (t-fiberdoor)</option>
+                <option value="t-panel8">PVC Panel 8" (t-panel8)</option>
+                <option value="t-panel10">PVC Panel 10" (t-panel10)</option>
+                <option value="t-gypsum">Ceiling Gypsum (t-gypsum)</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="field" style="margin-top: 14px;">
+            <label for="editProjectDesc">Description</label>
+            <textarea id="editProjectDesc" rows="4" style="width: 100%; padding: 12px 14px; border-radius: 10px; border: 1px solid var(--line); font-family: 'Inter', sans-serif; font-size: 13.5px; outline: none; resize: vertical;" placeholder="Enter project description..."></textarea>
+          </div>
+
+          <button class="btn btn-primary" id="saveProjectBtn" style="width:100%; justify-content:center;" onclick="saveProjectMetadata()" disabled>Save Details to Drive</button>
+          <p id="saveProjectStatus" style="font-size:11px; margin-top:8px; text-align:center; font-family:monospace;"></p>
+        </div>
+
+        <div id="portfolioTableContainer" class="table-card" style="display: none;">
+          <div class="thead">
+            <span>Project Folder</span>
+            <span>Category</span>
+            <span>Actions</span>
+          </div>
+          <div id="portfolioTableBody"></div>
+          <!-- Rows will populate dynamically -->
+        </div>
+
         <div id="adminPagination" class="pagination-container"></div>
       </div>
     </div>
@@ -91,7 +161,6 @@
 
   <script src="/js/components.js" defer></script>
   <script src="/js/common.js" defer></script>
-  <script src="/js/pagination.js" defer></script>
   <script src="/js/admin.js" defer></script>
 </body>
 </html>
