@@ -175,12 +175,27 @@ class SiteFooter extends HTMLElement {
           </div>
           <div>
             <h5>Newsletter Signup</h5>
-            <p style="font-size:12.5px; color:#3c5470; margin:0;">Get new material drops and finished projects, straight to your inbox.</p>
-            <form id="subscribeForm" class="newsletter-row" novalidate>
-              <input id="subscribeEmail" name="email" type="email" placeholder="Your email address" aria-label="Email address" required>
+            <p style="font-size:12.5px; color:#3c5470; margin:0; line-height: 1.5;">Get new material drops and finished projects, straight to your inbox.</p>
+            <form action="https://formsubmit.co/abdullahramzan8942@gmail.com" method="POST" class="newsletter-row" target="_blank">
+              <input type="hidden" name="_next" value="https://sohailinterior.pk/">
+              <input type="hidden" name="_captcha" value="false">
+              <input name="email" type="email" placeholder="Your email address" aria-label="Email address" required>
               <button type="submit">Subscribe</button>
             </form>
-            <div id="subscribeStatus" class="newsletter-status"></div>
+          </div>
+          <div class="footer-map">
+            <h5>Our Location</h5>
+            <a href="https://maps.app.goo.gl/uCmiaGv23uXGmtD89?g_st=awb" target="_blank" rel="noopener noreferrer" style="display: block; width: 100%; height: 120px; border-radius: 8px; overflow: hidden; position: relative;">
+              <iframe 
+                src="https://maps.google.com/maps?q=Sohail%20Interior,%20Farid%20Town,%20Sahiwal&t=&z=13&ie=UTF8&iwloc=&output=embed" 
+                width="100%" 
+                height="100%" 
+                style="border:0; filter: contrast(1.1) saturate(1.1); pointer-events: none;" 
+                allowfullscreen="" 
+                loading="lazy">
+              </iframe>
+              <div style="position: absolute; inset: 0; background: transparent; z-index: 10;"></div>
+            </a>
           </div>
         </div>
         <div class="footer-bottom">&copy; 2026 Sohail Interior. All rights reserved. &mdash; Sahiwal, Pakistan</div>

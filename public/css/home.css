@@ -243,7 +243,7 @@
 }
 
 .cat-grid {
-  grid-template-columns: repeat(4, 1fr) !important;
+  grid-template-columns: repeat(4, 1fr);
 }
 
 .cat-grid .cat-card {
@@ -538,7 +538,7 @@
     clip-path: none;
     min-height: 220px;
   }
-  .pgrid, .feature-grid, .cat-triad {
+  .pgrid, .feature-grid, .cat-triad, .cat-grid {
     grid-template-columns: 1fr 1fr;
   }
   .stats-strip {
@@ -559,7 +559,7 @@
   .section {
     padding: 54px 20px;
   }
-  .pgrid, .feature-grid, .cat-triad, .blog-row {
+  .pgrid, .feature-grid, .cat-triad, .cat-grid, .blog-row {
     grid-template-columns: 1fr;
   }
   .stats-strip {
