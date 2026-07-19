@@ -1,46 +1,28 @@
 // Home Page Specific Logic
 
-// 1. Static Materials Data for Featured Section
-const materialsData = [
-  { id: 'BLN-01', name: 'Window Blinds', cat: 'blinds', catLabel: 'Blinds', price: 'Rs.250 - Rs.360 / sqft', texture: 't-blinds', desc: 'Premium window blinds. Available in Roller (Rs.250/sf), Zebra (Rs.360/sf), and Bamboo (Rs.250/sf).', finishes: ['Roller', 'Zebra', 'Bamboo'], colors: ['#eaf2fa', '#c9d6e4', '#aebfd2'] },
-  { id: 'CGY-01', name: '2x2 Ceiling', cat: 'ceiling-gypsum', catLabel: '2x2 Ceiling', price: 'Rs.70 / sqft', texture: 't-gypsum', desc: 'Clean 2x2 celling paneling — moisture-resistant and durable false ceiling.', finishes: ['Standard Grid', 'Slim Line'], colors: ['#f5f8fb', '#e4ecf4', '#d7e2ee'] },
-  { id: 'FWP-01', name: 'Fabric Wallpaper', cat: 'fabric-wallpaper', catLabel: 'Fabric Wallpaper', price: 'Rs.45 / sqft', texture: 't-fabric', desc: 'Woven-texture fabric wallpaper, warm and elegant wall finish.', finishes: ['Plain Weave', 'Textured'], colors: ['#f5f0e6', '#e7d3ae', '#d9c295'] },
-  { id: 'FDR-01', name: 'Fiber Door A+', cat: 'fiber-doors', catLabel: 'Fiber Doors', price: 'Rs.900 / sqft', texture: 't-fiberdoor', desc: 'A+ Grade fiber doors, water-proof and heavy duty construction.', finishes: ['Solid Finish', 'Wood Textured'], colors: ['#12345c', '#2f6fb0', '#7db9e8'] },
-  { id: 'PW8-01', name: 'PVC Wall Panel 8 Inch', cat: 'pvc-wall-panel-8', catLabel: 'PVC Wall Panel 8"', price: 'Rs.700 / sheet', texture: 't-panel8', desc: 'Premium 8-inch width PVC paneling for moisture protection and decor.', finishes: ['Matte', 'Glossy'], colors: ['#dfe8f1', '#c9d6e4', '#b6c4d6'] },
-  { id: 'PUC-01', name: 'PVC Updown Ceiling', cat: 'pvc-updown-ceiling', catLabel: 'PVC Updown Ceiling', price: 'Rs.200 / sqft', texture: 't-pop', desc: 'Modern stepped updown ceiling layout with integrated cove lighting.', finishes: ['Double Layer', 'Stepped Edge'], colors: ['#eef3f8', '#dde7f1', '#cfdcea'] },
-  { id: 'PW10-01', name: 'PVC Wall Panel 10 Inch', cat: 'pvc-wall-panel-10', catLabel: 'PVC Wall Panel 10"', price: 'Rs.430 / sheet', texture: 't-panel10', desc: '10-inch width PVC paneling — bold layout spacing, highly cost-effective.', finishes: ['Matte', 'Woodgrain'], colors: ['#e4ecf4', '#b6c4d6', '#8ea0b5'] }
-];
+let newestCategorySlugs = [];
 
-// Helper to generate catalog product card HTML
-function getProductCardHTML(m) {
-  if (!m) return '';
-  const isNew = ['PW8-01', 'PUC-01'].includes(m.id);
-  const swatchHTML = m.colors.map(c => `<span style="background:${c}"></span>`).join('');
-  return `
-    <div class="pcard reveal" onclick="window.location.href='/materials?id=${m.id}'">
-      <div class="thumb ${m.texture}">
-        ${isNew ? '<div class="new-pill mono">New</div>' : ''}
-      </div>
-      <div class="pbody">
-        <h4>${m.name}</h4>
-        <div class="price">${m.price}</div>
-        <div class="swatch-dots">${swatchHTML}</div>
-      </div>
-    </div>
-  `;
-}
 
-// 2. Render Categories on Home Page (fetching Google Drive dynamically)
+
+let homeCatPage = 0;
+const HOME_CAT_PER_PAGE = 10;
+
 function renderHomeDriveCategories(categories) {
-  const grid = document.querySelector(".cat-triad");
+  const container = document.querySelector(".cat-triad").parentElement;
+  let grid = container.querySelector(".cat-triad");
   if (!grid) return;
 
   if (!categories || categories.length === 0) {
-    grid.innerHTML = `<div style="grid-column: span 3; text-align:center; padding: 40px; color: #6b7f97;">No categories synced. Check back soon.</div>`;
+    grid.innerHTML = `<div style="grid-column: span 5; text-align:center; padding: 40px; color: #6b7f97;">No categories synced. Check back soon.</div>`;
     return;
   }
 
-  grid.innerHTML = categories.map(cat => {
+  // Calculate slice
+  const start = homeCatPage * HOME_CAT_PER_PAGE;
+  const end = start + HOME_CAT_PER_PAGE;
+  const paginatedCats = categories.slice(start, end);
+
+  grid.innerHTML = paginatedCats.map(cat => {
     // Map categories dynamically to correct mock visual textures
     let textureClass = "t-vinyl";
     const nameLower = cat.name.toLowerCase();
@@ -54,8 +36,8 @@ function renderHomeDriveCategories(categories) {
 
     return `
       <div class="cat-card reveal" onclick="window.location.href='/gallery?category=${cat.slug}'">
-        <div class="art" style="background: var(--mist); overflow: hidden;">
-          <img src="/images/placeholder/${encodeURIComponent(cat.name.toUpperCase())}.jpg" 
+        <div class="art" style="background-color: var(--mist); overflow: hidden;">
+          <img src="/images/placeholder/${encodeURIComponent(cat.name.trim().toUpperCase())}.jpg" 
                alt="${cat.name}" 
                onerror="this.style.display='none'; this.parentElement.classList.add('${textureClass}');"
                style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover;">
@@ -65,21 +47,104 @@ function renderHomeDriveCategories(categories) {
     `;
   }).join("");
 
+  // Pagination controls
+  if (categories.length > HOME_CAT_PER_PAGE) {
+    let controls = container.querySelector(".home-cat-pagination");
+    if (!controls) {
+      controls = document.createElement("div");
+      controls.className = "home-cat-pagination";
+      controls.style.cssText = "display: flex; justify-content: center; gap: 12px; margin-top: 32px;";
+      container.appendChild(controls);
+    }
+
+    const hasNext = end < categories.length;
+    const hasPrev = homeCatPage > 0;
+
+    controls.innerHTML = `
+      <button class="btn btn-ghost" onclick="changeHomeCatPage(-1)" ${hasPrev ? '' : 'disabled'} style="padding: 8px 16px;">&larr; Back</button>
+      <button class="btn btn-primary" onclick="changeHomeCatPage(1)" ${hasNext ? '' : 'disabled'} style="padding: 8px 16px;">Next &rarr;</button>
+    `;
+    controls.style.display = "flex";
+  } else {
+    let controls = container.querySelector(".home-cat-pagination");
+    if (controls) controls.style.display = "none";
+  }
+
   if (window.revealCheck) window.revealCheck();
 }
+
+window.changeHomeCatPage = function (delta) {
+  homeCatPage += delta;
+  renderHomeDriveCategories(window.globalCategories || []);
+};
 
 // 3. Render Featured Materials
 function renderFeaturedGrid() {
   const grid = document.getElementById("featuredGrid");
   if (!grid) return;
 
-  const featuredIds = ['PUC-01', 'FWP-01', 'PW8-01', 'FDR-01'];
-  grid.innerHTML = featuredIds
-    .map(id => {
-      const match = materialsData.find(m => m.id === id);
-      return getProductCardHTML(match);
-    })
-    .join("");
+  // Render placeholders if globalCategories is not yet loaded
+  if (!window.globalCategories || window.globalCategories.length === 0) {
+    grid.innerHTML = `<div style="grid-column: span 4; text-align:center; padding: 40px; color: #6b7f97;">Loading featured materials...</div>`;
+    return;
+  }
+
+  // The requested featured categories
+  const featuredSlugs = ['fabric-wallpaper', 'fiber-doors', 'pvc-wall-panel-10', 'vinyl', 'blinds'];
+
+  grid.innerHTML = featuredSlugs.map(slug => {
+    const cat = window.globalCategories.find(c => c.slug === slug);
+    if (!cat) return '';
+
+    const firstImg = (cat.items || []).find(it => it.type !== 'video' && it.src);
+    const hasRealImg = !!firstImg;
+    const thumbStyle = hasRealImg ? `background-size:cover; background-position:center;` : '';
+    const dataSrc = hasRealImg ? `data-bg-src="${firstImg.src}"` : '';
+
+    let textureClass = 't-gypsum';
+    if (slug === 'vinyl') textureClass = 't-vinyl';
+    if (slug === 'fiber-doors') textureClass = 't-fiberdoor';
+    if (slug === 'fabric-wallpaper') textureClass = 't-fabric';
+    if (slug === 'pvc-wall-panel-10') textureClass = 't-panel10';
+    if (slug === 'blinds') textureClass = 't-blinds';
+
+    const thumbCls = hasRealImg ? 'thumb cat-slideshow fade-load' : `thumb cat-slideshow ${textureClass}`;
+    const count = (cat.items || []).length;
+    const isNew = newestCategorySlugs.includes(slug);
+
+    return `
+      <div class="pcard cat-card reveal" onclick="window.location.href='/materials?category=${cat.slug}'">
+        <div class="${thumbCls}" style="${thumbStyle}" ${dataSrc}>
+          ${hasRealImg ? '<div class="loading-glass"></div>' : ''}
+          ${isNew ? '<div class="new-pill mono">New</div>' : ''}
+          ${count > 0 ? `<div class="cat-count-pill mono">${count}</div>` : ''}
+        </div>
+        <div class="pbody">
+          <h4>${cat.name}</h4>
+          <div class="price">${count > 0 ? `${count} item${count !== 1 ? 's' : ''}` : 'View collection'}</div>
+        </div>
+      </div>
+    `;
+  }).join("");
+
+  // Fade in card images once loaded
+  grid.querySelectorAll('.fade-load').forEach(el => {
+    const src = el.getAttribute('data-bg-src');
+    if (src) {
+      const img = new Image();
+      img.onload = () => {
+        if (el.style.backgroundImage !== 'none') {
+          el.style.backgroundImage = `url('${src}')`;
+        }
+        const glass = el.querySelector('.loading-glass');
+        if (glass) {
+          glass.style.opacity = '0';
+          setTimeout(() => glass.remove(), 600);
+        }
+      };
+      img.src = src;
+    }
+  });
 
   if (window.revealCheck) window.revealCheck();
 }
@@ -90,7 +155,7 @@ const slidesData = [
     title: 'Introducing <em>PVC Updown</em><br>Ceiling',
     description: 'A layered updown ceiling profile with hidden lighting channels — now available across all Sohail Interior projects.',
     btnText: 'View Material →',
-    btnLink: '/materials?id=PUC-01',
+    btnLink: '/materials?category=pvc-updown-ceiling',
     mediaHTML: `<video src="/videos/1.mp4" autoplay loop muted playsinline></video>`,
     duration: 12000, // 12 seconds for video 1
     isVideo: true
@@ -99,7 +164,7 @@ const slidesData = [
     title: 'Premium <em>Window</em><br>Blinds',
     description: 'Elegant Roller, Zebra, and Bamboo blinds to control light and add privacy to your rooms.',
     btnText: 'View Material →',
-    btnLink: '/materials?id=BLN-01',
+    btnLink: '/materials?category=blinds',
     mediaHTML: `<video src="/videos/2.mp4" autoplay loop muted playsinline></video>`,
     duration: 8000, // 8 seconds for video 2
     isVideo: true
@@ -124,9 +189,8 @@ let isFirstLoad = true;
 function renderSlide(slideIdx) {
   const banner = document.querySelector(".hero-banner");
   const copyEl = document.getElementById("heroCopy");
-  const visualEl = document.getElementById("heroVisual");
   const dots = document.querySelectorAll("#heroDots span");
-  if (!copyEl || !visualEl) return;
+  if (!copyEl) return;
 
   currentSlideIdx = (slideIdx + slidesData.length) % slidesData.length;
   const slide = slidesData[currentSlideIdx];
@@ -134,38 +198,21 @@ function renderSlide(slideIdx) {
   const updateDOM = () => {
     // Render text copy
     copyEl.innerHTML = `
-      <div class="eyebrow mono"><span class="dot"></span>New This Season</div>
-      <h1>${slide.title}</h1>
-      <p>${slide.description}</p>
+      <div class="eyebrow mono" style="animation: fadeUp 0.8s ease 3s forwards; opacity: 0;"><span class="dot"></span>New This Season</div>
+      <h1 style="animation: wipeIn 0.8s ease 3.2s forwards; opacity: 0;">${slide.title}</h1>
+      <p style="animation: popUp 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275) 3.4s forwards; opacity: 0;">${slide.description}</p>
+      <div class="btn-row" style="margin-top: 24px; animation: fadeIn 0.8s ease 3.6s forwards; opacity: 0;">
+        <button class="btn btn-primary" onclick="window.location.href='${slide.btnLink}'">${slide.btnText}</button>
+        
+      </div>
     `;
 
-    // Render media
-    visualEl.innerHTML = slide.mediaHTML;
+    // Remove animation class to restart it
+    banner.classList.remove("reveal");
 
-    // Force play video on mobile screens
-    const video = visualEl.querySelector("video");
-    if (video) {
-      video.muted = true;
-      video.playsInline = true;
-      video.play().catch(err => {
-        const playFallback = () => {
-          video.play().catch(() => {});
-          document.removeEventListener('touchstart', playFallback);
-          document.removeEventListener('click', playFallback);
-        };
-        document.addEventListener('touchstart', playFallback, { passive: true });
-        document.addEventListener('click', playFallback, { passive: true });
-      });
-    }
 
-    // Toggle background video layout class
-    if (banner) {
-      if (slide.isVideo) {
-        banner.classList.add("has-bg-video");
-      } else {
-        banner.classList.remove("has-bg-video");
-      }
-    }
+
+
 
     // Render dot states
     dots.forEach((dot, i) => {
@@ -237,5 +284,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
 // Event listener from common.js categories fetcher
 window.addEventListener("categoriesLoaded", (e) => {
-  renderHomeDriveCategories(e.detail);
+  const cats = e.detail || [];
+  const sortedCats = [...cats].sort((a, b) => (b.lastUpdated || 0) - (a.lastUpdated || 0));
+  newestCategorySlugs = sortedCats.slice(0, 2).map(c => c.slug);
+
+  renderHomeDriveCategories(cats);
+  renderFeaturedGrid();
 });

@@ -3,7 +3,7 @@
 // Gallery Page States
 let activeGalleryCategory = "all";
 let currentGalleryPage = 1;
-const GALLERY_ITEMS_PER_PAGE = 6;
+const GALLERY_ITEMS_PER_PAGE = 40;
 let galleryItems = [];
 
 // 2. Populate Drive Folder filters dynamically
@@ -14,17 +14,8 @@ function renderFilters() {
   const categories = [{ slug: 'all', name: 'All' }, ...globalCategories];
   const activeLabel = categories.find(c => c.slug === activeGalleryCategory)?.name || 'All';
 
-  const desktopHTML = `
-    <div class="filter-desktop">
-      ${categories.map(cat => {
-        const isActive = activeGalleryCategory === cat.slug;
-        return `<div class="chip ${isActive ? 'active' : ''}" onclick="filterGallery('${cat.slug}')">${cat.name}</div>`;
-      }).join('')}
-    </div>
-  `;
-
-  const mobileHTML = `
-    <div class="filter-mobile system-theme">
+  filterRow.innerHTML = `
+    <div class="split-dropdown system-theme">
       <div class="split-button-group">
         <button class="split-main" onclick="filterGallery('${activeGalleryCategory}')">${activeLabel}</button>
         <button class="split-arrow" onclick="toggleGalleryFilterMenu(event)">
@@ -43,8 +34,6 @@ function renderFilters() {
       </div>
     </div>
   `;
-
-  filterRow.innerHTML = desktopHTML + mobileHTML;
 }
 
 window.toggleGalleryFilterMenu = function(e) {
@@ -126,11 +115,12 @@ function renderGalleryGrid() {
     const itemIndexInFullList = (paginated.currentPage - 1) * GALLERY_ITEMS_PER_PAGE + idx;
 
     return `
-      <div class="gcard reveal" data-lightbox-index="${itemIndexInFullList}">
-        ${itemIndexInFullList < 2 ? '<div class="new-pill mono">New</div>' : ''}
+      <div class="gcard reveal" data-lightbox-index="${itemIndexInFullList}" style="position: relative;">
+        ${item.isNew ? '<div class="new-pill mono">New</div>' : ''}
+        <div class="loading-glass"></div>
         ${isVideo 
-          ? `<video src="${item.src}" muted playsinline style="width:100%; height:100%; object-fit:cover;"></video>` 
-          : `<img src="${item.src}" style="width:100%; height:100%; object-fit:cover;">`
+          ? `<video src="${item.src}" muted playsinline onloadeddata="const g = this.previousElementSibling; if(g && g.classList.contains('loading-glass')) { g.style.opacity = '0'; setTimeout(()=>g.remove(), 600); }" style="width:100%; height:100%; object-fit:cover;"></video>` 
+          : `<img src="${item.src}" onload="const g = this.previousElementSibling; if(g && g.classList.contains('loading-glass')) { g.style.opacity = '0'; setTimeout(()=>g.remove(), 600); }" style="width:100%; height:100%; object-fit:cover;">`
         }
         <div class="overlay">
           <div class="cat mono">${item.categoryName}</div>

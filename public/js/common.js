@@ -264,19 +264,19 @@ function renderNavbar() {
   if (mainNav) {
     mainNav.innerHTML = homeBtn + materialsBtn + portfolioBtn + galleryDropdown;
   }
-  
+
   if (mobileNav) {
     mobileNav.innerHTML = homeBtn + materialsBtn + portfolioBtn + mobileGalleryDropdown;
     // Add event listeners to close menu on click for mobile
     mobileNav.querySelectorAll('a').forEach(a => {
       a.addEventListener('click', () => {
-        if(window.closeMobileMenu) window.closeMobileMenu();
+        if (window.closeMobileMenu) window.closeMobileMenu();
       });
     });
   }
 }
 
-window.toggleMobileGalleryMenu = function(e) {
+window.toggleMobileGalleryMenu = function (e) {
   e.preventDefault();
   e.stopPropagation();
   const menu = document.getElementById('mobileGalleryMenu');
@@ -509,13 +509,13 @@ window.QuoteCart = {
       text += `   - Quantity: ${c.qty}\n\n`;
     });
     text += "Please let me know the pricing and availability. Thank you!";
-    
+
     window.open(`https://wa.me/923115813505?text=${encodeURIComponent(text)}`, '_blank');
   }
 };
 
 // Global Search Suggest System
-window.setupGlobalSearch = function() {
+window.setupGlobalSearch = function () {
   const input = document.getElementById('searchInput');
   const resultsBox = document.getElementById('searchResults');
   if (!input || !resultsBox) return;
@@ -529,10 +529,10 @@ window.setupGlobalSearch = function() {
     }
 
     const matches = window.materialsData.filter(m => {
-      return m.name.toLowerCase().includes(query) || 
-             m.catLabel.toLowerCase().includes(query) || 
-             m.desc.toLowerCase().includes(query) ||
-             m.id.toLowerCase().includes(query);
+      return m.name.toLowerCase().includes(query) ||
+        m.catLabel.toLowerCase().includes(query) ||
+        m.desc.toLowerCase().includes(query) ||
+        m.id.toLowerCase().includes(query);
     });
 
     if (matches.length === 0) {
@@ -631,12 +631,12 @@ window.addEventListener('load', () => {
   const loader = document.getElementById('pageLoader');
   if (loader) {
     const isGlass = loader.classList.contains('glass-loader');
-    const delay = isGlass ? 800 : 2600;
-    
+    const delay = isGlass ? 50 : 100;
+
     if (isGlass) {
       loader.style.transition = 'opacity 0.4s cubic-bezier(.4, 0, .2, 1), filter 0.4s ease';
     }
-    
+
     setTimeout(() => {
       loader.classList.add('done');
     }, delay);
@@ -657,7 +657,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
       }
     }
-    
+
     // 2. Check for inline JavaScript redirect triggers (e.g. brand logo click)
     const clickable = e.target.closest('[onclick]');
     if (clickable) {

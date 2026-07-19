@@ -53,17 +53,14 @@
                 <rect x="13" y="3" width="8" height="18" />
               </svg></button>
           </div>
+          <button id="slideshowToggleBtn" onclick="toggleSlideshow()" aria-label="Toggle Slideshow" style="background: #fff; border: 1px solid var(--line); border-radius: 5px; height: 26px; padding: 0 10px; font-size: 11px; font-weight: 600; color: var(--navy); cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 4px; transition: 0.2s;">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 3l14 9-14 9V3z"/></svg> Slideshow: OFF
+          </button>
         </div>
         <select class="sort-select" id="sortSelect" onchange="handleSortChange(this.value)">
-          <option value="best">Best selling</option>
-          <option value="low-high">Price: Low to High</option>
-          <option value="high-low">Price: High to Low</option>
-          <option value="alphabetical">Alphabetically, A-Z</option>
+          <option value="best">Default Order</option>
+          <option value="alphabetical">Alphabetically, A–Z</option>
         </select>
-      </div>
-
-      <!-- Category Filter Chips -->
-      <div class="filter-row" id="materialsFilters">
       </div>
 
       <!-- Grid -->
@@ -79,28 +76,31 @@
       </div>
     </div>
 
-    <!-- ============ MATERIAL DETAIL VIEW ============ -->
+    <!-- ============ CATEGORY DETAIL VIEW ============ -->
     <div class="page" id="detailPage" style="display: none;">
       <div class="detail-wrap">
+
+        <!-- Breadcrumb -->
         <div class="crumbline">
           <a onclick="closeDetailView()">Home</a> &nbsp;/&nbsp;
           <a onclick="closeDetailView()">Materials</a> &nbsp;/&nbsp;
-          <span id="dCrumbName">Material Detail</span>
+          <span id="dCrumbName">Category</span>
         </div>
+
+        <!-- Category navigation chips -->
+        <div class="filter-row" id="materialsFilters"></div>
+
         <div class="detail-grid">
-          <div>
+
+          <!-- Left: Main image only -->
+          <div class="detail-gallery-col">
             <div class="gallery-main" id="dMainImg"></div>
-            <div class="gallery-thumbs" id="dThumbs"></div>
           </div>
+
+          <!-- Right: Category info -->
           <div class="detail-info">
-            <h1 id="dName">Material Name</h1>
-            <div class="detail-price" id="dPrice">Rs.0</div>
-
-            <div class="opt-label mono">Finish</div>
-            <div class="opt-row" id="dFinishes"></div>
-
-            <div class="opt-label mono">Tone</div>
-            <div class="color-row" id="dColors"></div>
+            <h1 id="dName">Category Name</h1>
+            <div class="detail-item-count mono" id="dItemCount"></div>
 
             <div class="qty-row">
               <div class="qty-stepper">
@@ -112,18 +112,23 @@
               <button class="btn btn-ghost" id="dWishlistBtn" title="Save to Wishlist">♥ Save</button>
               <button class="btn btn-ghost" id="dWhatsAppBtn">💬 Enquire on WhatsApp</button>
             </div>
+
             <p class="detail-desc" id="dDesc">Description.</p>
+
             <div class="meta-list">
               <div><b>Vendor:</b> Sohail Interior</div>
-              <div><b>SKU:</b> <span id="dSku"></span></div>
-              <div><b>Availability:</b> In Stock &mdash; ready to schedule</div>
               <div><b>Category:</b> <span id="dCat"></span></div>
+              <div><b>Availability:</b> In Stock &mdash; ready to schedule</div>
             </div>
           </div>
+
         </div>
 
-        <div class="related-head">You may also like</div>
-        <div class="pgrid" id="relatedGrid"></div>
+        <!-- Full-width paginated gallery grid -->
+        <div class="gallery-paginated-section">
+          <div class="gal-grid" id="dGalleryGrid"></div>
+          <div class="gallery-page-nav" id="dGalleryPagination"></div>
+        </div>
       </div>
     </div>
 

@@ -1,4 +1,7 @@
 /* Gallery Page Specific Styling */
+body {
+  background: linear-gradient(rgba(46, 139, 87, 0.1), rgba(46, 139, 87, 0.1)), url('/images/varity-bg.jpg') center/cover no-repeat fixed !important;
+}
 
 .page-band {
   background: var(--gray-band);
@@ -16,7 +19,7 @@
 }
 
 .filter-row {
-  max-width: 1220px;
+  max-width: 1600px;
   margin: 0 auto;
   padding: 0 40px 26px;
   display: flex;
@@ -37,7 +40,8 @@
   transition: .25s;
 }
 
-.chip.active, .chip:hover {
+.chip.active,
+.chip:hover {
   background: var(--navy);
   color: #fff;
   border-color: var(--navy);
@@ -45,9 +49,9 @@
 
 .gallery {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 22px;
-  max-width: 1220px;
+  grid-template-columns: repeat(10, 1fr);
+  gap: 12px;
+  max-width: 1600px;
   margin: 0 auto;
   padding: 0 40px;
 }
@@ -62,14 +66,16 @@
   background: var(--mist);
 }
 
-.gcard img, .gcard video {
+.gcard img,
+.gcard video {
   width: 100%;
   height: 100%;
   object-fit: cover;
   transition: transform .6s ease;
 }
 
-.gcard:hover img, .gcard:hover video {
+.gcard:hover img,
+.gcard:hover video {
   transform: scale(1.08);
 }
 
@@ -125,7 +131,7 @@
 
 /* Pagination Control */
 .pagination {
-  max-width: 1220px;
+  max-width: 1600px;
   margin: 30px auto 70px;
   padding: 0 40px;
   display: flex;
@@ -200,15 +206,101 @@
   }
 }
 
-.filter-desktop {
-  display: flex;
-  gap: 10px;
-  flex-wrap: wrap;
-  justify-content: center;
+/* ── Split Dropdown (Gallery Filter) ───────────────────────────────────────── */
+.split-dropdown {
+  width: 100%;
+  max-width: 360px;
+  margin: 0 auto;
+  position: relative;
 }
 
-.filter-mobile {
+.split-dropdown.system-theme .split-button-group {
+  display: flex;
+  border: 1px solid var(--navy);
+  border-radius: 999px;
+  background: var(--navy);
+  overflow: hidden;
+  box-shadow: 0 4px 16px rgba(13, 35, 64, 0.15);
+}
+
+.split-dropdown.system-theme .split-main {
+  flex: 1;
+  background: transparent;
+  border: none;
+  padding: 12px 20px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #fff;
+  text-align: left;
+  cursor: pointer;
+}
+
+.split-dropdown.system-theme .split-arrow {
+  background: rgba(255, 255, 255, 0.1);
+  border: none;
+  border-left: 1px solid rgba(255, 255, 255, 0.2);
+  padding: 0 16px;
+  color: #fff;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s ease;
+}
+
+.split-dropdown.system-theme .split-arrow:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.split-dropdown.system-theme .split-menu {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0;
+  width: 100%;
+  background: var(--navy);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 12px;
+  box-shadow: 0 8px 24px rgba(13, 35, 64, 0.2);
+  z-index: 100;
   display: none;
+  flex-direction: column;
+  max-height: 240px;
+  overflow-y: auto;
+  -ms-overflow-style: none;
+  /* IE and Edge */
+  scrollbar-width: none;
+  /* Firefox */
+}
+
+.split-dropdown.system-theme .split-menu::-webkit-scrollbar {
+  display: none;
+}
+
+.split-dropdown.system-theme .split-menu.show {
+  display: flex;
+}
+
+.split-dropdown.system-theme .split-item {
+  background: transparent;
+  border: none;
+  padding: 14px 20px;
+  font-size: 13px;
+  font-weight: 500;
+  color: #fff;
+  text-align: left;
+  cursor: pointer;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  transition: background 0.2s ease;
+}
+
+.split-dropdown.system-theme .split-item:last-child {
+  border-bottom: none;
+}
+
+.split-dropdown.system-theme .split-item:hover,
+.split-dropdown.system-theme .split-item.active {
+  background: rgba(255, 255, 255, 0.15);
+  font-weight: 600;
 }
 
 @media (max-width: 640px) {
@@ -217,122 +309,40 @@
     gap: 8px !important;
     padding: 0 20px;
   }
-  
+
   .gcard .overlay {
     padding: 10px;
   }
+
   .gcard h4 {
     font-size: 11px !important;
     line-height: 1.2;
     margin-bottom: 2px;
   }
+
   .gcard .cat {
     font-size: 8px !important;
     margin-bottom: 2px;
   }
+
   .gcard .meta {
     font-size: 8px !important;
     margin-top: 2px;
     display: none;
   }
+
   .gcard .new-pill {
     top: 6px;
     right: 6px;
     padding: 3px 6px;
     font-size: 7px;
   }
+
   .filter-row {
     padding: 0 20px 20px;
   }
 
-  .filter-desktop {
-    display: none;
-  }
-  .filter-mobile {
-    display: block;
-    width: 100%;
-    position: relative;
+  .split-dropdown {
     max-width: 100%;
-  }
-
-  .filter-mobile.system-theme .split-button-group {
-    display: flex;
-    border: 1px solid var(--navy);
-    border-radius: 999px;
-    background: var(--navy);
-    overflow: hidden;
-    box-shadow: 0 4px 16px rgba(13, 35, 64, 0.15);
-  }
-  
-  .filter-mobile.system-theme .split-main {
-    flex: 1;
-    background: transparent;
-    border: none;
-    padding: 12px 20px;
-    font-size: 13px;
-    font-weight: 600;
-    color: #fff;
-    text-align: left;
-    cursor: pointer;
-  }
-  
-  .filter-mobile.system-theme .split-arrow {
-    background: rgba(255, 255, 255, 0.1);
-    border: none;
-    border-left: 1px solid rgba(255, 255, 255, 0.2);
-    padding: 0 16px;
-    color: #fff;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: background 0.2s ease;
-  }
-
-  .filter-mobile.system-theme .split-arrow:hover {
-    background: rgba(255, 255, 255, 0.2);
-  }
-  
-  .filter-mobile.system-theme .split-menu {
-    position: absolute;
-    top: calc(100% + 6px);
-    left: 0;
-    width: 100%;
-    background: var(--navy);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    border-radius: 12px;
-    box-shadow: 0 8px 24px rgba(13, 35, 64, 0.2);
-    z-index: 100;
-    display: none;
-    flex-direction: column;
-    max-height: 240px;
-    overflow-y: auto;
-  }
-  
-  .filter-mobile.system-theme .split-menu.show {
-    display: flex;
-  }
-  
-  .filter-mobile.system-theme .split-item {
-    background: transparent;
-    border: none;
-    padding: 14px 20px;
-    font-size: 13px;
-    font-weight: 500;
-    color: #fff;
-    text-align: left;
-    cursor: pointer;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-    transition: background 0.2s ease;
-  }
-  
-  .filter-mobile.system-theme .split-item:last-child {
-    border-bottom: none;
-  }
-  
-  .filter-mobile.system-theme .split-item:hover,
-  .filter-mobile.system-theme .split-item.active {
-    background: rgba(255, 255, 255, 0.15);
-    font-weight: 600;
   }
 }

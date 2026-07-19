@@ -126,7 +126,7 @@ async function scanGoogleDriveFolders() {
 
     const filesResponse = await drive.files.list({
       q: `'${folder.id}' in parents and trashed = false`,
-      fields: "files(id, name, mimeType)",
+      fields: "files(id, name, mimeType, createdTime)",
       orderBy: "name",
       pageSize: 200,
     });
@@ -162,8 +162,26 @@ async function scanGoogleDriveFolders() {
         mimeType: file.mimeType || "",
         type: isVideo ? "video" : "image",
         src: `/api/stream/${file.id}`,
+        createdTime: file.createdTime || ""
       };
     });
+
+    // Find the newest item in this category to mark as "New"
+    let newestItem = null;
+    let maxTime = 0;
+    items.forEach(item => {
+      if (item.createdTime) {
+        const t = new Date(item.createdTime).getTime();
+        if (t > maxTime) {
+          maxTime = t;
+          newestItem = item;
+        }
+      }
+    });
+
+    if (newestItem) {
+      newestItem.isNew = true;
+    }
 
     const slug = slugify(folder.name);
 
@@ -171,6 +189,7 @@ async function scanGoogleDriveFolders() {
       id: folder.id,
       name: folder.name,
       slug,
+      lastUpdated: maxTime,
       items,
     };
   });

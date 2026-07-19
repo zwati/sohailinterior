@@ -239,7 +239,8 @@ function renderPortfolioGrid() {
 
     return `
       <div class="project-card reveal" onclick="openProjectLightbox(${idx})">
-        <div class="project-visual" id="slideshow-${idx}">
+        <div class="project-visual fade-load" id="slideshow-${idx}">
+          <div class="loading-glass" style="z-index: 5;"></div>
           ${mediaHTML}
           ${controlsHTML}
           <div class="project-category-badge">${p.catLabel}</div>
@@ -255,6 +256,26 @@ function renderPortfolioGrid() {
       </div>
     `;
   }).join('');
+
+  // Fade out loader once first image loads
+  grid.querySelectorAll('.project-visual.fade-load').forEach(el => {
+    const firstImg = el.querySelector('img.slide');
+    const glass = el.querySelector('.loading-glass');
+    if (!glass) return;
+
+    if (firstImg) {
+      if (firstImg.complete) {
+        glass.remove();
+      } else {
+        firstImg.addEventListener('load', () => {
+          glass.style.opacity = '0';
+          setTimeout(() => glass.remove(), 600);
+        });
+      }
+    } else {
+      glass.remove(); // No images (maybe only video), remove immediately
+    }
+  });
 
   if (window.revealCheck) {
     window.revealCheck();

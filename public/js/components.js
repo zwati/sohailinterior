@@ -1,5 +1,8 @@
 class PageLoader extends HTMLElement {
   connectedCallback() {
+    if (this.hasAttribute('glass')) {
+      return;
+    }
     const isGlass = this.hasAttribute('glass');
     this.innerHTML = `
       <div class="loader ${isGlass ? 'glass-loader' : ''}" id="pageLoader" role="status" aria-label="Loading Sohail Interior">
@@ -94,7 +97,7 @@ function appendDrawersAndModals() {
   }
 }
 
-window.openSearchModal = function() {
+window.openSearchModal = function () {
   const wrapper = document.getElementById('searchWrapper');
   const input = document.getElementById('searchInput');
   const results = document.getElementById('searchResults');
@@ -108,14 +111,14 @@ window.openSearchModal = function() {
     if (results) results.style.display = 'none';
   }
 };
-window.closeSearchModal = function() {
+window.closeSearchModal = function () {
   const wrapper = document.getElementById('searchWrapper');
   const results = document.getElementById('searchResults');
   if (wrapper) wrapper.style.display = 'none';
   if (results) results.style.display = 'none';
 };
 
-window.openWishlistDrawer = function() {
+window.openWishlistDrawer = function () {
   const drawer = document.getElementById('wishlistDrawer');
   if (drawer) {
     drawer.classList.add('active');
@@ -124,12 +127,12 @@ window.openWishlistDrawer = function() {
     }
   }
 };
-window.closeWishlistDrawer = function() {
+window.closeWishlistDrawer = function () {
   const drawer = document.getElementById('wishlistDrawer');
   if (drawer) drawer.classList.remove('active');
 };
 
-window.openCartDrawer = function() {
+window.openCartDrawer = function () {
   const drawer = document.getElementById('cartDrawer');
   if (drawer) {
     drawer.classList.add('active');
@@ -138,7 +141,7 @@ window.openCartDrawer = function() {
     }
   }
 };
-window.closeCartDrawer = function() {
+window.closeCartDrawer = function () {
   const drawer = document.getElementById('cartDrawer');
   if (drawer) drawer.classList.remove('active');
 };
@@ -161,52 +164,70 @@ class SiteHeader extends HTMLElement {
     this.innerHTML = `
       <header class="site-header">
         <div class="header-inner">
-          <div class="header-row">
-            <button class="icon-btn hamburger-btn" id="hamburgerBtn" title="Menu" aria-label="Menu" type="button" aria-controls="mobileSidebar" aria-expanded="false">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
-            </button>
- 
-            <div class="brand" onclick="window.location.href='/'">
-              <img src="/logo/SI_square.png" alt="Sohail Interior Logo" class="brand-mark" style="object-fit: contain;">
-              <div>
-                <div class="brand-name">SOHAIL INTERIOR</div>
-                <div class="brand-sub mono">Design &amp; Materials</div>
+          <div class="header-row" style="display: flex; justify-content: space-between; align-items: center;">
+            
+            <!-- Left: Mobile menu and Socials -->
+            <div class="header-left" style="flex: 0 0 auto; display: flex; align-items: center; gap: 8px;">
+              <button class="icon-btn hamburger-btn" id="hamburgerBtn" title="Menu" aria-label="Menu" type="button" aria-controls="mobileSidebar" aria-expanded="false">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+              </button>
+              <div class="social-icons" style="display: flex; gap: 8px;">
+                <a href="#" aria-label="Facebook"><svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg></a>
+                <a href="#" aria-label="Instagram"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg></a>
+                <a href="#" aria-label="TikTok"><svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor"><path d="M12.525.02c1.31-.02 2.61-.01 3.91-.02.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.05-2.89-.35-4.2-.97-.57-.26-1.1-.59-1.62-.93-.01 2.92.01 5.84-.02 8.75-.08 1.4-.54 2.79-1.35 3.94-1.31 1.92-3.58 3.17-5.91 3.21-1.43.08-2.86-.31-4.08-1.03-2.02-1.12-3.44-3.17-3.64-5.46-.24-2.42.74-4.82 2.61-6.32 1.53-1.26 3.51-1.84 5.46-1.55.04 1.44.02 2.89.04 4.34-1.07-.37-2.31-.22-3.23.44-1.01.76-1.55 2.06-1.31 3.27.32 1.51 1.76 2.59 3.32 2.53 1.37-.08 2.57-.96 2.96-2.26.17-.6.2-1.24.2-1.87-.01-5.26-.01-10.51-.01-15.77h-.01Z"/></svg></a>
               </div>
             </div>
 
-            <nav class="main-nav" id="mainNav">
-              <a href="/">Home</a>
-              <a href="/materials">Materials Catalog</a>
-              <a href="/portfolio">Portfolio</a>
-              <div class="dropdown">
-                <a href="/gallery">Gallery ▾</a>
-                <div class="dropdown-content">
-                  <a href="/gallery">All Folders</a>
+            <!-- Center: Brand (Logo + Text) -->
+            <div class="header-center" style="flex: 1; display: flex; justify-content: center;">
+              <div class="brand" onclick="window.location.href='/'" style="display: flex; flex-direction: row; align-items: center; gap: 10px; text-align: left;">
+                <img src="/logo/SI_square.png" alt="Sohail Interior Logo" class="brand-mark" style="object-fit: contain; width: 36px; height: 36px;">
+                <div>
+                  <div class="brand-name" style="letter-spacing: 1px;">SOHAIL INTERIOR</div>
+                  <div class="brand-sub mono" style="font-size: 10px; margin-top: 2px;">Design &amp; Materials</div>
                 </div>
               </div>
-            </nav>
+            </div>
  
-            <div class="header-actions" style="position: relative; display: flex; align-items: center; gap: 8px;">
-              <div class="search-wrapper" id="searchWrapper" style="display: none; position: relative;">
-                <input type="text" id="searchInput" placeholder="Search materials..." autocomplete="off" style="padding: 6px 12px; border-radius: 20px; border: 1px solid var(--line); outline: none; font-size: 13px; width: 180px; background: var(--mist);">
-                <div class="search-suggestions" id="searchResults" style="position: absolute; top: calc(100% + 8px); right: 0; background: #fff; border: 1px solid var(--line); border-radius: 8px; box-shadow: var(--shadow); width: 280px; max-height: 250px; overflow-y: auto; z-index: 1000; display: none;"></div>
+            <!-- Right: Actions -->
+            <div class="header-right" style="flex: 0 0 auto; display: flex; justify-content: flex-end;">
+              <div class="header-actions" style="position: relative; display: flex; align-items: center; gap: 8px;">
+                <div class="search-wrapper" id="searchWrapper" style="display: none; position: relative;">
+                  <input type="text" id="searchInput" placeholder="Search materials..." autocomplete="off" style="padding: 6px 12px; border-radius: 20px; border: 1px solid var(--line); outline: none; font-size: 13px; width: 180px; background: var(--mist);">
+                  <div class="search-suggestions" id="searchResults" style="position: absolute; top: calc(100% + 8px); right: 0; background: #fff; border: 1px solid var(--line); border-radius: 8px; box-shadow: var(--shadow); width: 280px; max-height: 250px; overflow-y: auto; z-index: 1000; display: none;"></div>
+                </div>
+                <button class="icon-btn" id="searchBtn" title="Search" aria-label="Search">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                </button>
+                <button class="icon-btn" title="Admin Dashboard" aria-label="Admin" onclick="window.location.href='/admin'">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4.4 3.6-8 8-8s8 3.6 8 8"/></svg>
+                </button>
+                <button class="icon-btn" id="wishlistBtn" title="Saved materials" aria-label="Saved materials">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.6l-1-1a5.5 5.5 0 1 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8z"/></svg>
+                  <span class="badge" id="wishlistBadge">0</span>
+                </button>
+                <button class="icon-btn" id="cartBtn" title="Quote list" aria-label="Quote list">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+                  <span class="badge" id="cartBadge">0</span>
+                </button>
               </div>
-              <button class="icon-btn" id="searchBtn" title="Search" aria-label="Search">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-              </button>
-              <button class="icon-btn" title="Admin Dashboard" aria-label="Admin" onclick="window.location.href='/admin'">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4.4 3.6-8 8-8s8 3.6 8 8"/></svg>
-              </button>
-              <button class="icon-btn" id="wishlistBtn" title="Saved materials" aria-label="Saved materials">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.6l-1-1a5.5 5.5 0 1 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8z"/></svg>
-                <span class="badge" id="wishlistBadge">0</span>
-              </button>
-              <button class="icon-btn" id="cartBtn" title="Quote list" aria-label="Quote list">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
-                <span class="badge" id="cartBadge">0</span>
-              </button>
             </div>
           </div>
+        </div>
+      </header>
+
+        <div class="nav-row" style="display: flex; justify-content: center; padding: 12px 0; border-top: 1px solid var(--line); background: #fff;">
+          <nav class="main-nav" id="mainNav">
+            <a href="/">Home</a>
+            <a href="/materials">Materials Catalog</a>
+            <a href="/portfolio">Portfolio</a>
+            <div class="dropdown">
+              <a href="/gallery">Gallery ▾</a>
+              <div class="dropdown-content">
+                <a href="/gallery">All Folders</a>
+              </div>
+            </div>
+          </nav>
         </div>
  
         <div class="sidebar-overlay" id="sidebarOverlay"></div>
@@ -230,20 +251,19 @@ class SiteHeader extends HTMLElement {
             </div>
           </nav>
         </div>
-      </header>
     `;
- 
+
     // Bind Hamburger Logic
     const hamburgerBtn = this.querySelector('#hamburgerBtn');
     const closeBtn = this.querySelector('#closeSidebar');
     const overlay = this.querySelector('#sidebarOverlay');
     const sidebar = this.querySelector('#mobileSidebar');
     const mobileNav = this.querySelector('#mobileNav');
- 
+
     sidebar.setAttribute('aria-hidden', 'true');
     sidebar.setAttribute('role', 'dialog');
     sidebar.setAttribute('aria-label', 'Mobile navigation menu');
- 
+
     const openMenu = () => {
       sidebar.classList.add('active');
       overlay.classList.add('active');
@@ -251,7 +271,7 @@ class SiteHeader extends HTMLElement {
       if (hamburgerBtn) hamburgerBtn.setAttribute('aria-expanded', 'true');
       sidebar.setAttribute('aria-hidden', 'false');
     };
- 
+
     const closeMenu = () => {
       sidebar.classList.remove('active');
       overlay.classList.remove('active');
@@ -259,7 +279,7 @@ class SiteHeader extends HTMLElement {
       if (hamburgerBtn) hamburgerBtn.setAttribute('aria-expanded', 'false');
       sidebar.setAttribute('aria-hidden', 'true');
     };
- 
+
     if (hamburgerBtn) hamburgerBtn.addEventListener('click', openMenu);
     if (closeBtn) closeBtn.addEventListener('click', closeMenu);
     if (overlay) overlay.addEventListener('click', closeMenu);
@@ -269,18 +289,18 @@ class SiteHeader extends HTMLElement {
         if (anchor) closeMenu();
       });
     }
- 
+
     // Bind search/wishlist/cart handlers
     const searchBtn = this.querySelector('#searchBtn');
     const wishlistBtn = this.querySelector('#wishlistBtn');
     const cartBtn = this.querySelector('#cartBtn');
- 
+
     if (searchBtn) searchBtn.addEventListener('click', () => window.openSearchModal());
     if (wishlistBtn) wishlistBtn.addEventListener('click', () => window.openWishlistDrawer());
     if (cartBtn) cartBtn.addEventListener('click', () => window.openCartDrawer());
- 
+
     appendDrawersAndModals();
-    
+
     // Global function so common.js can close menu after link clicks or Escape
     window.closeMobileMenu = closeMenu;
   }

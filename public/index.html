@@ -1,16 +1,21 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Sohail Interior — Premium Design & Materials</title>
-  <meta name="description" content="Discover premium materials including PVC ceilings, wallpapers, fiber doors, and blinds in Sahiwal and Lahore. Book a free site visit today.">
+  <meta name="description"
+    content="Discover premium materials including PVC ceilings, wallpapers, fiber doors, and blinds in Sahiwal and Lahore. Book a free site visit today.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,500&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,500&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap"
+    rel="stylesheet">
   <link rel="stylesheet" href="/css/common.css">
   <link rel="stylesheet" href="/css/home.css">
   <link rel="icon" type="image/png" href="/logo/SI_square.png">
 </head>
+
 <body>
 
   <page-loader></page-loader>
@@ -20,121 +25,90 @@
   <!-- Main Content -->
   <main>
     <div class="page active" id="home">
-      
+
       <!-- Hero Section -->
       <section class="hero">
-        <div class="blob b1"></div>
-        <div class="blob b2"></div>
-        <div class="blob b3"></div>
+        <video autoplay muted playsinline class="hero-bg-video">
+          <source src="/videos/hero.mp4" type="video/mp4">
+        </video>
         <div class="hero-banner reveal">
           <div class="hero-copy" id="heroCopy">
             <div class="eyebrow mono"><span class="dot"></span>New This Season</div>
             <h1>Introducing <em>PVC Updown</em><br>Ceiling</h1>
-            <p>A layered updown ceiling profile with hidden lighting channels — now available across all Sohail Interior projects.</p>
+            <p>A layered updown ceiling profile with hidden lighting channels — now available across all Sohail Interior
+              projects.</p>
             <div class="btn-row">
-              <button class="btn btn-primary" onclick="window.location.href='/materials?id=PUC-01'">View Material &rarr;</button>
-              <button class="btn btn-ghost" onclick="window.location.href='/portfolio'">See it Installed</button>
+              <button class="btn btn-primary"
+                onclick="window.location.href='/materials?category=pvc-updown-ceiling'">View Material </button>
             </div>
           </div>
-          <div class="hero-visual" id="heroVisual">
-            <!-- Populated dynamically by home.js -->
-          </div>
-          <div class="hero-dots" id="heroDots">
-            <span class="active" onclick="setSlide(0)" aria-label="Slide 1"></span>
-            <span onclick="setSlide(1)" aria-label="Slide 2"></span>
-            <span onclick="setSlide(2)" aria-label="Slide 3"></span>
-          </div>
-        </div>
 
-        <!-- Stats Strip -->
-        <div class="stats-strip reveal">
-          <div class="stat"><div class="num">120+</div><div class="lbl">Projects delivered</div></div>
-          <div class="stat"><div class="num">9</div><div class="lbl">Signature materials</div></div>
-          <div class="stat"><div class="num">8yrs</div><div class="lbl">In practice</div></div>
-          <div class="stat"><div class="num">100%</div><div class="lbl">Full-res gallery, always</div></div>
-        </div>
+          <!-- Stats Strip -->
+          <div class="stats-strip reveal">
+            <div class="stat"
+              style="animation: popUp 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275) 0.8s forwards; opacity: 0;">
+              <div class="num">120+</div>
+              <div class="lbl">Projects delivered</div>
+            </div>
+            <div class="stat"
+              style="animation: popUp 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275) 1.0s forwards; opacity: 0;">
+              <div class="num">9</div>
+              <div class="lbl">Signature materials</div>
+            </div>
+            <div class="stat"
+              style="animation: popUp 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275) 1.2s forwards; opacity: 0;">
+              <div class="num">8yrs</div>
+              <div class="lbl">In practice</div>
+            </div>
+            <div class="stat"
+              style="animation: popUp 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275) 1.4s forwards; opacity: 0;">
+              <div class="num">100%</div>
+              <div class="lbl">Full-res gallery, always</div>
+            </div>
+          </div>
       </section>
 
       <!-- Dynamic Categories Grid (Google Drive Folders load here) -->
-      <section class="section">
-        <div class="section-head reveal">
-          <h2>Browse by Category</h2>
-          <p>Explore material collections managed live from Google Drive.</p>
-        </div>
-        <div class="cat-triad cat-grid">
-          <!-- Fallback or dynamic chips rendered by home.js -->
-          <div style="grid-column: span 3; text-align:center; padding: 40px; color: #6b7f97;">Loading categories...</div>
+      <section class="section"
+        style="max-width: 100%; margin: 0; padding-left: 0; padding-right: 0; background: linear-gradient(rgba(46, 139, 87, 0.1), rgba(46, 139, 87, 0.1)), url('/images/varity-bg.jpg') center/cover no-repeat; padding-top: 40px; padding-bottom: 40px; border-top: 1px solid rgba(255, 255, 255, 0.2); box-shadow: 0 -10px 30px rgba(0, 0, 0, 0.15); position: relative; z-index: 10;">
+        <div style="max-width: 100%; padding: 0 clamp(12px, 4vw, 40px);">
+          <div class="section-head">
+            <h2>Offering a wide range of variety</h2>
+            <p>Explore material collections.</p>
+          </div>
+          <div class="cat-triad cat-grid">
+            <!-- Fallback or dynamic chips rendered by home.js -->
+            <div style="grid-column: span 3; text-align:center; padding: 40px; color: #6b7f97;">Loading categories...
+            </div>
+          </div>
         </div>
       </section>
 
       <!-- Featured Materials Grid -->
-      <section class="section" style="padding-top:0;">
-        <div class="section-head reveal">
-          <h2>Featured Materials</h2>
-          <p>Most requested finishes this month.</p>
+      <section class="section"
+        style="max-width: 100%; margin: 0; padding-left: 0; padding-right: 0; background: linear-gradient(rgba(46, 139, 87, 0.1), rgba(46, 139, 87, 0.1)), url('/images/featured-material-bg.jpeg') center/cover no-repeat; padding-top: 32px; padding-bottom: 32px; border-top: 1px solid rgba(255, 255, 255, 0.2); box-shadow: 0 -10px 30px rgba(0, 0, 0, 0.15); position: relative; z-index: 10;">
+        <div style="max-width: 100%; padding: 0 clamp(12px, 4vw, 40px);">
+          <div class="section-head">
+            <h2>Featured Materials</h2>
+            <p>Most requested finishes this month.</p>
+          </div>
+          <div class="pgrid" id="featuredGrid">
+            <!-- Populated by home.js -->
+          </div>
         </div>
-        <div class="pgrid" id="featuredGrid">
-          <!-- Populated by home.js -->
+        <br>
+        <br>
+        <!-- Call to Action Band -->
+        <div class="cta-band">
+          <div>
+            <h3>See the latest work, sent as a link.</h3>
+            <p>Not a WhatsApp download &mdash; a living catalog.</p>
+          </div>
+          <button class="btn btn-white" onclick="window.location.href='portfolio.html'">Open Portfolio &rarr;</button>
         </div>
+
       </section>
 
-      <!-- Why Us Section -->
-      <section class="section" style="padding-top:0;">
-        <div class="section-head reveal">
-          <h2>Why a platform, not a chat thread</h2>
-          <p>Built around the exact problems client interaction usually creates.</p>
-        </div>
-        <div class="feature-grid">
-          <div class="feature-card reveal">
-            <div class="ic">&uarr;</div>
-            <h3>One upload, full quality</h3>
-            <p>No more re-compressed photos or slow connections cutting an album short — every article publishes once, in full resolution.</p>
-          </div>
-          <div class="feature-card reveal">
-            <div class="ic">&boxplus;</div>
-            <h3>Nothing goes missing</h3>
-            <p>Every material and project lives in one indexed catalog, so a unique piece never quietly disappears in someone's chat history.</p>
-          </div>
-          <div class="feature-card reveal">
-            <div class="ic">&circlearrowright;</div>
-            <h3>Always current</h3>
-            <p>Sohail updates from the admin panel; the client's link reflects it instantly — no re-sending, no "did you get it?"</p>
-          </div>
-        </div>
-      </section>
-
-      <!-- Call to Action Band -->
-      <div class="cta-band reveal">
-        <div>
-          <h3>See the latest work, sent as a link.</h3>
-          <p>Not a WhatsApp download &mdash; a living catalog.</p>
-        </div>
-        <button class="btn btn-white" onclick="window.location.href='/portfolio'">Open Portfolio &rarr;</button>
-      </div>
-
-      <!-- Journal/Blog Section -->
-      <section class="section" style="padding-top:0;">
-        <div class="section-head reveal">
-          <h2>From the Journal</h2>
-        </div>
-        <div class="blog-row">
-          <div class="blog-card reveal">
-            <div class="thumb t-slat"></div>
-            <div>
-              <h5>Choosing a Ceiling Finish for Small Rooms</h5>
-              <p>How slat spacing and tone change how tall a room feels.</p>
-            </div>
-          </div>
-          <div class="blog-card reveal">
-            <div class="thumb t-marble"></div>
-            <div>
-              <h5>Marble vs Engineered Wood, Honestly Compared</h5>
-              <p>Upkeep, cost and feel &mdash; a straight answer for Sahiwal homes.</p>
-            </div>
-          </div>
-        </div>
-      </section>
-      
     </div>
   </main>
 
@@ -145,4 +119,5 @@
   <script src="/js/common.js" defer></script>
   <script src="/js/home.js" defer></script>
 </body>
+
 </html>
