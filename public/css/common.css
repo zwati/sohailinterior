@@ -407,7 +407,7 @@ nav.main-nav a:not(.active):hover {
   max-width: 1220px;
   margin: 0 auto;
   display: grid;
-  grid-template-columns: 1.2fr 1fr 1.2fr;
+  grid-template-columns: 1.2fr 1fr 1.2fr 1.2fr;
   gap: 40px;
 }
 
@@ -1006,6 +1006,10 @@ nav.main-nav a:not(.active):hover {
 }
 
 @media (max-width: 768px) {
+  .site-footer {
+    padding: 40px 24px 24px;
+  }
+  
   .header-row {
     grid-template-columns: auto 1fr auto; /* Hamburger, Brand, Actions */
     padding: 14px 18px;
