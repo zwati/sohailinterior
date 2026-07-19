@@ -370,8 +370,10 @@ nav.main-nav a:not(.active):hover {
 
 .reveal {
   opacity: 0;
-  transform: translateY(26px);
-  transition: opacity .7s ease, transform .7s ease;
+  transform: translateY(14px);
+  /* Reduced from 0.7s — was making cards feel stuck/dragging */
+  transition: opacity 0.38s ease, transform 0.38s ease;
+  will-change: opacity, transform;
 }
 
 .reveal.in {
@@ -1539,32 +1541,36 @@ nav.main-nav a:not(.active):hover {
   }
 }
 
-/* ================= NAVY GLASS LOADER ================= */
+/* ================= CARD SHIMMER LOADER ================= */
+/* Replaced backdrop-filter:blur — it was applied to every thumbnail at once,
+   causing severe GPU overload on pages with many cards. Shimmer is composited
+   on the GPU at near-zero cost. */
 .loading-glass {
   position: absolute;
   inset: 0;
-  background: rgba(13, 35, 64, 0.06);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: opacity 0.6s ease;
   z-index: 5;
+  overflow: hidden;
+  transition: opacity 0.4s ease;
+  /* Base skeleton colour */
+  background: linear-gradient(90deg,
+    rgba(234, 242, 250, 0.0) 0%,
+    rgba(234, 242, 250, 0.8) 50%,
+    rgba(234, 242, 250, 0.0) 100%);
+  background-size: 200% 100%;
+  animation: shimmer-sweep 1.4s ease-in-out infinite;
+  pointer-events: none;
 }
 
+/* No spinner pseudo-element needed — the sweep IS the loading indicator */
 .loading-glass::after {
-  content: "";
-  width: 24px;
-  height: 24px;
-  border: 2.5px solid rgba(13, 35, 64, 0.15);
-  border-top-color: var(--navy);
-  border-radius: 50%;
-  animation: loader-spin 0.85s linear infinite;
+  display: none;
+}
+
+@keyframes shimmer-sweep {
+  0%   { background-position: -200% 0; }
+  100% { background-position:  200% 0; }
 }
 
 @keyframes loader-spin {
-  to {
-    transform: rotate(360deg);
-  }
+  to { transform: rotate(360deg); }
 }

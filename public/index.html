@@ -14,6 +14,9 @@
   <link rel="stylesheet" href="/css/common.css">
   <link rel="stylesheet" href="/css/home.css">
   <link rel="icon" type="image/png" href="/logo/SI_square.png">
+  <!-- Preload section BGs so they are ready before the sections paint -->
+  <link rel="preload" href="/images/varity-bg.jpg" as="image">
+  <link rel="preload" href="/images/featured-material-bg.jpeg" as="image">
 </head>
 
 <body>
@@ -69,8 +72,7 @@
       </section>
 
       <!-- Dynamic Categories Grid (Google Drive Folders load here) -->
-      <section class="section"
-        style="max-width: 100%; margin: 0; padding-left: 0; padding-right: 0; background: linear-gradient(rgba(46, 139, 87, 0.1), rgba(46, 139, 87, 0.1)), url('/images/varity-bg.jpg') center/cover no-repeat; padding-top: 40px; padding-bottom: 40px; border-top: 1px solid rgba(255, 255, 255, 0.2); box-shadow: 0 -10px 30px rgba(0, 0, 0, 0.15); position: relative; z-index: 10;">
+      <section class="section home-section-variety" id="varietySection">
         <div style="max-width: 100%; padding: 0 clamp(12px, 4vw, 40px);">
           <div class="section-head">
             <h2>Offering a wide range of variety</h2>
@@ -85,8 +87,7 @@
       </section>
 
       <!-- Featured Materials Grid -->
-      <section class="section"
-        style="max-width: 100%; margin: 0; padding-left: 0; padding-right: 0; background: linear-gradient(rgba(46, 139, 87, 0.1), rgba(46, 139, 87, 0.1)), url('/images/featured-material-bg.jpeg') center/cover no-repeat; padding-top: 32px; padding-bottom: 32px; border-top: 1px solid rgba(255, 255, 255, 0.2); box-shadow: 0 -10px 30px rgba(0, 0, 0, 0.15); position: relative; z-index: 10;">
+      <section class="section home-section-featured" id="featuredSection">
         <div style="max-width: 100%; padding: 0 clamp(12px, 4vw, 40px);">
           <div class="section-head">
             <h2>Featured Materials</h2>

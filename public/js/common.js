@@ -656,12 +656,30 @@ document.addEventListener("keydown", (e) => {
 // 3. Reveal on Scroll Animation Loader
 const io = new IntersectionObserver((entries) => {
   entries.forEach(e => {
-    if (e.isIntersecting) e.target.classList.add('in');
+    if (e.isIntersecting) {
+      e.target.classList.add('in');
+      // Clear the stagger delay once the animation fires so hover/layout
+      // transitions on the card aren't delayed afterwards
+      setTimeout(() => {
+        e.target.style.transitionDelay = '';
+      }, 500);
+    }
   });
-}, { threshold: 0.12 });
+}, { threshold: 0.08 });
 
 window.revealCheck = function () {
-  document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+  document.querySelectorAll('.reveal:not(.in)').forEach(el => {
+    // Assign a stagger delay based on position among siblings so cards
+    // cascade in rather than all appearing at the same instant
+    const siblings = el.parentElement
+      ? Array.from(el.parentElement.children).filter(c => c.classList.contains('reveal'))
+      : [];
+    const idx = siblings.indexOf(el);
+    // Cap at 160ms so large grids don't make the last card wait too long
+    const delay = Math.min(idx * 55, 160);
+    el.style.transitionDelay = delay + 'ms';
+    io.observe(el);
+  });
 };
 
 // 4. Initial Startup Tasks

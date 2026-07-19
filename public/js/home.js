@@ -229,6 +229,7 @@ function renderSlide(slideIdx) {
     isFirstLoad = false;
   } else {
     // Blur out visual only
+    const visualEl = document.querySelector('.hero-visual') || banner;
     visualEl.style.transition = 'filter 0.4s ease, opacity 0.4s ease';
     visualEl.style.filter = 'blur(16px) brightness(0.8)';
     visualEl.style.opacity = '0.5';

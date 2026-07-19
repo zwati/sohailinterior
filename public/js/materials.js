@@ -637,16 +637,27 @@ function setMainItem(item, cat) {
     el.innerHTML = `<video src="${item.src}" controls
       style="width:100%;height:100%;object-fit:cover;border-radius:16px;"></video>`;
     el.style.backgroundImage = '';
+    el.style.opacity = '';
     el.className = 'gallery-main';
     el.style.cursor = 'default';
     el.onclick = null;
-  } else {
+  } else if (item.src) {
+    // Has a real image — fade it in smoothly
     el.innerHTML = '';
     el.className = 'gallery-main';
-    el.style.backgroundImage = `url('${item.src}')`;
-    el.style.backgroundSize = 'cover';
-    el.style.backgroundPosition = 'center';
     el.style.cursor = 'zoom-in';
+    el.style.opacity = '0.4';
+    el.style.transition = 'opacity 0.35s ease';
+
+    const img = new Image();
+    img.onload = () => {
+      el.style.backgroundImage = `url('${item.src}')`;
+      el.style.backgroundSize = 'cover';
+      el.style.backgroundPosition = 'center';
+      el.style.opacity = '1';
+    };
+    img.src = item.src;
+
     el.onclick = () => {
       if (window.openLightbox) {
         const allItems = cat.items.map(it => ({
@@ -659,6 +670,23 @@ function setMainItem(item, cat) {
         window.openLightbox(Math.max(0, idx), allItems);
       }
     };
+  } else {
+    // No image src — show texture class as fallback
+    el.innerHTML = `
+      <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;gap:12px;opacity:0.45;">
+        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2">
+          <rect x="3" y="3" width="18" height="18" rx="2"/>
+          <circle cx="8.5" cy="8.5" r="1.5"/>
+          <polyline points="21 15 16 10 5 21"/>
+        </svg>
+        <span style="font-size:13px;font-family:'Inter',sans-serif;">Images loading…</span>
+      </div>`;
+    const textureCls = TEXTURE_MAP[cat.slug] || 't-gypsum';
+    el.className = `gallery-main ${textureCls}`;
+    el.style.backgroundImage = '';
+    el.style.opacity = '1';
+    el.style.cursor = 'default';
+    el.onclick = null;
   }
 }
 
@@ -669,6 +697,9 @@ function renderDetailGallery(cat) {
   if (!gridEl) return;
 
   const items = cat.items;
+  // THIS is what openDetail relies on to pick the first real image for the main panel
+  currentFilteredItems = items;
+
   if (items.length === 0) {
     gridEl.innerHTML = '<div class="gallery-empty">No media available for this category yet.</div>';
     if (paginEl) paginEl.innerHTML = '';
@@ -858,11 +889,16 @@ function handleURLRouting() {
 // ─── Bootstrap ────────────────────────────────────────────────────────────────
 document.addEventListener('DOMContentLoaded', () => {
   if (window.globalCategories?.length > 0) {
+    // Drive data already in-hand (fast load or cached) — use it immediately
     loadFromGlobalCategories(window.globalCategories);
+    renderMaterialsFilters();
+    renderCatalog();
+    handleURLRouting();
   } else {
-    // Static fallback (no real images yet)
+    // API hasn't responded yet — show static catalog shell (cards with texture patterns,
+    // no real images). Do NOT open the detail view yet; wait for categoriesLoaded to
+    // fire so the main image panel gets a real Drive photo, not the blank fallback.
     categoriesData = STATIC_FALLBACK.map(s => ({ ...s, items: [] }));
-    // Sync static fallback to window.materialsData using STATIC_METADATA
     window.materialsData = categoriesData.map(cat => {
       const meta = STATIC_METADATA[cat.slug] || {
         price: 0,
@@ -885,11 +921,11 @@ document.addEventListener('DOMContentLoaded', () => {
         colors: meta.colors
       };
     });
+    renderMaterialsFilters();
+    renderCatalog();
+    // NOTE: handleURLRouting() intentionally NOT called here.
+    // categoriesLoaded will call openDetail() once real images are ready.
   }
-
-  renderMaterialsFilters();
-  renderCatalog();
-  handleURLRouting();
 });
 
 // ─── Re-render when API categories arrive ────────────────────────────────────
@@ -897,7 +933,15 @@ window.addEventListener('categoriesLoaded', (e) => {
   loadFromGlobalCategories(e.detail);
   renderMaterialsFilters();
   renderCatalog();
-  handleURLRouting();
+
+  // If the detail panel is already open (e.g. page was slow to load Drive data),
+  // re-open the current category so the main image updates with real Drive images.
+  const detailPage = document.getElementById('detailPage');
+  if (activeCatSlug && detailPage && detailPage.style.display !== 'none') {
+    openDetail(activeCatSlug);
+  } else {
+    handleURLRouting();
+  }
 });
 
 // Reactive update when wishlist drawer removes or toggles items
