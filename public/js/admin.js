@@ -73,6 +73,7 @@ function renderAdminCategoryOptions() {
 
 // 3. Render asset management tables
 let allAdminItems = [];
+let filteredAdminItems = null;
 
 function renderAdminTable(page = 1) {
   const container = document.getElementById("galleryTableBody");
@@ -81,6 +82,7 @@ function renderAdminTable(page = 1) {
 
   // Flatten all items on first render or when categories change
   if (allAdminItems.length === 0 && globalCategories && globalCategories.length > 0) {
+    allAdminItems = [];
     globalCategories.forEach(cat => {
       cat.items.forEach(item => {
         allAdminItems.push({ ...item, categoryName: cat.name });
@@ -88,21 +90,26 @@ function renderAdminTable(page = 1) {
     });
   }
 
+  const listToDisplay = filteredAdminItems !== null ? filteredAdminItems : allAdminItems;
+
   // Use Pagination.js to get 7 items per page
-  const pageData = Pagination.paginate(allAdminItems, page, 7);
+  const pageData = Pagination.paginate(listToDisplay, page, 7);
   let rows = "";
 
   pageData.items.forEach(item => {
     rows += `
       <div class="trow">
         <div class="title-cell">
-          <div style="width:36px; height:36px; border-radius:6px; overflow:hidden; margin-right:12px; flex-shrink:0;">
+          <div onclick="window.openLightbox(0, [{src: '${item.src}', name: '${item.name.replace(/'/g, "\\'")}', type: '${item.type}', categoryName: '${item.categoryName.replace(/'/g, "\\'")}'}])" style="width:36px; height:36px; border-radius:6px; overflow:hidden; margin-right:12px; flex-shrink:0; cursor:pointer;" title="Click to view full preview">
             ${item.type === 'video'
         ? `<video src="${item.src}" style="width:100%; height:100%; object-fit:cover;" muted></video>`
         : `<img src="${item.src}" style="width:100%; height:100%; object-fit:cover;">`
       }
           </div>
-          ${item.name}
+          <div>
+            <div style="font-weight: 600;">${item.name}</div>
+            <div style="font-size: 11px; color: var(--gray-band); font-family: monospace;">ID: ${item.id}</div>
+          </div>
         </div>
         <span>${item.categoryName}</span>
         <span class="status synced">Synced</span>
@@ -369,6 +376,7 @@ window.uploadArticle = async function () {
 
 // Listen to dynamic categories load updates
 window.addEventListener("categoriesLoaded", () => {
+  allAdminItems = []; // Clear so it re-flattens fresh categories on next render
   const dashStage = document.getElementById("dashStage");
   // Only redraw dashboard panels if the user has logged in and dashboard is active
   if (dashStage && dashStage.style.display !== 'none') {
@@ -380,3 +388,34 @@ window.addEventListener("categoriesLoaded", () => {
     }
   }
 });
+
+window.searchAdminItemById = function () {
+  const query = document.getElementById("adminSearchId")?.value.trim().toLowerCase();
+  if (!query) {
+    filteredAdminItems = null;
+    renderAdminTable(1);
+    return;
+  }
+
+  filteredAdminItems = allAdminItems.filter(item =>
+    (item.id || '').toLowerCase().includes(query)
+  );
+  renderAdminTable(1);
+};
+
+window.clearAdminSearch = function () {
+  const input = document.getElementById("adminSearchId");
+  if (input) input.value = "";
+  filteredAdminItems = null;
+  renderAdminTable(1);
+};
+
+// Bind enter key
+const adminSearchInput = document.getElementById("adminSearchId");
+if (adminSearchInput) {
+  adminSearchInput.addEventListener("keydown", (e) => {
+    if (e.key === "Enter") {
+      searchAdminItemById();
+    }
+  });
+}

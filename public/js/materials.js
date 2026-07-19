@@ -6,40 +6,110 @@ const GALLERY_PER_PAGE = 16;   // thumbs per page inside detail view
 const CATALOG_PER_PAGE = 12;   // max category cards per catalog page
 
 // ─── State ───────────────────────────────────────────────────────────────────
-let categoriesData     = [];   // [{slug, name, texture, items:[{id,name,src,type}]}]
-let activeCatSlug      = null;
+let categoriesData = [];   // [{slug, name, texture, items:[{id,name,src,type}]}]
+let activeCatSlug = null;
 let currentGalleryPage = 1;
 let currentCatalogPage = 1;
-let currentSort        = 'best';
-let currentQty         = 1;    // qty stepper in detail view
-let slideshowTimers    = {};   // slug → intervalId
-let slideshowEnabled   = false;
+let currentSort = 'best';
+let currentQty = 1;    // qty stepper in detail view
+let selectedFinish = 'Standard Finish';
+let selectedColor = '#eaf2fa';
+let activeItem = null; // currently selected file item or category fallback
+let currentFilteredItems = []; // filtered items list
+let slideshowTimers = {};   // slug → intervalId
+let slideshowEnabled = false;
+
+// ─── Static metadata for details & pricing ────────────────────────────────────
+const STATIC_METADATA = {
+  'blinds': {
+    price: 250,
+    priceText: 'Rs.250 - Rs.360 / sqft',
+    finishPrices: {
+      'Roller': 250,
+      'Zebra': 360,
+      'Bamboo': 250
+    },
+    unit: 'sqft',
+    desc: 'Premium window blinds. Available in Roller (Rs.250/sf), Zebra (Rs.360/sf), and Bamboo (Rs.250/sf).',
+    finishes: ['Roller', 'Zebra', 'Bamboo'],
+    colors: ['#eaf2fa', '#c9d6e4', '#aebfd2']
+  },
+  'ceiling-gypsum': {
+    price: 70,
+    priceText: 'Rs.70 / sqft',
+    unit: 'sqft',
+    desc: 'Clean 2x2 ceiling paneling — moisture-resistant and durable false ceiling.',
+    finishes: ['Standard Grid', 'Slim Line'],
+    colors: ['#f5f8fb', '#e4ecf4', '#d7e2ee']
+  },
+  'fabric-wallpaper': {
+    price: 45,
+    priceText: 'Rs.45 / sqft',
+    unit: 'sqft',
+    desc: 'Woven-texture fabric wallpaper, warm and elegant wall finish.',
+    finishes: ['Plain Weave', 'Textured'],
+    colors: ['#f5f0e6', '#e7d3ae', '#d9c295']
+  },
+  'fiber-doors': {
+    price: 900,
+    priceText: 'Rs.900 / sqft',
+    unit: 'sqft',
+    desc: 'A+ Grade fiber doors, water-proof and heavy duty construction.',
+    finishes: ['Solid Finish', 'Wood Textured'],
+    colors: ['#12345c', '#2f6fb0', '#7db9e8']
+  },
+  'pvc-wall-panel-8': {
+    price: 700,
+    priceText: 'Rs.700 / sheet',
+    unit: 'sheet',
+    desc: 'Premium 8-inch width PVC paneling for moisture protection and decor.',
+    finishes: ['Matte', 'Glossy'],
+    colors: ['#dfe8f1', '#c9d6e4', '#b6c4d6']
+  },
+  'pvc-updown-ceiling': {
+    price: 200,
+    priceText: 'Rs.200 / sqft',
+    unit: 'sqft',
+    desc: 'Modern stepped updown ceiling layout with integrated cove lighting.',
+    finishes: ['Double Layer', 'Stepped Edge'],
+    colors: ['#eef3f8', '#dde7f1', '#cfdcea']
+  },
+  'pvc-wall-panel-10': {
+    price: 430,
+    priceText: 'Rs.430 / sheet',
+    unit: 'sheet',
+    desc: '10-inch width PVC paneling — bold layout spacing, highly cost-effective.',
+    finishes: ['Matte', 'Woodgrain'],
+    colors: ['#e4ecf4', '#b6c4d6', '#8ea0b5']
+  }
+};
+
 
 // ─── Static fallback shown before API loads ───────────────────────────────────
 const STATIC_FALLBACK = [
-  { slug: 'blinds',             name: 'Window Blinds',        texture: 't-blinds'    },
-  { slug: 'ceiling-gypsum',     name: '2×2 Ceiling',          texture: 't-gypsum'    },
-  { slug: 'fabric-wallpaper',   name: 'Fabric Wallpaper',     texture: 't-fabric'    },
-  { slug: 'fiber-doors',        name: 'Fiber Door A+',        texture: 't-fiberdoor' },
-  { slug: 'pvc-wall-panel-8',   name: 'PVC Wall Panel 8"',    texture: 't-panel8'    },
-  { slug: 'pvc-updown-ceiling', name: 'PVC Updown Ceiling',   texture: 't-pop'       },
-  { slug: 'pvc-wall-panel-10',  name: 'PVC Wall Panel 10"',   texture: 't-panel10'   },
+  { slug: 'blinds', name: 'Window Blinds', texture: 't-blinds' },
+  { slug: 'ceiling-gypsum', name: '2×2 Ceiling', texture: 't-gypsum' },
+  { slug: 'fabric-wallpaper', name: 'Fabric Wallpaper', texture: 't-fabric' },
+  { slug: 'fiber-doors', name: 'Fiber Door A+', texture: 't-fiberdoor' },
+  { slug: 'pvc-wall-panel-8', name: 'PVC Wall Panel 8"', texture: 't-panel8' },
+  { slug: 'pvc-updown-ceiling', name: 'PVC Updown Ceiling', texture: 't-pop' },
+  { slug: 'pvc-wall-panel-10', name: 'PVC Wall Panel 10"', texture: 't-panel10' },
 ];
 
 // Slug → CSS texture class fallback map
 const TEXTURE_MAP = {
-  'blinds':             't-blinds',
-  'ceiling-gypsum':     't-gypsum',
-  'fabric-wallpaper':   't-fabric',
-  'fiber-doors':        't-fiberdoor',
-  'pvc-wall-panel-8':   't-panel8',
+  'blinds': 't-blinds',
+  'ceiling-gypsum': 't-gypsum',
+  'fabric-wallpaper': 't-fabric',
+  'fiber-doors': 't-fiberdoor',
+  'pvc-wall-panel-8': 't-panel8',
   'pvc-updown-ceiling': 't-pop',
-  'pvc-wall-panel-10':  't-panel10',
-  'vinyl':              't-vinyl',
+  'pvc-wall-panel-10': 't-panel10',
+  'vinyl': 't-vinyl',
 };
 
 // ─── Grid cols toggle ─────────────────────────────────────────────────────────
-window.setGridCols = function(n, btn) {
+window.setGridCols = function (n, btn) {
   const grid = document.getElementById('catalogGrid');
   if (!grid) return;
   grid.className = 'pgrid' + (n !== 4 ? ` cols-${n}` : '');
@@ -48,14 +118,14 @@ window.setGridCols = function(n, btn) {
 };
 
 // ─── Sort handler ─────────────────────────────────────────────────────────────
-window.handleSortChange = function(val) {
+window.handleSortChange = function (val) {
   currentSort = val;
   currentCatalogPage = 1;
   renderCatalog();
 };
 
 // ─── Catalog page navigation ──────────────────────────────────────────────────
-window.changeCatalogPage = function(page) {
+window.changeCatalogPage = function (page) {
   currentCatalogPage = page;
   renderCatalog();
   document.getElementById('materialsPage')?.scrollIntoView({ behavior: 'smooth' });
@@ -67,7 +137,7 @@ function clearSlideshows() {
   slideshowTimers = {};
 }
 
-window.toggleSlideshow = function() {
+window.toggleSlideshow = function () {
   slideshowEnabled = !slideshowEnabled;
   const btn = document.getElementById('slideshowToggleBtn');
   if (btn) {
@@ -100,7 +170,7 @@ function startSlideshow(cat) {
 
   // Convert to layer-based slideshow
   el.style.backgroundImage = 'none'; // Remove static bg
-  
+
   // Ensure count pill stays on top
   const countPill = el.querySelector('.cat-count-pill');
   if (countPill) countPill.style.zIndex = '10';
@@ -111,7 +181,7 @@ function startSlideshow(cat) {
   // Initial layer
   const existingLayers = Array.from(el.querySelectorAll('.slide-layer'));
   let currentLayer;
-  
+
   if (existingLayers.length > 0) {
     currentLayer = existingLayers.pop();
     existingLayers.forEach(l => l.remove());
@@ -134,21 +204,21 @@ function startSlideshow(cat) {
 
   slideshowTimers[cat.slug] = setInterval(() => {
     idx = (idx + 1) % imgs.length;
-    
+
     // Setup new layer entering from right
     let nextLayer = document.createElement('div');
     nextLayer.className = 'slide-layer';
     nextLayer.style.backgroundImage = `url('${imgs[idx].src}')`;
     nextLayer.style.transform = 'translateX(100%)';
     el.insertBefore(nextLayer, countPill ? countPill : null);
-    
+
     // Force reflow
     void nextLayer.offsetWidth;
-    
+
     // Trigger transition
     currentLayer.style.transform = 'translateX(-100%)';
     nextLayer.style.transform = 'translateX(0)';
-    
+
     // Cleanup old layer
     const layerToRemove = currentLayer;
     setTimeout(() => {
@@ -156,16 +226,16 @@ function startSlideshow(cat) {
         layerToRemove.remove();
       }
     }, 600); // matches the 0.6s CSS transition
-    
+
     currentLayer = nextLayer;
   }, 5000);
 }
 
 // ─── Catalog card HTML ────────────────────────────────────────────────────────
 function catCardHTML(cat) {
-  const firstImg   = cat.items.find(it => it.type !== 'video' && it.src);
+  const firstImg = cat.items.find(it => it.type !== 'video' && it.src);
   const hasRealImg = firstImg && (firstImg.src.startsWith('/') || firstImg.src.startsWith('http'));
-  const thumbCls   = hasRealImg
+  const thumbCls = hasRealImg
     ? 'thumb cat-slideshow fade-load'
     : `thumb cat-slideshow ${cat.texture || 't-gypsum'}`;
   const thumbStyle = hasRealImg
@@ -189,7 +259,7 @@ function catCardHTML(cat) {
 
 // ─── Render catalog (one card per category) ───────────────────────────────────
 function renderCatalog() {
-  const grid  = document.getElementById('catalogGrid');
+  const grid = document.getElementById('catalogGrid');
   const pagEl = document.getElementById('catalogPagination');
   if (!grid) return;
 
@@ -205,7 +275,7 @@ function renderCatalog() {
   }
 
   const paginated = Pagination.paginate(cats, currentCatalogPage, CATALOG_PER_PAGE);
-  grid.innerHTML  = paginated.items.map(catCardHTML).join('');
+  grid.innerHTML = paginated.items.map(catCardHTML).join('');
 
   if (pagEl) {
     pagEl.innerHTML = Pagination.generateHTML(paginated.currentPage, paginated.totalPages, 'changeCatalogPage');
@@ -272,7 +342,7 @@ function renderMaterialsFilters() {
     </div>`;
 }
 
-window.toggleMaterialsFilterMenu = function(e) {
+window.toggleMaterialsFilterMenu = function (e) {
   e.stopPropagation();
   document.getElementById('materialsSplitMenu')?.classList.toggle('show');
 };
@@ -281,25 +351,170 @@ document.addEventListener('click', () =>
 );
 
 // Clicking a chip on the detail page navigates to that category's detail
-window.filterMaterials = function(slug) {
+window.filterMaterials = function (slug) {
   openDetail(slug);
 };
 
+// Bind option selection actions globally
+window.selectFinish = function (finishName) {
+  selectedFinish = finishName;
+  document.querySelectorAll('#dFinishes .opt-btn').forEach(btn => {
+    btn.classList.toggle('active', btn.textContent.trim() === finishName);
+  });
+
+  // Dynamic pricing for blinds
+  if (activeCatSlug === 'blinds') {
+    const priceEl = document.getElementById('dPrice');
+    if (priceEl && STATIC_METADATA['blinds']?.finishPrices?.[finishName]) {
+      priceEl.textContent = `Rs.${STATIC_METADATA['blinds'].finishPrices[finishName]} / sqft`;
+    }
+  }
+
+  // Filter gallery images and update view
+  const cat = categoriesData.find(c => c.slug === activeCatSlug);
+  if (cat) {
+    currentGalleryPage = 1;
+    renderDetailGallery(cat);
+
+    // Auto-update activeItem to the first image of the selected finish
+    const firstItem = currentFilteredItems.find(it => it.type !== 'video') || currentFilteredItems[0];
+    if (firstItem) {
+      activeItem = firstItem;
+    } else {
+      activeItem = {
+        id: cat.slug,
+        name: cat.name,
+        src: '',
+        type: 'image'
+      };
+    }
+    syncActiveItemState(cat);
+  }
+};
+
+window.selectColor = function (colorHex) {
+  selectedColor = colorHex;
+  document.querySelectorAll('#dColors .color-dot').forEach(dot => {
+    dot.classList.toggle('active', dot.getAttribute('data-color') === colorHex);
+  });
+};
+
+// Helpers for filenames and pricing
+function formatFileName(filename) {
+  let name = filename.replace(/\.[^/.]+$/, ""); // strip extension
+  name = name.replace(/(?:rs|Rs|RS)\.?\s*\d+\S*/g, ""); // strip Rs price tags
+  name = name.replace(/[-_]+/g, " "); // replace separators
+  name = name.trim();
+  return name.replace(/\b\w/g, c => c.toUpperCase()); // title case
+}
+
+function getFilePriceDetails(file, catSlug) {
+  const meta = STATIC_METADATA[catSlug];
+  if (!meta) return { price: 0, priceText: 'Contact for pricing' };
+
+  // 1. Check if name contains a price tag
+  const name = file.name || '';
+  const priceMatch = name.match(/(?:rs|Rs|RS)\.?\s*(\d+)/i) || name.match(/(\d+)\s*(?:rs|Rs|RS)/i);
+  if (priceMatch) {
+    const price = parseInt(priceMatch[1], 10);
+    const unit = name.toLowerCase().includes('sheet') ? 'sheet' : (name.toLowerCase().includes('pc') ? 'piece' : (meta.unit || 'sqft'));
+    return { price, priceText: `Rs.${price} / ${unit}` };
+  }
+
+  // 2. Blinds dynamic finish price
+  if (catSlug === 'blinds') {
+    const lowerName = name.toLowerCase();
+    if (lowerName.includes('zebra')) {
+      return { price: 360, priceText: 'Rs.360 / sqft' };
+    } else if (lowerName.includes('roller') || lowerName.includes('bamboo')) {
+      return { price: 250, priceText: 'Rs.250 / sqft' };
+    }
+  }
+
+  // 3. Fallback to category level price
+  return { price: meta.price, priceText: meta.priceText };
+}
+
+// Synchronize selected active item preview, price, wishlist status, and button actions
+function syncActiveItemState(cat) {
+  if (!activeItem) return;
+
+  // Retrieve materialsData entry to get the exact priceText
+  const materialsItem = window.materialsData.find(m => m.id === activeItem.id) || {
+    priceText: 'Contact for pricing'
+  };
+
+  // 1. Display Price
+  const priceEl = document.getElementById('dPrice');
+  if (priceEl) {
+    if (cat.slug === 'blinds') {
+      if (selectedFinish === 'Zebra') {
+        priceEl.textContent = 'Rs.360 / sqft';
+      } else {
+        priceEl.textContent = 'Rs.250 / sqft';
+      }
+    } else {
+      priceEl.textContent = materialsItem.priceText;
+    }
+  }
+
+  // 2. Set main preview image
+  setMainItem(activeItem, cat);
+
+  // 3. Wishlist button state
+  const wishBtn = document.getElementById('dWishlistBtn');
+  if (wishBtn) {
+    const saved = window.Wishlist.get();
+    if (saved.includes(activeItem.id)) {
+      wishBtn.textContent = '♥ Saved';
+      wishBtn.style.color = '#d9534f';
+    } else {
+      wishBtn.textContent = '♥ Save';
+      wishBtn.style.color = '';
+    }
+  }
+
+  // 4. Quote click handler
+  const addQuoteBtn = document.getElementById('dAddQuoteBtn');
+  if (addQuoteBtn) {
+    addQuoteBtn.onclick = () => {
+      window.QuoteCart.add(activeItem.id, selectedFinish, selectedColor, currentQty);
+      if (window.showToast) {
+        window.showToast(`"${activeItem.name}" added to quote list successfully!`);
+      }
+    };
+  }
+
+  // 5. WhatsApp click handler
+  const waBtn = document.getElementById('dWhatsAppBtn');
+  if (waBtn) {
+    waBtn.onclick = () => {
+      const displayPrice = (cat.slug === 'blinds' && selectedFinish === 'Zebra') ? 'Rs.360 / sqft' : ((cat.slug === 'blinds') ? 'Rs.250 / sqft' : materialsItem.priceText);
+      const finishDetail = (selectedFinish && selectedFinish !== 'Standard Finish') ? ` (${selectedFinish} Finish)` : '';
+      const msg = `Hi Sohail Interior, I'm interested in your ${cat.name} collection - Item: ${activeItem.name}${finishDetail} (Price: ${displayPrice}). Could you share details?`;
+      window.open(`https://wa.me/923115813505?text=${encodeURIComponent(msg)}`, '_blank');
+    };
+  }
+}
+
 // ─── Open detail (category view) ──────────────────────────────────────────────
-window.openDetail = function(slug) {
+window.openDetail = function (slug, targetItemId) {
   const cat = categoriesData.find(c => c.slug === slug);
   if (!cat) return;
 
-  activeCatSlug      = slug;
+  activeCatSlug = slug;
   currentGalleryPage = 1;
 
-  // Update URL
-  window.history.pushState({}, '', `${window.location.pathname}?category=${slug}`);
+  // Update URL (preserve specific file ID if passed)
+  const newUrl = targetItemId
+    ? `${window.location.pathname}?id=${targetItemId}`
+    : `${window.location.pathname}?category=${slug}`;
+  window.history.pushState({}, '', newUrl);
 
   // Fill info panel
   document.getElementById('dCrumbName').textContent = cat.name;
-  document.getElementById('dName').textContent       = cat.name;
-  document.getElementById('dCat').textContent        = cat.name;
+  document.getElementById('dName').textContent = cat.name;
+  document.getElementById('dCat').textContent = cat.name;
 
   const countEl = document.getElementById('dItemCount');
   if (countEl) {
@@ -308,7 +523,59 @@ window.openDetail = function(slug) {
       : 'Collection coming soon';
   }
 
-  document.getElementById('dDesc').textContent =
+  // Get item metadata for pricing & options
+  const materialsItem = window.materialsData.find(m => m.id === slug);
+  const meta = STATIC_METADATA[slug] || (materialsItem ? {
+    price: materialsItem.price,
+    priceText: materialsItem.priceText,
+    desc: materialsItem.desc,
+    finishes: materialsItem.finishes,
+    colors: materialsItem.colors
+  } : {
+    price: 0,
+    priceText: 'Contact for pricing',
+    desc: `Premium quality ${cat.name} collection.`,
+    finishes: ['Standard Finish'],
+    colors: ['#eaf2fa']
+  });
+
+  // Display Price
+  const priceEl = document.getElementById('dPrice');
+  if (priceEl) {
+    priceEl.textContent = meta.priceText;
+  }
+
+  // Setup Options & Selections
+  selectedFinish = meta.finishes && meta.finishes.length > 0 ? meta.finishes[0] : 'Standard Finish';
+  selectedColor = meta.colors && meta.colors.length > 0 ? meta.colors[0] : '#eaf2fa';
+
+  const finishArea = document.getElementById('dFinishArea');
+  const finishesContainer = document.getElementById('dFinishes');
+  if (finishArea && finishesContainer) {
+    if (meta.finishes && meta.finishes.length > 0) {
+      finishArea.style.display = 'block';
+      finishesContainer.innerHTML = meta.finishes.map(f => `
+        <button class="opt-btn ${f === selectedFinish ? 'active' : ''}" onclick="selectFinish('${f}')">${f}</button>
+      `).join('');
+    } else {
+      finishArea.style.display = 'none';
+    }
+  }
+
+  const colorArea = document.getElementById('dColorArea');
+  const colorsContainer = document.getElementById('dColors');
+  if (colorArea && colorsContainer) {
+    if (meta.colors && meta.colors.length > 0) {
+      colorArea.style.display = 'block';
+      colorsContainer.innerHTML = meta.colors.map(c => `
+        <span class="color-dot ${c === selectedColor ? 'active' : ''}" style="background:${c};" data-color="${c}" onclick="selectColor('${c}')"></span>
+      `).join('');
+    } else {
+      colorArea.style.display = 'none';
+    }
+  }
+
+  document.getElementById('dDesc').textContent = meta.desc ||
     `Browse our full ${cat.name} collection. Tap any thumbnail to view full size, or click the main image to open a slideshow.`;
 
   // Reset qty stepper
@@ -316,67 +583,47 @@ window.openDetail = function(slug) {
   const qtyEl = document.getElementById('dQty');
   if (qtyEl) qtyEl.textContent = 1;
 
-  // WhatsApp enquiry
-  const waBtn = document.getElementById('dWhatsAppBtn');
-  if (waBtn) {
-    waBtn.onclick = () => {
-      const msg = `Hi Sohail Interior, I'm interested in your ${cat.name} collection. Could you share pricing and availability?`;
-      window.open(`https://wa.me/923115813505?text=${encodeURIComponent(msg)}`, '_blank');
+  // Render the paginated gallery first (sets up currentFilteredItems)
+  renderDetailGallery(cat);
+
+  // Set activeItem
+  let firstItem = null;
+  if (targetItemId) {
+    firstItem = cat.items.find(it => it.id === targetItemId);
+  }
+  if (!firstItem) {
+    firstItem = currentFilteredItems.find(it => it.type !== 'video') || currentFilteredItems[0];
+  }
+
+  if (firstItem) {
+    activeItem = firstItem;
+  } else {
+    activeItem = {
+      id: cat.slug,
+      name: cat.name,
+      src: '',
+      type: 'image'
     };
   }
 
-  // Add to Quote — uses category slug as the cart item ID
-  const addQuoteBtn = document.getElementById('dAddQuoteBtn');
-  if (addQuoteBtn) {
-    addQuoteBtn.onclick = () => {
-      window.QuoteCart.add(cat.slug, 'Standard Finish', '#eaf2fa', currentQty);
-      window.openCartDrawer();
-    };
-  }
+  // Setup/bind click handlers and states for the activeItem
+  syncActiveItemState(cat);
 
-  // Wishlist Save / Unsave
+  // Setup wishlist save button click
   const wishBtn = document.getElementById('dWishlistBtn');
   if (wishBtn) {
-    const syncWishBtn = () => {
-      const saved = window.Wishlist.get();
-      if (saved.includes(cat.slug)) {
-        wishBtn.textContent = '♥ Saved';
-        wishBtn.style.color = '#d9534f';
-      } else {
-        wishBtn.textContent = '♥ Save';
-        wishBtn.style.color = '';
-      }
-    };
-    syncWishBtn();
     wishBtn.onclick = () => {
-      window.Wishlist.toggle(cat.slug);
-      syncWishBtn();
+      window.Wishlist.toggle(activeItem.id);
+      syncActiveItemState(cat);
     };
   }
-
-  // Set main image to the first non-video item (or first item)
-  const firstItem = cat.items.find(it => it.type !== 'video') || cat.items[0];
-  if (firstItem) {
-    setMainItem(firstItem, cat);
-  } else {
-    const mainImg = document.getElementById('dMainImg');
-    if (mainImg) {
-      mainImg.className            = `gallery-main ${cat.texture || ''}`;
-      mainImg.style.backgroundImage = '';
-      mainImg.innerHTML            = '';
-      mainImg.onclick              = null;
-    }
-  }
-
-  // Render the paginated gallery
-  renderDetailGallery(cat);
 
   // Update active chip in filter row
   renderMaterialsFilters();
 
   // Switch panels
   document.getElementById('materialsPage').style.display = 'none';
-  document.getElementById('detailPage').style.display    = 'block';
+  document.getElementById('detailPage').style.display = 'block';
   window.scrollTo({ top: 0 });
   if (window.revealCheck) window.revealCheck();
 };
@@ -387,25 +634,25 @@ function setMainItem(item, cat) {
   if (!el) return;
 
   if (item.type === 'video') {
-    el.innerHTML            = `<video src="${item.src}" controls
+    el.innerHTML = `<video src="${item.src}" controls
       style="width:100%;height:100%;object-fit:cover;border-radius:16px;"></video>`;
     el.style.backgroundImage = '';
-    el.className             = 'gallery-main';
-    el.style.cursor          = 'default';
-    el.onclick               = null;
+    el.className = 'gallery-main';
+    el.style.cursor = 'default';
+    el.onclick = null;
   } else {
-    el.innerHTML                    = '';
-    el.className                    = 'gallery-main';
-    el.style.backgroundImage        = `url('${item.src}')`;
-    el.style.backgroundSize         = 'cover';
-    el.style.backgroundPosition     = 'center';
-    el.style.cursor                 = 'zoom-in';
+    el.innerHTML = '';
+    el.className = 'gallery-main';
+    el.style.backgroundImage = `url('${item.src}')`;
+    el.style.backgroundSize = 'cover';
+    el.style.backgroundPosition = 'center';
+    el.style.cursor = 'zoom-in';
     el.onclick = () => {
       if (window.openLightbox) {
         const allItems = cat.items.map(it => ({
-          src:          it.src,
-          name:         it.name,
-          type:         it.type || 'image',
+          src: it.src,
+          name: it.name,
+          type: it.type || 'image',
           categoryName: cat.name
         }));
         const idx = cat.items.indexOf(item);
@@ -417,25 +664,25 @@ function setMainItem(item, cat) {
 
 // Render paginated gallery grid in detail view
 function renderDetailGallery(cat) {
-  const gridEl  = document.getElementById('dGalleryGrid');
+  const gridEl = document.getElementById('dGalleryGrid');
   const paginEl = document.getElementById('dGalleryPagination');
   if (!gridEl) return;
 
   const items = cat.items;
   if (items.length === 0) {
-    gridEl.innerHTML  = '<div class="gallery-empty">No media available for this category yet.</div>';
+    gridEl.innerHTML = '<div class="gallery-empty">No media available for this category yet.</div>';
     if (paginEl) paginEl.innerHTML = '';
     return;
   }
 
   const totalPages = Math.ceil(items.length / GALLERY_PER_PAGE);
-  const page       = Math.max(1, Math.min(currentGalleryPage, totalPages));
-  const start      = (page - 1) * GALLERY_PER_PAGE;
-  const slice      = items.slice(start, start + GALLERY_PER_PAGE);
+  const page = Math.max(1, Math.min(currentGalleryPage, totalPages));
+  const start = (page - 1) * GALLERY_PER_PAGE;
+  const slice = items.slice(start, start + GALLERY_PER_PAGE);
 
   gridEl.innerHTML = slice.map(item => {
     const isVid = item.type === 'video';
-    const bg    = isVid
+    const bg = isVid
       ? 'background:#0d2340'
       : `background-size:cover;background-position:center`;
     return `
@@ -479,7 +726,7 @@ function renderDetailGallery(cat) {
 }
 
 // Change gallery page (prev / next)
-window.changeGalleryPage = function(page, slug) {
+window.changeGalleryPage = function (page, slug) {
   currentGalleryPage = page;
   const cat = categoriesData.find(c => c.slug === slug);
   if (cat) {
@@ -488,25 +735,27 @@ window.changeGalleryPage = function(page, slug) {
   }
 };
 
-// Select a thumbnail → update main image
-window.selectGalleryItem = function(slug, itemId) {
-  const cat  = categoriesData.find(c => c.slug === slug);
+window.selectGalleryItem = function (slug, itemId) {
+  const cat = categoriesData.find(c => c.slug === slug);
   if (!cat) return;
   const item = cat.items.find(it => it.id === itemId);
-  if (item) setMainItem(item, cat);
+  if (item) {
+    activeItem = item;
+    syncActiveItemState(cat);
+  }
 };
 
 // ─── Qty stepper ─────────────────────────────────────────────────────────────
-window.stepQty = function(delta) {
+window.stepQty = function (delta) {
   currentQty = Math.max(1, currentQty + delta);
   const el = document.getElementById('dQty');
   if (el) el.textContent = currentQty;
 };
 
 // ─── Close detail → back to catalog ──────────────────────────────────────────
-window.closeDetailView = function() {
+window.closeDetailView = function () {
   window.history.pushState({}, '', window.location.pathname);
-  document.getElementById('detailPage').style.display    = 'none';
+  document.getElementById('detailPage').style.display = 'none';
   document.getElementById('materialsPage').style.display = 'block';
   activeCatSlug = null;
   window.scrollTo({ top: 0 });
@@ -515,30 +764,95 @@ window.closeDetailView = function() {
 // ─── Build categoriesData from API response ───────────────────────────────────
 function loadFromGlobalCategories(globalCats) {
   categoriesData = globalCats.map(cat => ({
-    slug:    cat.slug,
-    name:    cat.name,
+    slug: cat.slug,
+    name: cat.name,
     texture: TEXTURE_MAP[cat.slug] || 't-gypsum',
-    items:   (cat.items || []).map(it => ({
-      id:   it.id,
+    items: (cat.items || []).map(it => ({
+      id: it.id,
       name: it.name,
-      src:  it.src,
+      src: it.src,
       type: /\.(mp4|mov|avi|webm|mkv)$/i.test(it.name || '') ? 'video' : 'image'
     }))
   }));
 
   // Sync category entries to window.materialsData so cart/wishlist drawers can render them
-  window.materialsData = categoriesData.map(cat => ({
-    id:       cat.slug,
-    name:     cat.name,
-    cat:      cat.slug,
-    catLabel: cat.name,
-    price:    0,
-    priceText:'Contact for pricing',
-    texture:  cat.texture || 't-gypsum',
-    desc:     `${cat.name} collection from Sohail Interior.`,
-    finishes: ['Standard Finish'],
-    colors:   ['#eaf2fa', '#c9d6e4', '#aebfd2']
-  }));
+  const categoryMaterials = categoriesData.map(cat => {
+    const meta = STATIC_METADATA[cat.slug] || {
+      price: 0,
+      priceText: 'Contact for pricing',
+      desc: `${cat.name} collection from Sohail Interior.`,
+      finishes: ['Standard Finish'],
+      colors: ['#eaf2fa', '#c9d6e4', '#aebfd2']
+    };
+    return {
+      id: cat.slug,
+      name: cat.name,
+      cat: cat.slug,
+      catLabel: cat.name,
+      price: meta.price,
+      priceText: meta.priceText,
+      finishPrices: meta.finishPrices,
+      texture: cat.texture || 't-gypsum',
+      desc: meta.desc,
+      finishes: meta.finishes,
+      colors: meta.colors
+    };
+  });
+
+  // Also include the individual files from categories so search and wishlist are still supported!
+  const fileMaterials = [];
+  categoriesData.forEach(cat => {
+    const catMeta = STATIC_METADATA[cat.slug] || {
+      finishes: ['Standard Finish'],
+      colors: ['#eaf2fa']
+    };
+    cat.items.forEach(file => {
+      const cleanName = formatFileName(file.name);
+      const { price, priceText } = getFilePriceDetails(file, cat.slug);
+
+      fileMaterials.push({
+        id: file.id,
+        name: cleanName,
+        cat: cat.slug,
+        catLabel: cat.name,
+        price: price,
+        priceText: priceText,
+        texture: file.src, // Google Drive stream URL
+        desc: `Premium quality ${cleanName} from our ${cat.name} collection. Durable, moisture-resistant, and professionally installed.`,
+        finishes: catMeta.finishes,
+        colors: catMeta.colors
+      });
+    });
+  });
+
+  window.materialsData = [...categoryMaterials, ...fileMaterials];
+}
+
+// Helper to handle routing query parameters
+function handleURLRouting() {
+  const params = new URLSearchParams(window.location.search);
+  const targetId = params.get('category') || params.get('id');
+  if (targetId) {
+    let slug = targetId;
+    if (slug.startsWith('BLN') || slug === 'BLN-01') slug = 'blinds';
+    else if (slug.startsWith('CGY') || slug === 'CGY-01') slug = 'ceiling-gypsum';
+    else if (slug.startsWith('FWP') || slug === 'FWP-01') slug = 'fabric-wallpaper';
+    else if (slug.startsWith('FDR') || slug === 'FDR-01') slug = 'fiber-doors';
+    else if (slug.startsWith('PW8') || slug === 'PW8-01') slug = 'pvc-wall-panel-8';
+    else if (slug.startsWith('PUC') || slug === 'PUC-01') slug = 'pvc-updown-ceiling';
+    else if (slug.startsWith('PW10') || slug === 'PW10-01') slug = 'pvc-wall-panel-10';
+
+    const directCat = categoriesData.find(c => c.slug === slug);
+    if (directCat) {
+      openDetail(slug);
+    } else {
+      // Find the file-based item to locate its category
+      const fileItem = window.materialsData.find(m => m.id === targetId);
+      if (fileItem) {
+        openDetail(fileItem.cat, targetId);
+      }
+    }
+  }
 }
 
 // ─── Bootstrap ────────────────────────────────────────────────────────────────
@@ -548,28 +862,34 @@ document.addEventListener('DOMContentLoaded', () => {
   } else {
     // Static fallback (no real images yet)
     categoriesData = STATIC_FALLBACK.map(s => ({ ...s, items: [] }));
-    // Sync static fallback to window.materialsData
-    window.materialsData = categoriesData.map(cat => ({
-      id:       cat.slug,
-      name:     cat.name,
-      cat:      cat.slug,
-      catLabel: cat.name,
-      price:    0,
-      priceText:'Contact for pricing',
-      texture:  cat.texture || 't-gypsum',
-      desc:     `${cat.name} collection from Sohail Interior.`,
-      finishes: ['Standard Finish'],
-      colors:   ['#eaf2fa', '#c9d6e4', '#aebfd2']
-    }));
+    // Sync static fallback to window.materialsData using STATIC_METADATA
+    window.materialsData = categoriesData.map(cat => {
+      const meta = STATIC_METADATA[cat.slug] || {
+        price: 0,
+        priceText: 'Contact for pricing',
+        desc: `${cat.name} collection from Sohail Interior.`,
+        finishes: ['Standard Finish'],
+        colors: ['#eaf2fa', '#c9d6e4', '#aebfd2']
+      };
+      return {
+        id: cat.slug,
+        name: cat.name,
+        cat: cat.slug,
+        catLabel: cat.name,
+        price: meta.price,
+        priceText: meta.priceText,
+        finishPrices: meta.finishPrices,
+        texture: cat.texture || 't-gypsum',
+        desc: meta.desc,
+        finishes: meta.finishes,
+        colors: meta.colors
+      };
+    });
   }
 
   renderMaterialsFilters();
   renderCatalog();
-
-  // URL routing — open category directly if ?category= in URL
-  const params  = new URLSearchParams(window.location.search);
-  const catSlug = params.get('category');
-  if (catSlug) openDetail(catSlug);
+  handleURLRouting();
 });
 
 // ─── Re-render when API categories arrive ────────────────────────────────────
@@ -577,9 +897,14 @@ window.addEventListener('categoriesLoaded', (e) => {
   loadFromGlobalCategories(e.detail);
   renderMaterialsFilters();
   renderCatalog();
-
-  // Re-open if currently on a category detail
-  const params  = new URLSearchParams(window.location.search);
-  const catSlug = params.get('category');
-  if (catSlug) openDetail(catSlug);
+  handleURLRouting();
 });
+
+// Reactive update when wishlist drawer removes or toggles items
+window.addEventListener('wishlistUpdated', () => {
+  const cat = categoriesData.find(c => c.slug === activeCatSlug);
+  if (cat) {
+    syncActiveItemState(cat);
+  }
+});
+

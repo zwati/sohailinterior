@@ -1,11 +1,11 @@
 
-git checkout -b feature/mobile-ui-updates
+git checkout -b material_catalog
 
 
 git add .
 
 
-git commit -m "UI updates"
+git commit -m "work with material catalog"
 
 
-git push -u origin feature/mobile-ui-updates
+git push -u origin materila_catalog

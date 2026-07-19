@@ -2,13 +2,13 @@
 
 // Global Materials Catalog Data
 window.materialsData = [
-  { id: 'BLN-01', name: 'Window Blinds', cat: 'blinds', catLabel: 'Blinds', price: 250, priceText: 'Rs.250 - Rs.360 / sqft', texture: 't-blinds', desc: 'Premium window blinds. Available in Roller (Rs.250/sf), Zebra (Rs.360/sf), and Bamboo (Rs.250/sf).', finishes: ['Roller', 'Zebra', 'Bamboo'], colors: ['#eaf2fa', '#c9d6e4', '#aebfd2'] },
-  { id: 'CGY-01', name: '2x2 Ceiling', cat: 'ceiling-gypsum', catLabel: '2x2 Ceiling', price: 70, priceText: 'Rs.70 / sqft', texture: 't-gypsum', desc: 'Clean 2x2 celling paneling — moisture-resistant and durable false ceiling.', finishes: ['Standard Grid', 'Slim Line'], colors: ['#f5f8fb', '#e4ecf4', '#d7e2ee'] },
-  { id: 'FWP-01', name: 'Fabric Wallpaper', cat: 'fabric-wallpaper', catLabel: 'Fabric Wallpaper', price: 45, priceText: 'Rs.45 / sqft', texture: 't-fabric', desc: 'Woven-texture fabric wallpaper, warm and elegant wall finish.', finishes: ['Plain Weave', 'Textured'], colors: ['#f5f0e6', '#e7d3ae', '#d9c295'] },
-  { id: 'FDR-01', name: 'Fiber Door A+', cat: 'fiber-doors', catLabel: 'Fiber Doors', price: 900, priceText: 'Rs.900 / sqft', texture: 't-fiberdoor', desc: 'A+ Grade fiber doors, water-proof and heavy duty construction.', finishes: ['Solid Finish', 'Wood Textured'], colors: ['#12345c', '#2f6fb0', '#7db9e8'] },
-  { id: 'PW8-01', name: 'PVC Wall Panel 8 Inch', cat: 'pvc-wall-panel-8', catLabel: 'PVC Wall Panel 8"', price: 700, priceText: 'Rs.700 / sheet', texture: 't-panel8', desc: 'Premium 8-inch width PVC paneling for moisture protection and decor.', finishes: ['Matte', 'Glossy'], colors: ['#dfe8f1', '#c9d6e4', '#b6c4d6'] },
-  { id: 'PUC-01', name: 'PVC Updown Ceiling', cat: 'pvc-updown-ceiling', catLabel: 'PVC Updown Ceiling', price: 200, priceText: 'Rs.200 / sqft', texture: 't-pop', desc: 'Modern stepped updown ceiling layout with integrated cove lighting.', finishes: ['Double Layer', 'Stepped Edge'], colors: ['#eef3f8', '#dde7f1', '#cfdcea'] },
-  { id: 'PW10-01', name: 'PVC Wall Panel 10 Inch', cat: 'pvc-wall-panel-10', catLabel: 'PVC Wall Panel 10"', price: 430, priceText: 'Rs.430 / sheet', texture: 't-panel10', desc: '10-inch width PVC paneling — bold layout spacing, highly cost-effective.', finishes: ['Matte', 'Woodgrain'], colors: ['#e4ecf4', '#b6c4d6', '#8ea0b5'] }
+  { id: 'blinds', name: 'Window Blinds', cat: 'blinds', catLabel: 'Blinds', price: 250, priceText: 'Rs.250 - Rs.360 / sqft', finishPrices: { 'Roller': 250, 'Zebra': 360, 'Bamboo': 250 }, unit: 'sqft', texture: 't-blinds', desc: 'Premium window blinds. Available in Roller (Rs.250/sf), Zebra (Rs.360/sf), and Bamboo (Rs.250/sf).', finishes: ['Roller', 'Zebra', 'Bamboo'], colors: ['#eaf2fa', '#c9d6e4', '#aebfd2'] },
+  { id: 'ceiling-gypsum', name: '2x2 Ceiling', cat: 'ceiling-gypsum', catLabel: '2x2 Ceiling', price: 70, priceText: 'Rs.70 / sqft', unit: 'sqft', texture: 't-gypsum', desc: 'Clean 2x2 celling paneling — moisture-resistant and durable false ceiling.', finishes: ['Standard Grid', 'Slim Line'], colors: ['#f5f8fb', '#e4ecf4', '#d7e2ee'] },
+  { id: 'fabric-wallpaper', name: 'Fabric Wallpaper', cat: 'fabric-wallpaper', catLabel: 'Fabric Wallpaper', price: 45, priceText: 'Rs.45 / sqft', unit: 'sqft', texture: 't-fabric', desc: 'Woven-texture fabric wallpaper, warm and elegant wall finish.', finishes: ['Plain Weave', 'Textured'], colors: ['#f5f0e6', '#e7d3ae', '#d9c295'] },
+  { id: 'fiber-doors', name: 'Fiber Door A+', cat: 'fiber-doors', catLabel: 'Fiber Doors', price: 900, priceText: 'Rs.900 / sqft', unit: 'sqft', texture: 't-fiberdoor', desc: 'A+ Grade fiber doors, water-proof and heavy duty construction.', finishes: ['Solid Finish', 'Wood Textured'], colors: ['#12345c', '#2f6fb0', '#7db9e8'] },
+  { id: 'pvc-wall-panel-8', name: 'PVC Wall Panel 8 Inch', cat: 'pvc-wall-panel-8', catLabel: 'PVC Wall Panel 8"', price: 700, priceText: 'Rs.700 / sheet', unit: 'sheet', texture: 't-panel8', desc: 'Premium 8-inch width PVC paneling for moisture protection and decor.', finishes: ['Matte', 'Glossy'], colors: ['#dfe8f1', '#c9d6e4', '#b6c4d6'] },
+  { id: 'pvc-updown-ceiling', name: 'PVC Updown Ceiling', cat: 'pvc-updown-ceiling', catLabel: 'PVC Updown Ceiling', price: 200, priceText: 'Rs.200 / sqft', unit: 'sqft', texture: 't-pop', desc: 'Modern stepped updown ceiling layout with integrated cove lighting.', finishes: ['Double Layer', 'Stepped Edge'], colors: ['#eef3f8', '#dde7f1', '#cfdcea'] },
+  { id: 'pvc-wall-panel-10', name: 'PVC Wall Panel 10 Inch', cat: 'pvc-wall-panel-10', catLabel: 'PVC Wall Panel 10"', price: 430, priceText: 'Rs.430 / sheet', unit: 'sheet', texture: 't-panel10', desc: '10-inch width PVC paneling — bold layout spacing, highly cost-effective.', finishes: ['Matte', 'Woodgrain'], colors: ['#e4ecf4', '#b6c4d6', '#8ea0b5'] }
 ];
 
 // 1. Dynamic Navbar & Google Drive Categories Loader
@@ -125,6 +125,17 @@ async function loadGlobalNavbar() {
     const json = await res.json();
     if (json.ok) {
       globalCategories = json.categories;
+
+      // Assign sequential, category-folder prefixed IDs to every file
+      if (globalCategories && globalCategories.length > 0) {
+        globalCategories.forEach(cat => {
+          let itemIndex = 1;
+          cat.items.forEach(file => {
+            file.id = `img-si-${cat.slug}-${itemIndex++}`;
+          });
+        });
+      }
+
       renderNavbar();
 
       // Dynamically build materialsData from Google Drive categories response
@@ -133,7 +144,17 @@ async function loadGlobalNavbar() {
         globalCategories.forEach(cat => {
           cat.items.forEach(file => {
             const cleanName = formatFileName(file.name);
-            const { price, priceText } = extractPrice(file.name);
+            let { price, priceText } = extractPrice(file.name);
+
+            // Fallback to category level price if no price tag is in the filename
+            const hasPriceTag = file.name.match(/(?:rs|Rs|RS)\.?\s*\d+\S*/i) || file.name.match(/\d+\s*(?:rs|Rs|RS)/i);
+            if (!hasPriceTag) {
+              const catItem = window.materialsData.find(m => m.id === cat.slug);
+              if (catItem) {
+                price = catItem.price;
+                priceText = catItem.priceText;
+              }
+            }
 
             dynamicMaterials.push({
               id: file.id,
@@ -151,7 +172,7 @@ async function loadGlobalNavbar() {
         });
 
         if (dynamicMaterials.length > 0) {
-          window.materialsData = dynamicMaterials;
+          window.materialsData = [...window.materialsData, ...dynamicMaterials];
         }
       }
 
@@ -292,9 +313,21 @@ let activeLightboxIdx = 0;
 window.openLightbox = function (idx, items) {
   lightboxItems = items;
   activeLightboxIdx = idx;
+  let lightbox = document.getElementById("lightbox");
+  if (!lightbox) {
+    lightbox = document.createElement("div");
+    lightbox.id = "lightbox";
+    lightbox.innerHTML = `
+      <button id="lightbox-close" onclick="closeLightbox()">✕</button>
+      <button id="lightbox-prev" onclick="prevLightboxItem()">‹</button>
+      <button id="lightbox-next" onclick="nextLightboxItem()">›</button>
+      <div id="lightbox-content-box"></div>
+      <div id="lightbox-caption"></div>
+    `;
+    document.body.appendChild(lightbox);
+  }
   updateLightbox();
-  const lightbox = document.getElementById("lightbox");
-  if (lightbox) lightbox.classList.add("active");
+  lightbox.classList.add("active");
 };
 
 window.closeLightbox = function () {
@@ -353,6 +386,7 @@ window.Wishlist = {
     }
     this.save(list);
     this.render();
+    window.dispatchEvent(new CustomEvent("wishlistUpdated", { detail: { id } }));
   },
   add(id) {
     const list = this.get();
@@ -361,12 +395,14 @@ window.Wishlist = {
       this.save(list);
     }
     this.render();
+    window.dispatchEvent(new CustomEvent("wishlistUpdated", { detail: { id } }));
   },
   remove(id) {
     const list = this.get();
     const filtered = list.filter(item => item !== id);
     this.save(filtered);
     this.render();
+    window.dispatchEvent(new CustomEvent("wishlistUpdated", { detail: { id } }));
   },
   updateBadges() {
     const list = this.get();
@@ -388,9 +424,15 @@ window.Wishlist = {
       const item = window.materialsData.find(m => m.id === id);
       if (!item) return;
 
+      const isRealImg = item.texture && (item.texture.startsWith('/') || item.texture.startsWith('http'));
+      const bgStyle = isRealImg
+        ? `style="background-image: url('${item.texture}'); background-size: cover; background-position: center;"`
+        : '';
+      const imgClass = isRealImg ? 'drawer-item-img' : `drawer-item-img ${item.texture}`;
+
       html += `
         <div class="drawer-item" data-id="${item.id}">
-          <div class="drawer-item-img ${item.texture}"></div>
+          <div class="${imgClass}" ${bgStyle}></div>
           <div class="drawer-item-info">
             <h4>${item.name}</h4>
             <p>${item.priceText}</p>
@@ -471,9 +513,19 @@ window.QuoteCart = {
       const item = window.materialsData.find(m => m.id === cartItem.id);
       if (!item) return;
 
+      const displayedPriceText = (item.finishPrices && item.finishPrices[cartItem.finish])
+        ? `Rs.${item.finishPrices[cartItem.finish]} / ${item.unit || 'sqft'}`
+        : item.priceText;
+
+      const isRealImg = item.texture && (item.texture.startsWith('/') || item.texture.startsWith('http'));
+      const bgStyle = isRealImg
+        ? `style="background-image: url('${item.texture}'); background-size: cover; background-position: center;"`
+        : '';
+      const imgClass = isRealImg ? 'drawer-item-img' : `drawer-item-img ${item.texture}`;
+
       html += `
         <div class="drawer-item" data-key="${cartItem.key}">
-          <div class="drawer-item-img ${item.texture}"></div>
+          <div class="${imgClass}" ${bgStyle}></div>
           <div class="drawer-item-info">
             <h4>${item.name}</h4>
             <p style="font-size:12px; color:var(--gray-band); margin-top:2px;">
@@ -482,7 +534,7 @@ window.QuoteCart = {
             </p>
           </div>
           <div class="drawer-item-actions">
-            <span class="drawer-item-price">${item.priceText}</span>
+            <span class="drawer-item-price">${displayedPriceText}</span>
             <div class="drawer-qty-selector">
               <button onclick="QuoteCart.updateQty('${cartItem.key}', -1)">&minus;</button>
               <span>${cartItem.qty}</span>
@@ -542,9 +594,13 @@ window.setupGlobalSearch = function () {
     }
 
     resultsBox.innerHTML = matches.map(m => {
+      const isRealImg = m.texture && (m.texture.startsWith('/') || m.texture.startsWith('http'));
+      const bgStyle = isRealImg ? `background-image: url('${m.texture}'); background-size: cover; background-position: center;` : '';
+      const imgClass = isRealImg ? 'search-result-img' : `search-result-img ${m.texture}`;
+
       return `
         <div class="search-result-item" onclick="window.location.href='/materials?id=${m.id}'; window.closeSearchModal();" style="display: flex; align-items: center; gap: 12px; padding: 8px 12px; border-radius: 6px; cursor: pointer; transition: background 0.2s ease;">
-          <div class="search-result-img ${m.texture}" style="width: 36px; height: 36px; border-radius: 4px; overflow: hidden; background: var(--mist);"></div>
+          <div class="${imgClass}" style="width: 36px; height: 36px; border-radius: 4px; overflow: hidden; background: var(--mist); ${bgStyle}"></div>
           <div class="search-result-info">
             <h4 style="margin: 0; font-size: 13.5px; color: var(--navy); font-weight: 600;">${m.name}</h4>
             <p style="margin: 2px 0 0 0; font-size: 11px; color: var(--gray-band);">${m.catLabel} &bull; ${m.priceText}</p>
@@ -671,3 +727,53 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 });
+
+window.showToast = function (message) {
+  let toast = document.getElementById("toast-notification");
+  if (!toast) {
+    toast = document.createElement("div");
+    toast.id = "toast-notification";
+    toast.style.position = "fixed";
+    toast.style.bottom = "24px";
+    toast.style.right = "24px";
+    toast.style.background = "#0d2340";
+    toast.style.color = "white";
+    toast.style.padding = "12px 20px";
+    toast.style.borderRadius = "8px";
+    toast.style.boxShadow = "0 8px 30px rgba(13,35,64, 0.25)";
+    toast.style.zIndex = "10000";
+    toast.style.display = "flex";
+    toast.style.alignItems = "center";
+    toast.style.gap = "8px";
+    toast.style.fontFamily = "'Inter', sans-serif";
+    toast.style.fontSize = "13.5px";
+    toast.style.fontWeight = "500";
+    toast.style.border = "1px solid rgba(255,255,255,0.1)";
+    toast.style.transition = "opacity 0.3s ease, transform 0.3s ease";
+    toast.style.opacity = "0";
+    toast.style.transform = "translateY(20px)";
+    document.body.appendChild(toast);
+  }
+
+  toast.innerHTML = `
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#2ecc71" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+      <polyline points="20 6 9 17 4 12"></polyline>
+    </svg>
+    <span>${message}</span>
+  `;
+
+  // Animate in
+  setTimeout(() => {
+    toast.style.opacity = "1";
+    toast.style.transform = "translateY(0)";
+  }, 10);
+
+  // Clear existing timeout
+  if (toast.timeoutId) clearTimeout(toast.timeoutId);
+
+  // Animate out after 10 seconds
+  toast.timeoutId = setTimeout(() => {
+    toast.style.opacity = "0";
+    toast.style.transform = "translateY(20px)";
+  }, 10000);
+};

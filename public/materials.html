@@ -53,8 +53,11 @@
                 <rect x="13" y="3" width="8" height="18" />
               </svg></button>
           </div>
-          <button id="slideshowToggleBtn" onclick="toggleSlideshow()" aria-label="Toggle Slideshow" style="background: #fff; border: 1px solid var(--line); border-radius: 5px; height: 26px; padding: 0 10px; font-size: 11px; font-weight: 600; color: var(--navy); cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 4px; transition: 0.2s;">
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 3l14 9-14 9V3z"/></svg> Slideshow: OFF
+          <button id="slideshowToggleBtn" onclick="toggleSlideshow()" aria-label="Toggle Slideshow"
+            style="background: #fff; border: 1px solid var(--line); border-radius: 5px; height: 26px; padding: 0 10px; font-size: 11px; font-weight: 600; color: var(--navy); cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 4px; transition: 0.2s;">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M5 3l14 9-14 9V3z" />
+            </svg> Slideshow: OFF
           </button>
         </div>
         <select class="sort-select" id="sortSelect" onchange="handleSortChange(this.value)">
@@ -101,6 +104,15 @@
           <div class="detail-info">
             <h1 id="dName">Category Name</h1>
             <div class="detail-item-count mono" id="dItemCount"></div>
+
+            <!-- Price Display -->
+            <div class="detail-price" id="dPrice" style="margin: 14px 0 20px;"></div>
+
+            <!-- Finish Selection -->
+            <div id="dFinishArea" style="display: none; margin-bottom: 20px;">
+              <div class="opt-label">SELECT FINISH</div>
+              <div class="opt-row" id="dFinishes"></div>
+            </div>
 
             <div class="qty-row">
               <div class="qty-stepper">
