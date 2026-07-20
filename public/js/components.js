@@ -219,12 +219,12 @@ class SiteHeader extends HTMLElement {
         <div class="nav-row" style="display: flex; justify-content: center; padding: 12px 0; border-top: 1px solid var(--line); background: #fff;">
           <nav class="main-nav" id="mainNav">
             <a href="/">Home</a>
-            <a href="/materials">Materials Catalog</a>
+            <a href="/materials" class="locked-nav-link" onclick="event.preventDefault(); return false;" title="Materials Catalog — Coming Soon" aria-disabled="true"><svg class="nav-lock-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>Materials Catalog</a>
             <a href="/portfolio">Portfolio</a>
             <div class="dropdown">
-              <a href="/gallery">Gallery ▾</a>
+              <a href="/gallery" class="locked-nav-link" title="Gallery — Coming Soon" aria-disabled="true"><svg class="nav-lock-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>Gallery ▾</a>
               <div class="dropdown-content">
-                <a href="/gallery">All Folders</a>
+                <a href="/gallery" onclick="event.preventDefault(); return false;" style="cursor: not-allowed; opacity: 0.55;">All Folders</a>
               </div>
             </div>
           </nav>
@@ -241,14 +241,16 @@ class SiteHeader extends HTMLElement {
           </div>
           <nav class="mobile-nav" id="mobileNav">
             <a href="/">Home</a>
-            <a href="/materials">Materials Catalog</a>
+            <a href="/materials" class="locked-nav-link" onclick="event.preventDefault(); return false;" title="Materials Catalog — Coming Soon" aria-disabled="true"><svg class="nav-lock-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>Materials Catalog</a>
             <a href="/portfolio">Portfolio</a>
             <div class="dropdown">
-              <a href="/gallery">Gallery ▾</a>
+              <a href="/gallery" class="locked-nav-link" title="Gallery — Coming Soon" aria-disabled="true"><svg class="nav-lock-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>Gallery ▾</a>
+
               <div class="dropdown-content">
-                <a href="/gallery">All Folders</a>
+                <a href="/gallery" onclick="event.preventDefault(); return false;" style="cursor: not-allowed; opacity: 0.55;">All Folders</a>
               </div>
             </div>
+
           </nav>
         </div>
     `;
@@ -315,11 +317,11 @@ class SiteFooter extends HTMLElement {
             <h5>Get in touch</h5>
             <div class="contact-line">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 6-9 12-9 12S3 16 3 10a9 9 0 0 1 18 0Z"/><circle cx="12" cy="10" r="3"/></svg>
-              Furniture Bazar, Sadman Town Sahiwal
+              Farid Town, Sahiwal, Punjab, Pakistan
             </div>
             <div class="contact-line">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16v16H4z"/><path d="m4 4 8 8 8-8"/></svg>
-              Sohailinteriors7@gmail.com
+              hello@sohailinterior.pk
             </div>
             <div class="contact-line">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3 19.5 19.5 0 0 1-6-6 19.8 19.8 0 0 1-3-8.7A2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1 1 .3 2 .6 3a2 2 0 0 1-.5 2.1L8 10a16 16 0 0 0 6 6l1.2-1.2a2 2 0 0 1 2.1-.5c1 .3 2 .5 3 .6a2 2 0 0 1 1.7 2Z"/></svg>
@@ -334,6 +336,30 @@ class SiteFooter extends HTMLElement {
             <a href="#">About Sohail Interior</a>
             <a href="#">Contact Us</a>
           </div>
+          <div>
+            <h5>Newsletter Signup</h5>
+            <p style="font-size:12.5px; color:#3c5470; margin:0 0 4px; line-height: 1.5;">Get new material drops and finished projects, straight to your inbox.</p>
+            <form action="https://formsubmit.co/abdullahramzan8942@gmail.com" method="POST" class="newsletter-row" target="_blank">
+              <input type="hidden" name="_next" value="https://sohailinterior.pk/">
+              <input type="hidden" name="_captcha" value="false">
+              <input name="email" type="email" placeholder="Your email address" aria-label="Email address" required>
+              <button type="submit">Subscribe</button>
+            </form>
+          </div>
+          <div class="footer-map">
+            <h5>Our Location</h5>
+            <a href="https://maps.app.goo.gl/uCmiaGv23uXGmtD89?g_st=awb" target="_blank" rel="noopener noreferrer" style="display: block; width: 100%; height: 160px; border-radius: 10px; overflow: hidden; position: relative;">
+              <iframe
+                src="https://maps.google.com/maps?q=Sohail%20Interior,%20Farid%20Town,%20Sahiwal&t=&z=13&ie=UTF8&iwloc=&output=embed"
+                width="100%"
+                height="100%"
+                style="border:0; filter: contrast(1.1) saturate(1.1); pointer-events: none;"
+                allowfullscreen=""
+                loading="lazy">
+              </iframe>
+              <div style="position: absolute; inset: 0; background: transparent; z-index: 10;"></div>
+            </a>
+          </div>
         </div>
         <div class="footer-bottom">&copy; 2026 Sohail Interior. All rights reserved. &mdash; Sahiwal, Pakistan</div>
       </footer>
@@ -345,6 +371,7 @@ class WhatsAppFloat extends HTMLElement {
   connectedCallback() {
     this.innerHTML = `
       <div class="wa-float">
+        <div class="wa-tip">We are here!</div>
         <a href="https://wa.me/923115813505" target="_blank" rel="noopener noreferrer" class="wa-btn" title="Chat on WhatsApp" aria-label="Chat on WhatsApp">
           <svg viewBox="0 0 24 24"><path d="M12 2a10 10 0 0 0-8.5 15.3L2 22l4.9-1.3A10 10 0 1 0 12 2Zm5.4 14.2c-.2.6-1.3 1.2-1.9 1.3-.5.1-1.1.1-1.8-.1-.4-.1-1-.3-1.6-.6-2.9-1.2-4.7-4.1-4.9-4.3-.1-.2-1.2-1.6-1.2-3s.7-2.1 1-2.4c.3-.3.6-.3.8-.3h.6c.2 0 .4 0 .6.5.2.6.8 2 .9 2.1.1.2.1.4 0 .6-.1.2-.2.3-.4.5l-.5.6c-.2.2-.3.4-.1.7.2.3.8 1.3 1.7 2.1 1.2 1 2.2 1.4 2.5 1.5.3.1.5.1.7-.1.2-.2.7-.8.9-1.1.2-.3.4-.2.7-.1.3.1 1.9.9 2.2 1 .3.2.5.2.6.4.1.2.1.9-.1 1.5Z"/></svg>
         </a>

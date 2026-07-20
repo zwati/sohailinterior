@@ -1574,3 +1574,200 @@ nav.main-nav a:not(.active):hover {
 @keyframes loader-spin {
   to { transform: rotate(360deg); }
 }
+
+/* ================= GLASS LOCK OVERLAYS ================= */
+.locked-container {
+  position: relative;
+}
+
+.glass-lock-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 1000;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: rgba(251, 253, 255, 0.4);
+  backdrop-filter: blur(25px);
+  -webkit-backdrop-filter: blur(25px);
+  border: 1px solid rgba(13, 35, 64, 0.05);
+  transition: all 0.3s ease;
+  pointer-events: all;
+  user-select: none;
+}
+
+.glass-lock-content {
+  text-align: center;
+  padding: 48px 32px;
+  background: rgba(255, 255, 255, 0.75);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-radius: 24px;
+  box-shadow: 0 30px 65px rgba(18, 52, 92, 0.15);
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  max-width: 440px;
+  margin: 20px;
+  animation: lockFloat 4s ease-in-out infinite;
+}
+
+.glass-lock-icon {
+  width: 86px;
+  height: 86px;
+  background: linear-gradient(135deg, var(--navy), var(--blue));
+  border-radius: 50%;
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  color: #fff;
+  margin-bottom: 24px;
+  box-shadow: 0 10px 25px rgba(18, 52, 92, 0.28);
+  position: relative;
+}
+
+.glass-lock-icon svg {
+  width: 38px;
+  height: 38px;
+}
+
+.glass-lock-icon::after {
+  content: '';
+  position: absolute;
+  inset: -6px;
+  border-radius: 50%;
+  border: 2px dashed var(--blue);
+  opacity: 0.65;
+  animation: lockRotate 14s linear infinite;
+}
+
+.glass-lock-title {
+  font-family: 'Fraunces', serif;
+  font-size: 26px;
+  color: var(--navy);
+  margin: 0 0 12px 0;
+  font-weight: 600;
+}
+
+.glass-lock-subtitle {
+  font-family: 'Inter', sans-serif;
+  font-size: 14px;
+  color: #4a5c75;
+  line-height: 1.6;
+  margin: 0;
+}
+
+/* Page lock overlay used in materials.html */
+.page-lock-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 990;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: rgba(251, 253, 255, 0.45);
+  backdrop-filter: blur(25px);
+  -webkit-backdrop-filter: blur(25px);
+  user-select: none;
+}
+
+/* Locked Navigation Link in mainNav / mobileNav */
+.locked-nav-link {
+  position: relative !important;
+  pointer-events: none !important;
+  cursor: not-allowed !important;
+  color: #7b8e9b !important;
+  background: rgba(13, 35, 64, 0.04) !important;
+  backdrop-filter: blur(8px) !important;
+  -webkit-backdrop-filter: blur(8px) !important;
+  border: 1px solid rgba(13, 35, 64, 0.08) !important;
+  box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.4) !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 6px !important;
+  padding: 10px 18px !important;
+  border-radius: 999px !important;
+}
+
+.locked-nav-link:hover {
+  background: rgba(13, 35, 64, 0.04) !important;
+  transform: none !important;
+}
+
+.locked-nav-link .nav-lock-icon {
+  width: 14px;
+  height: 14px;
+  stroke: var(--navy);
+  stroke-width: 2.5px;
+  flex-shrink: 0;
+}
+
+/* Locked Normal Button (e.g. View Material on hero banner) */
+.locked-btn {
+  pointer-events: none !important;
+  cursor: not-allowed !important;
+  color: #7b8e9b !important;
+  background: rgba(13, 35, 64, 0.04) !important;
+  backdrop-filter: blur(6px) !important;
+  -webkit-backdrop-filter: blur(6px) !important;
+  border: 1px solid rgba(13, 35, 64, 0.12) !important;
+  box-shadow: none !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+  padding: 13px 24px !important;
+  border-radius: 11px !important;
+}
+
+.locked-btn .btn-lock-icon {
+  width: 15px;
+  height: 15px;
+  stroke: #7b8e9b;
+  stroke-width: 2.5px;
+  flex-shrink: 0;
+}
+
+@keyframes lockFloat {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+
+@keyframes lockRotate {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+/* Locked nav link that still allows CSS :hover to propagate (for dropdown triggers) */
+.locked-nav-trigger {
+  position: relative;
+  cursor: not-allowed !important;
+  color: #7b8e9b !important;
+  background: rgba(13, 35, 64, 0.04) !important;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid rgba(13, 35, 64, 0.08) !important;
+  box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.4) !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 6px !important;
+  padding: 10px 18px !important;
+  border-radius: 999px !important;
+  transform: none !important;
+}
+
+.locked-nav-trigger:hover {
+  background: rgba(13, 35, 64, 0.04) !important;
+  transform: none !important;
+}
+
+.locked-nav-trigger .nav-lock-icon {
+  width: 14px;
+  height: 14px;
+  stroke: #7b8e9b;
+  stroke-width: 2.5px;
+  flex-shrink: 0;
+}

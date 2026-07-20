@@ -154,24 +154,14 @@ const slidesData = [
   {
     title: 'Introducing <em>PVC Updown</em><br>Ceiling',
     description: 'A layered updown ceiling profile with hidden lighting channels — now available across all Sohail Interior projects.',
-    btnText: 'View Material →',
-    btnLink: '/materials?category=pvc-updown-ceiling',
+    btnText: 'View Material',
     mediaHTML: `<video src="/videos/1.mp4" autoplay loop muted playsinline></video>`,
-    duration: 12000, // 12 seconds for video 1
-    isVideo: true
-  },
-  {
-    title: 'Premium <em>Window</em><br>Blinds',
-    description: 'Elegant Roller, Zebra, and Bamboo blinds to control light and add privacy to your rooms.',
-    btnText: 'View Material →',
-    btnLink: '/materials?category=blinds',
-    mediaHTML: `<video src="/videos/2.mp4" autoplay loop muted playsinline></video>`,
-    duration: 8000, // 8 seconds for video 2
+    duration: 12000,
     isVideo: true
   }
 ];
 
-const slideSequence = [0, 1];
+const slideSequence = [0];
 let currentSequenceIdx = 0;
 let currentSlideIdx = 0;
 let slideTimeoutId = null;
@@ -202,8 +192,10 @@ function renderSlide(slideIdx) {
       <h1 style="animation: wipeIn 0.8s ease 3.2s forwards; opacity: 0;">${slide.title}</h1>
       <p style="animation: popUp 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275) 3.4s forwards; opacity: 0;">${slide.description}</p>
       <div class="btn-row" style="margin-top: 24px; animation: fadeIn 0.8s ease 3.6s forwards; opacity: 0;">
-        <button class="btn btn-primary" onclick="window.location.href='${slide.btnLink}'">${slide.btnText}</button>
-        
+        <button class="btn btn-primary locked-btn" onclick="return false;">
+          <svg class="btn-lock-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+          ${slide.btnText}
+        </button>
       </div>
     `;
 
@@ -266,22 +258,22 @@ function startSliderTimer() {
 }
 
 window.setSlide = function (index) {
-  // Sync the sequence if user manually clicks a dot
   const foundSeqIdx = slideSequence.indexOf(index);
   if (foundSeqIdx !== -1) {
     currentSequenceIdx = foundSeqIdx;
   }
   renderSlide(index);
-  startSliderTimer(); // Reset timer interval
 };
+
 
 // Startup
 document.addEventListener("DOMContentLoaded", () => {
   renderFeaturedGrid();
   initializeDots();
   renderSlide(0);
-  startSliderTimer();
+  // No timer — single slide, no rotation needed
 });
+
 
 // Event listener from common.js categories fetcher
 window.addEventListener("categoriesLoaded", (e) => {

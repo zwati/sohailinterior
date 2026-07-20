@@ -115,12 +115,12 @@ function renderGalleryGrid() {
     const itemIndexInFullList = (paginated.currentPage - 1) * GALLERY_ITEMS_PER_PAGE + idx;
 
     return `
-      <div class="gcard reveal" data-lightbox-index="${itemIndexInFullList}" style="position: relative;">
+      <div class="gcard reveal" data-lightbox-index="${itemIndexInFullList}">
         ${item.isNew ? '<div class="new-pill mono">New</div>' : ''}
         <div class="loading-glass"></div>
-        ${isVideo 
-          ? `<video src="${item.src}" muted playsinline onloadeddata="const g = this.previousElementSibling; if(g && g.classList.contains('loading-glass')) { g.style.opacity = '0'; setTimeout(()=>g.remove(), 600); }" style="width:100%; height:100%; object-fit:cover;"></video>` 
-          : `<img src="${item.src}" onload="const g = this.previousElementSibling; if(g && g.classList.contains('loading-glass')) { g.style.opacity = '0'; setTimeout(()=>g.remove(), 600); }" style="width:100%; height:100%; object-fit:cover;">`
+        ${isVideo
+          ? `<video src="${item.src}" muted playsinline></video>`
+          : `<img src="${item.src}" alt="${item.name || 'Sohail Interior'}">`
         }
         <div class="overlay">
           <div class="cat mono">${item.categoryName}</div>
@@ -130,6 +130,32 @@ function renderGalleryGrid() {
       </div>
     `;
   }).join("");
+
+  grid.querySelectorAll('.gcard').forEach(card => {
+    const glass = card.querySelector('.loading-glass');
+    const media = card.querySelector('img, video');
+    if (!glass || !media) return;
+
+    const onReady = () => {
+      media.classList.add('loaded');
+      glass.style.opacity = '0';
+      setTimeout(() => glass.remove(), 500);
+    };
+
+    if (media.tagName === 'IMG') {
+      if (media.complete && media.naturalWidth > 0) {
+        onReady();
+      } else {
+        media.addEventListener('load', onReady, { once: true });
+        media.addEventListener('error', onReady, { once: true });
+      }
+    } else if (media.readyState >= 2) {
+      onReady();
+    } else {
+      media.addEventListener('loadeddata', onReady, { once: true });
+      media.addEventListener('error', onReady, { once: true });
+    }
+  });
 
   // Paginated navigation links
   paginationContainer.innerHTML = Pagination.generateHTML(paginated.currentPage, paginated.totalPages, "changeGalleryPage");
