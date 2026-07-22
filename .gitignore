@@ -1,13 +1,3 @@
-# Environment variables — NEVER commit to git
-.env
-
 # Node dependencies
 node_modules/
 
-# OS files
-.DS_Store
-Thumbs.db
-
-# Logs
-*.log
-npm-debug.log*

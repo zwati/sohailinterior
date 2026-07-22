@@ -1,6 +1,6 @@
 // Admin Page Specific Logic
 
-let currentAdminTab = 'gallery'; // 'gallery' or 'portfolio'
+let currentAdminTab = 'gallery'; // 'gallery' | 'portfolio' | 'controls'
 
 // 1. Authenticate and enter dashboard panel
 window.enterDashboard = function () {
@@ -13,6 +13,9 @@ window.enterDashboard = function () {
   document.getElementById('loginStage').style.display = 'none';
   document.getElementById('dashStage').style.display = 'block';
 
+  // Seed the lock toggle with whatever is saved in localStorage
+  syncMaterialsLockUI();
+
   // Set default active tab
   switchAdminTab('gallery');
 };
@@ -21,40 +24,84 @@ window.enterDashboard = function () {
 window.switchAdminTab = function (tab) {
   currentAdminTab = tab;
 
-  const galleryBtn = document.getElementById("tabGalleryBtn");
-  const portfolioBtn = document.getElementById("tabPortfolioBtn");
+  const galleryBtn   = document.getElementById('tabGalleryBtn');
+  const portfolioBtn = document.getElementById('tabPortfolioBtn');
+  const controlsBtn  = document.getElementById('tabControlsBtn');
 
-  const galleryUpload = document.getElementById("galleryUploadContainer");
-  const galleryTable = document.getElementById("galleryTableContainer");
+  const galleryUpload  = document.getElementById('galleryUploadContainer');
+  const galleryTable   = document.getElementById('galleryTableContainer');
+  const portfolioEdit  = document.getElementById('portfolioEditContainer');
+  const portfolioTable = document.getElementById('portfolioTableContainer');
+  const siteControls   = document.getElementById('siteControlsContainer');
+  const pagination     = document.getElementById('adminPagination');
 
-  const portfolioEdit = document.getElementById("portfolioEditContainer");
-  const portfolioTable = document.getElementById("portfolioTableContainer");
+  // Reset all
+  [galleryBtn, portfolioBtn, controlsBtn].forEach(b => b && b.classList.remove('active'));
+  [galleryUpload, galleryTable, portfolioEdit, portfolioTable, siteControls].forEach(el => el && (el.style.display = 'none'));
 
   if (tab === 'gallery') {
-    galleryBtn.classList.add("active");
-    portfolioBtn.classList.remove("active");
-
-    galleryUpload.style.display = "block";
-    galleryTable.style.display = "block";
-
-    portfolioEdit.style.display = "none";
-    portfolioTable.style.display = "none";
-
+    galleryBtn.classList.add('active');
+    galleryUpload.style.display = 'block';
+    galleryTable.style.display  = 'block';
+    if (pagination) pagination.style.display = '';
     renderAdminCategoryOptions();
     renderAdminTable();
-  } else {
-    galleryBtn.classList.remove("active");
-    portfolioBtn.classList.add("active");
-
-    galleryUpload.style.display = "none";
-    galleryTable.style.display = "none";
-
-    portfolioEdit.style.display = "block";
-    portfolioTable.style.display = "block";
-
+  } else if (tab === 'portfolio') {
+    portfolioBtn.classList.add('active');
+    portfolioEdit.style.display  = 'block';
+    portfolioTable.style.display = 'block';
+    if (pagination) pagination.style.display = 'none';
     loadAdminPortfolio(1);
+  } else if (tab === 'controls') {
+    controlsBtn.classList.add('active');
+    siteControls.style.display = 'block';
+    if (pagination) pagination.style.display = 'none';
+    syncMaterialsLockUI();
   }
 };
+
+// ── Materials Catalog Lock Toggle ─────────────────────────────────────────────
+
+// Sync the toggle UI to match what's in localStorage
+function syncMaterialsLockUI() {
+  const isLocked = localStorage.getItem('materialsLocked') !== 'false'; // default: locked
+  const toggle   = document.getElementById('materialsLockToggle');
+  const track    = document.getElementById('materialsLockTrack');
+  const thumb    = document.getElementById('materialsLockThumb');
+  const label    = document.getElementById('materialsLockStatusText');
+  if (!toggle) return;
+
+  toggle.checked = !isLocked; // checked = unlocked
+  if (isLocked) {
+    track.style.background = '#cbd5e1';
+    thumb.style.left = '3px';
+    label.textContent = 'LOCKED';
+    label.style.color = '#6b7f97';
+  } else {
+    track.style.background = 'var(--navy, #12345c)';
+    thumb.style.left = '23px';
+    label.textContent = 'LIVE';
+    label.style.color = 'var(--navy, #12345c)';
+  }
+}
+
+// Called when the toggle is clicked
+window.toggleMaterialsLock = function (checked) {
+  // checked = true → user wants catalog LIVE (unlocked)
+  const isLocked = !checked;
+  localStorage.setItem('materialsLocked', isLocked ? 'true' : 'false');
+
+  syncMaterialsLockUI();
+
+  const status = document.getElementById('materialsLockSaveStatus');
+  if (status) {
+    status.textContent = isLocked
+      ? '🔒 Materials catalog is now hidden behind the lock overlay.'
+      : '✅ Materials catalog is now live and visible to visitors.';
+    setTimeout(() => { status.textContent = ''; }, 4000);
+  }
+};
+
 
 // 2. Populate admin category upload dropdown
 function renderAdminCategoryOptions() {

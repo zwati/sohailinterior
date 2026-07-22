@@ -336,16 +336,6 @@ class SiteFooter extends HTMLElement {
             <a href="#">About Sohail Interior</a>
             <a href="#">Contact Us</a>
           </div>
-          <div>
-            <h5>Newsletter Signup</h5>
-            <p style="font-size:12.5px; color:#3c5470; margin:0 0 4px; line-height: 1.5;">Get new material drops and finished projects, straight to your inbox.</p>
-            <form action="https://formsubmit.co/abdullahramzan8942@gmail.com" method="POST" class="newsletter-row" target="_blank">
-              <input type="hidden" name="_next" value="https://sohailinterior.pk/">
-              <input type="hidden" name="_captcha" value="false">
-              <input name="email" type="email" placeholder="Your email address" aria-label="Email address" required>
-              <button type="submit">Subscribe</button>
-            </form>
-          </div>
           <div class="footer-map">
             <h5>Our Location</h5>
             <a href="https://maps.app.goo.gl/uCmiaGv23uXGmtD89?g_st=awb" target="_blank" rel="noopener noreferrer" style="display: block; width: 100%; height: 160px; border-radius: 10px; overflow: hidden; position: relative;">

@@ -1,6 +1,6 @@
 /* Gallery Page Specific Styling */
 body {
-  background: linear-gradient(rgba(46, 139, 87, 0.1), rgba(46, 139, 87, 0.1)), url('/images/varity-bg.jpg') center/cover no-repeat fixed !important;
+  background: url('/images/varity-bg.jpg') center/cover no-repeat fixed !important;
 }
 
 .page-band {

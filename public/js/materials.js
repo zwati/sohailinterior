@@ -887,6 +887,7 @@ function handleURLRouting() {
 }
 
 // ─── Bootstrap ────────────────────────────────────────────────────────────────
+
 document.addEventListener('DOMContentLoaded', () => {
   if (window.globalCategories?.length > 0) {
     // Drive data already in-hand (fast load or cached) — use it immediately
@@ -895,34 +896,18 @@ document.addEventListener('DOMContentLoaded', () => {
     renderCatalog();
     handleURLRouting();
   } else {
-    // API hasn't responded yet — show static catalog shell (cards with texture patterns,
-    // no real images). Do NOT open the detail view yet; wait for categoriesLoaded to
-    // fire so the main image panel gets a real Drive photo, not the blank fallback.
-    categoriesData = STATIC_FALLBACK.map(s => ({ ...s, items: [] }));
-    window.materialsData = categoriesData.map(cat => {
-      const meta = STATIC_METADATA[cat.slug] || {
-        price: 0,
-        priceText: 'Contact for pricing',
-        desc: `${cat.name} collection from Sohail Interior.`,
-        finishes: ['Standard Finish'],
-        colors: ['#eaf2fa', '#c9d6e4', '#aebfd2']
-      };
-      return {
-        id: cat.slug,
-        name: cat.name,
-        cat: cat.slug,
-        catLabel: cat.name,
-        price: meta.price,
-        priceText: meta.priceText,
-        finishPrices: meta.finishPrices,
-        texture: cat.texture || 't-gypsum',
-        desc: meta.desc,
-        finishes: meta.finishes,
-        colors: meta.colors
-      };
-    });
-    renderMaterialsFilters();
-    renderCatalog();
+    // API hasn't responded yet — show a loading spinner and wait for categoriesLoaded.
+    // Do NOT render STATIC_FALLBACK cards; real Drive cards will appear once ready.
+    const grid = document.getElementById('catalogGrid');
+    if (grid) {
+      grid.innerHTML = `
+        <div style="grid-column:1/-1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:80px 20px;gap:16px;color:var(--navy,#12345c);opacity:0.5;">
+          <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="animation:loader-spin 1s linear infinite;">
+            <path d="M21 12a9 9 0 1 1-6.219-8.56"/>
+          </svg>
+          <span style="font-size:13px;font-family:'Inter',sans-serif;letter-spacing:.04em;">Loading catalog…</span>
+        </div>`;
+    }
     // NOTE: handleURLRouting() intentionally NOT called here.
     // categoriesLoaded will call openDetail() once real images are ready.
   }
