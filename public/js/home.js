@@ -149,22 +149,48 @@ function renderFeaturedGrid() {
   if (window.revealCheck) window.revealCheck();
 }
 
-// 4. Hero Slideshow logic (playing video slides with constant time)
+// 4. Hero 4-Slide Sequence System (Hero Video + 3 Slideshow Images)
 const slidesData = [
   {
+    type: 'video',
     title: 'Introducing <em>PVC Updown</em><br>Ceiling',
     description: 'A layered updown ceiling profile with hidden lighting channels — now available across all Sohail Interior projects.',
     btnText: 'View Material',
-    mediaHTML: `<video src="/videos/1.mp4" autoplay loop muted playsinline></video>`,
-    duration: 12000,
-    isVideo: true
+    btnLink: '/materials',
+    duration: 8000
+  },
+  {
+    type: 'image',
+    imageSrc: '/images/hero/hero-slideshow-1.jpg',
+    title: 'Crafted <em>Interior Finishes</em>',
+    description: 'Bespoke architectural wall and ceiling paneling engineered for modern aesthetic living in Sahiwal & Lahore.',
+    btnText: 'Explore Gallery',
+    btnLink: '/gallery',
+    duration: 6000
+  },
+  {
+    type: 'image',
+    imageSrc: '/images/hero/hero-slideshow-2.jpg',
+    title: 'Premium <em>Material Collections</em>',
+    description: 'Waterproof fiber doors, acoustic 2x2 ceiling grids, and designer wallpaper textures crafted to last.',
+    btnText: 'Browse Catalog',
+    btnLink: '/materials',
+    duration: 6000
+  },
+  {
+    type: 'image',
+    imageSrc: '/images/hero/hero-slideshow-3.jpg',
+    title: 'Signature <em>Design & Execution</em>',
+    description: 'Full site consultation, custom measurement, and professional guaranteed installation for your space.',
+    btnText: 'Book Consultation',
+    btnLink: '/portfolio',
+    duration: 6000
   }
 ];
 
-const slideSequence = [0];
-let currentSequenceIdx = 0;
 let currentSlideIdx = 0;
 let slideTimeoutId = null;
+let videoReadyHandled = false;
 
 function initializeDots() {
   const dotsEl = document.getElementById("heroDots");
@@ -174,39 +200,53 @@ function initializeDots() {
   }).join("");
 }
 
-let isFirstLoad = true;
-
-function renderSlide(slideIdx) {
-  const banner = document.querySelector(".hero-banner");
+function triggerTextEffects(slide) {
   const copyEl = document.getElementById("heroCopy");
-  const dots = document.querySelectorAll("#heroDots span");
   if (!copyEl) return;
 
-  currentSlideIdx = (slideIdx + slidesData.length) % slidesData.length;
-  const slide = slidesData[currentSlideIdx];
+  // Force DOM re-trigger of animations by updating HTML
+  copyEl.innerHTML = `
+    <div class="eyebrow mono" style="animation: fadeUp 0.6s ease 0.05s forwards; opacity: 0;"><span class="dot"></span>New This Season</div>
+    <h1 style="animation: wipeIn 0.7s ease 0.15s forwards; opacity: 0;">${slide.title}</h1>
+    <p style="animation: popUp 0.7s cubic-bezier(0.175, 0.885, 0.32, 1.275) 0.25s forwards; opacity: 0;">${slide.description}</p>
+    <div class="btn-row" style="margin-top: 24px; animation: fadeIn 0.7s ease 0.35s forwards; opacity: 0;">
+      <button class="btn btn-primary" onclick="window.location.href='${slide.btnLink || '/materials'}'">
+        ${slide.btnText}
+      </button>
+    </div>
+  `;
+}
 
-  const updateDOM = () => {
-    // Render text copy
-    copyEl.innerHTML = `
-      <div class="eyebrow mono" style="animation: fadeUp 0.8s ease 3s forwards; opacity: 0;"><span class="dot"></span>New This Season</div>
-      <h1 style="animation: wipeIn 0.8s ease 3.2s forwards; opacity: 0;">${slide.title}</h1>
-      <p style="animation: popUp 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275) 3.4s forwards; opacity: 0;">${slide.description}</p>
-      <div class="btn-row" style="margin-top: 24px; animation: fadeIn 0.8s ease 3.6s forwards; opacity: 0;">
-        <button class="btn btn-primary locked-btn" onclick="return false;">
-          <svg class="btn-lock-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
-          ${slide.btnText}
-        </button>
-      </div>
-    `;
+function renderSlide(slideIdx, immediate = false) {
+  const nextIdx = (slideIdx + slidesData.length) % slidesData.length;
+  const copyEl = document.getElementById("heroCopy");
+  const bgImg = document.getElementById("heroBgImg");
+  const bgVideo = document.getElementById("heroBgVideo");
 
-    // Remove animation class to restart it
-    banner.classList.remove("reveal");
+  const performDOMUpdate = () => {
+    currentSlideIdx = nextIdx;
+    const slide = slidesData[currentSlideIdx];
+    const dots = document.querySelectorAll("#heroDots span");
 
+    if (slide.type === 'video') {
+      if (bgVideo && (bgVideo.readyState >= 2 || videoReadyHandled)) {
+        bgVideo.classList.add("active-media");
+        bgVideo.loop = false; // Video plays ONCE
+        try {
+          bgVideo.currentTime = 0;
+          bgVideo.play();
+        } catch (_) {}
+      } else if (bgImg) {
+        bgImg.style.backgroundImage = "url('/images/hero/hero-img.png')";
+      }
+    } else {
+      if (bgVideo) bgVideo.classList.remove("active-media");
+      if (bgImg && slide.imageSrc) {
+        bgImg.style.backgroundImage = `url('${slide.imageSrc}')`;
+      }
+    }
 
-
-
-
-    // Render dot states
+    // Update dots indicator
     dots.forEach((dot, i) => {
       if (i === currentSlideIdx) {
         dot.classList.add("active");
@@ -214,65 +254,90 @@ function renderSlide(slideIdx) {
         dot.classList.remove("active");
       }
     });
+
+    // Re-trigger text copy & entrance effects
+    triggerTextEffects(slide);
+
+    // Clear closing transition classes
+    if (copyEl) copyEl.classList.remove("copy-closing");
+
+    // Restart slider timer
+    startSliderTimer();
   };
 
-  if (isFirstLoad) {
-    updateDOM();
-    isFirstLoad = false;
+  if (immediate) {
+    performDOMUpdate();
   } else {
-    // Blur out visual only
-    const visualEl = document.querySelector('.hero-visual') || banner;
-    visualEl.style.transition = 'filter 0.4s ease, opacity 0.4s ease';
-    visualEl.style.filter = 'blur(16px) brightness(0.8)';
-    visualEl.style.opacity = '0.5';
+    // Closing phase: fade out copy
+    if (copyEl) copyEl.classList.add("copy-closing");
 
-    setTimeout(() => {
-      updateDOM();
-      // Blur in visual only
-      visualEl.style.filter = 'blur(0px) brightness(1)';
-      visualEl.style.opacity = '1';
-
-      // Cleanup filter after transition completes
-      setTimeout(() => {
-        visualEl.style.filter = '';
-      }, 400);
-    }, 400);
+    setTimeout(performDOMUpdate, 320);
   }
 }
 
-function advanceSequence() {
-  currentSequenceIdx = (currentSequenceIdx + 1) % slideSequence.length;
-  renderSlide(slideSequence[currentSequenceIdx]);
-}
 
 function startSliderTimer() {
   if (slideTimeoutId) clearTimeout(slideTimeoutId);
-
   const currentSlide = slidesData[currentSlideIdx];
-  const duration = currentSlide.duration || 4000;
+  const duration = currentSlide.duration || 6000;
 
   slideTimeoutId = setTimeout(() => {
-    advanceSequence();
-    startSliderTimer();
+    // If on video slide (0), transition to first image slide (1);
+    // If on image slides (1, 2, 3), circulate across image slides (1 -> 2 -> 3 -> 1...)
+    const nextIdx = (currentSlideIdx === 0 || currentSlideIdx >= slidesData.length - 1)
+      ? 1
+      : currentSlideIdx + 1;
+
+    renderSlide(nextIdx);
   }, duration);
 }
 
 window.setSlide = function (index) {
-  const foundSeqIdx = slideSequence.indexOf(index);
-  if (foundSeqIdx !== -1) {
-    currentSequenceIdx = foundSeqIdx;
-  }
   renderSlide(index);
 };
 
+function setupVideoReadyListener() {
+  const bgVideo = document.getElementById("heroBgVideo");
+  if (!bgVideo) return;
+
+  bgVideo.loop = false;
+  bgVideo.onended = () => {
+    // When video finishes playing once, transition to first image slide
+    if (currentSlideIdx === 0) {
+      renderSlide(1);
+    }
+  };
+
+  const onVideoReady = () => {
+    if (videoReadyHandled) return;
+    videoReadyHandled = true;
+
+    // Transition to video background when ready
+    bgVideo.classList.add("active-media");
+
+    // If currently on slide 0 (video slide), re-trigger text effects & entrance as requested
+    if (currentSlideIdx === 0) {
+      renderSlide(0, true);
+    }
+  };
+
+  if (bgVideo.readyState >= 3) {
+    onVideoReady();
+  } else {
+    bgVideo.addEventListener("canplay", onVideoReady, { once: true });
+    bgVideo.addEventListener("playing", onVideoReady, { once: true });
+  }
+}
 
 // Startup
 document.addEventListener("DOMContentLoaded", () => {
   renderFeaturedGrid();
   initializeDots();
-  renderSlide(0);
-  // No timer — single slide, no rotation needed
+  renderSlide(0, true); // Immediately displays hero-img.png + starting text effects
+  setupVideoReadyListener(); // Fades in video when loaded, plays once, then transitions to circulating images
 });
+
+
 
 
 // Event listener from common.js categories fetcher

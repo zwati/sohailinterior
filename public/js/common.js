@@ -701,21 +701,29 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 // 5. Global Page Loader hide controller
-window.addEventListener('load', () => {
+window.dismissLoader = function () {
   const loader = document.getElementById('pageLoader');
-  if (loader) {
-    const isGlass = loader.classList.contains('glass-loader');
-    const delay = isGlass ? 50 : 100;
-
-    if (isGlass) {
-      loader.style.transition = 'opacity 0.4s cubic-bezier(.4, 0, .2, 1), filter 0.4s ease';
-    }
-
-    setTimeout(() => {
-      loader.classList.add('done');
-    }, delay);
+  if (!loader || loader.classList.contains('done')) return;
+  const isGlass = loader.classList.contains('glass-loader');
+  if (isGlass) {
+    loader.style.transition = 'opacity 0.4s cubic-bezier(.4, 0, .2, 1), filter 0.4s ease';
   }
+  loader.classList.add('done');
+  document.body.classList.add('loader-dismissed');
+  window.dispatchEvent(new CustomEvent('loaderDismissed'));
+};
+
+document.addEventListener('DOMContentLoaded', () => {
+  const loader = document.getElementById('pageLoader');
+  const isGlass = loader && loader.classList.contains('glass-loader');
+  const delay = isGlass ? 250 : 650;
+  setTimeout(window.dismissLoader, delay);
 });
+
+window.addEventListener('load', () => {
+  setTimeout(window.dismissLoader, 50);
+});
+
 
 // Intercept navigation triggers to show the loader during page changes
 document.addEventListener('DOMContentLoaded', () => {
@@ -795,3 +803,17 @@ window.showToast = function (message) {
     toast.style.transform = "translateY(20px)";
   }, 10000);
 };
+
+// Subtle mouse parallax effect for luxury background layers
+document.addEventListener("mousemove", (e) => {
+  const layers = document.querySelectorAll(".bg-layer");
+  if (!layers.length) return;
+  const x = (e.clientX / window.innerWidth - 0.5) * 20;
+  const y = (e.clientY / window.innerHeight - 0.5) * 20;
+
+  layers.forEach((layer, index) => {
+    const speed = (index + 1) * 0.06;
+    layer.style.transform = `translate(${x * speed}px, ${y * speed}px)`;
+  });
+});
+

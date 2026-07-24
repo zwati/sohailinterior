@@ -14,9 +14,6 @@
   <link rel="stylesheet" href="/css/common.css">
   <link rel="stylesheet" href="/css/home.css">
   <link rel="icon" type="image/png" href="/logo/SI_square.png">
-  <!-- Preload section BGs so they are ready before the sections paint -->
-  <link rel="preload" href="/images/varity-bg.jpg" as="image">
-  <link rel="preload" href="/images/featured-material-bg.jpeg" as="image">
 </head>
 
 <body>
@@ -30,8 +27,9 @@
     <div class="page active" id="home">
 
       <!-- Hero Section -->
-      <section class="hero">
-        <video autoplay muted playsinline class="hero-bg-video">
+      <section class="hero" id="heroSection">
+        <div class="hero-bg-img" id="heroBgImg" style="background-image: url('/images/hero/hero-img.png');"></div>
+        <video autoplay muted playsinline preload="metadata" class="hero-bg-video" id="heroBgVideo">
           <source src="/videos/hero.mp4" type="video/mp4">
         </video>
         <div class="hero-banner reveal">
@@ -46,26 +44,24 @@
               </button>
             </div>
           </div>
+          <div class="hero-dots" id="heroDots"></div>
 
           <!-- Stats Strip -->
           <div class="stats-strip reveal">
-            <div class="stat"
-              style="animation: popUp 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275) 0.8s forwards; opacity: 0;">
+
+            <div class="stat">
               <div class="num">120+</div>
               <div class="lbl">Projects delivered</div>
             </div>
-            <div class="stat"
-              style="animation: popUp 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275) 1.0s forwards; opacity: 0;">
+            <div class="stat">
               <div class="num">9</div>
               <div class="lbl">Signature materials</div>
             </div>
-            <div class="stat"
-              style="animation: popUp 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275) 1.2s forwards; opacity: 0;">
+            <div class="stat">
               <div class="num">8yrs</div>
               <div class="lbl">In practice</div>
             </div>
-            <div class="stat"
-              style="animation: popUp 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275) 1.4s forwards; opacity: 0;">
+            <div class="stat">
               <div class="num">100%</div>
               <div class="lbl">Full-res gallery, always</div>
             </div>
@@ -73,10 +69,22 @@
       </section>
 
 
-      <!-- Dynamic Categories Grid (Google Drive Folders load here) -->
 
-      <section class="section home-section-variety" id="varietySection">
-        <div style="max-width: 100%; padding: 0 clamp(12px, 4vw, 40px);">
+      <!-- Dynamic Categories Grid (Google Drive Folders load here) -->
+      <section class="section home-section-variety luxury-bg-section" id="varietySection">
+        <div class="bg-layer gradient"></div>
+        <div class="bg-layer blueprint"></div>
+        <div class="bg-layer marble"></div>
+        <div class="bg-layer waves"></div>
+        <div class="bg-layer glow glow-left"></div>
+        <div class="bg-layer glow glow-right"></div>
+        <div class="bg-layer glass glass-1"></div>
+        <div class="bg-layer glass glass-2"></div>
+        <div class="bg-layer dots dots-1"></div>
+        <div class="bg-layer dots dots-2"></div>
+        <div class="bg-layer plant"></div>
+
+        <div style="max-width: 100%; padding: 0 clamp(12px, 4vw, 40px); position: relative; z-index: 2;">
           <div class="section-head">
             <h2>Offering a wide range of variety</h2>
             <p>Explore material collections.</p>
@@ -90,8 +98,20 @@
       </section>
 
       <!-- Featured Materials Grid -->
-      <section class="section home-section-featured" id="featuredSection">
-        <div style="max-width: 100%; padding: 0 clamp(12px, 4vw, 40px);">
+      <section class="section home-section-featured luxury-bg-section" id="featuredSection">
+        <div class="bg-layer gradient"></div>
+        <div class="bg-layer blueprint"></div>
+        <div class="bg-layer marble"></div>
+        <div class="bg-layer waves"></div>
+        <div class="bg-layer glow glow-left"></div>
+        <div class="bg-layer glow glow-right"></div>
+        <div class="bg-layer glass glass-1"></div>
+        <div class="bg-layer glass glass-2"></div>
+        <div class="bg-layer dots dots-1"></div>
+        <div class="bg-layer dots dots-2"></div>
+        <div class="bg-layer plant"></div>
+
+        <div style="max-width: 100%; padding: 0 clamp(12px, 4vw, 40px); position: relative; z-index: 2;">
           <div class="section-head">
             <h2>Featured Materials</h2>
             <p>Most requested finishes this month.</p>
@@ -100,6 +120,7 @@
             <!-- Populated by home.js -->
           </div>
         </div>
+
         <br>
         <br>
         <!-- Call to Action Band -->

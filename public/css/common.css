@@ -1553,9 +1553,9 @@ nav.main-nav a:not(.active):hover {
   transition: opacity 0.4s ease;
   /* Base skeleton colour */
   background: linear-gradient(90deg,
-    rgba(234, 242, 250, 0.0) 0%,
-    rgba(234, 242, 250, 0.8) 50%,
-    rgba(234, 242, 250, 0.0) 100%);
+      rgba(234, 242, 250, 0.0) 0%,
+      rgba(234, 242, 250, 0.8) 50%,
+      rgba(234, 242, 250, 0.0) 100%);
   background-size: 200% 100%;
   animation: shimmer-sweep 1.4s ease-in-out infinite;
   pointer-events: none;
@@ -1567,12 +1567,19 @@ nav.main-nav a:not(.active):hover {
 }
 
 @keyframes shimmer-sweep {
-  0%   { background-position: -200% 0; }
-  100% { background-position:  200% 0; }
+  0% {
+    background-position: -200% 0;
+  }
+
+  100% {
+    background-position: 200% 0;
+  }
 }
 
 @keyframes loader-spin {
-  to { transform: rotate(360deg); }
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 /* ================= GLASS LOCK OVERLAYS ================= */
@@ -1732,13 +1739,25 @@ nav.main-nav a:not(.active):hover {
 }
 
 @keyframes lockFloat {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-10px); }
+
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(-10px);
+  }
 }
 
 @keyframes lockRotate {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 /* Locked nav link that still allows CSS :hover to propagate (for dropdown triggers) */
@@ -1770,4 +1789,177 @@ nav.main-nav a:not(.active):hover {
   stroke: #7b8e9b;
   stroke-width: 2.5px;
   flex-shrink: 0;
-}
+}
+
+/* ================= LUXURY MULTI-LAYER DECORATIVE BACKGROUND SYSTEM ================= */
+.materials,
+.luxury-bg-section,
+.luxury-bg-page {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+  background: #f5f9ff;
+}
+
+.bg-layer {
+  position: absolute;
+  pointer-events: none;
+  transition: transform 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.bg-layer.gradient {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(circle at 10% 20%, rgba(70, 130, 255, 0.18), transparent 40%),
+    radial-gradient(circle at 90% 15%, rgba(255, 255, 255, 0.95), transparent 35%),
+    radial-gradient(circle at 85% 75%, rgba(231, 211, 174, 0.35), transparent 42%),
+    radial-gradient(circle at 50% 50%, rgba(125, 185, 232, 0.16), transparent 50%),
+    radial-gradient(circle at 20% 80%, rgba(90, 80, 210, 0.12), transparent 45%),
+    linear-gradient(135deg, #fbfdff 0%, #edf5ff 35%, #f4f8fe 70%, #eaf2fb 100%);
+  z-index: -10;
+}
+
+.bg-layer.blueprint {
+  position: absolute;
+  left: -120px;
+  bottom: 0;
+  width: 480px;
+  height: 480px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 400' fill='none' stroke='rgba(47,111,176,0.22)' stroke-width='0.8'%3E%3Cpath d='M20,20 H380 V380 H20 Z'/%3E%3Cpath d='M20,140 H380 M20,260 H380 M140,20 V380 M260,20 V380'/%3E%3Ccircle cx='140' cy='140' r='40' stroke-dasharray='4,4'/%3E%3Cpath d='M60,60 L140,140 M140,140 L220,60' stroke-width='0.5'/%3E%3Cpath d='M260,260 H360 V360 H260 Z' stroke-dasharray='2,2'/%3E%3Ctext x='30' y='45' fill='rgba(47,111,176,0.35)' font-size='10' font-family='monospace'%3EPLAN A-1%3E/text%3E%3C/svg%3E");
+  opacity: 0.14;
+  background-size: contain;
+  background-repeat: no-repeat;
+  z-index: -9;
+}
+
+.bg-layer.marble {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 450px;
+  height: 450px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 500 500'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.015' numOctaves='3' result='n'/%3E%3CfeColorMatrix type='matrix' values='1 0 0 0 0.1  0 1 0 0 0.15  0 0 1 0 0.25  0 0 0 0.1 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  opacity: 0.08;
+  background-size: cover;
+  mix-blend-mode: multiply;
+  z-index: -8;
+}
+
+.bg-layer.waves {
+  position: absolute;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 600' preserveAspectRatio='none'%3E%3Cpath fill='none' stroke='rgba(70,130,255,0.14)' stroke-width='1.5' d='M0,150 Q360,280 720,120 T1440,200'/%3E%3Cpath fill='none' stroke='rgba(70,130,255,0.18)' stroke-width='2' d='M0,220 Q400,100 800,260 T1440,160'/%3E%3Cpath fill='none' stroke='rgba(47,111,176,0.12)' stroke-width='1' d='M0,320 Q320,440 680,300 T1440,380'/%3E%3Cpath fill='none' stroke='rgba(125,185,232,0.22)' stroke-width='1.5' d='M0,450 Q480,280 960,420 T1440,320'/%3E%3C/svg%3E");
+  background-size: cover;
+  opacity: 0.85;
+  z-index: -7;
+}
+
+.bg-layer.glow {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(80px);
+  z-index: -6;
+}
+
+.bg-layer.glow-left {
+  width: 550px;
+  height: 550px;
+  left: -180px;
+  top: -150px;
+  background: radial-gradient(circle, rgba(70, 130, 255, 0.42) 0%, rgba(47, 111, 176, 0.18) 60%, transparent 100%);
+}
+
+.bg-layer.glow-right {
+  width: 620px;
+  height: 620px;
+  right: -250px;
+  bottom: -250px;
+  background: radial-gradient(circle, rgba(231, 211, 174, 0.55) 0%, rgba(185, 138, 78, 0.22) 55%, transparent 100%);
+}
+
+.bg-layer.glow-top {
+  width: 480px;
+  height: 480px;
+  right: 15%;
+  top: -100px;
+  background: radial-gradient(circle, rgba(125, 185, 232, 0.35) 0%, rgba(90, 80, 210, 0.15) 65%, transparent 100%);
+}
+
+
+.bg-layer.glass {
+  position: absolute;
+  border-radius: 50%;
+  backdrop-filter: blur(15px);
+  -webkit-backdrop-filter: blur(15px);
+  background: rgba(255, 255, 255, 0.35);
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  z-index: -5;
+}
+
+.bg-layer.glass-1 {
+  width: 280px;
+  height: 280px;
+  left: -70px;
+  top: -70px;
+}
+
+.bg-layer.glass-2 {
+  width: 220px;
+  height: 220px;
+  right: -80px;
+  top: -80px;
+}
+
+.bg-layer.dots {
+  position: absolute;
+  width: 140px;
+  height: 140px;
+  background-image: radial-gradient(rgba(70, 130, 255, 0.35) 2px, transparent 2px);
+  background-size: 18px 18px;
+  opacity: 0.8;
+  z-index: -4;
+}
+
+.bg-layer.dots-1 {
+  top: 40px;
+  right: 140px;
+}
+
+.bg-layer.dots-2 {
+  bottom: 40px;
+  left: 60px;
+}
+
+.bg-layer.plant {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  width: 460px;
+  height: 460px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 400' fill='rgba(18,52,92,0.18)'%3E%3Cpath d='M400,400 Q320,300 240,240 C280,200 340,180 380,210 C330,240 290,260 240,240 C210,180 200,120 230,60 C200,100 200,150 240,240 C170,240 120,220 80,170 C110,210 150,230 240,240 Q320,300 400,400 Z'/%3E%3Cpath d='M350,400 Q280,330 220,290 C260,260 300,250 330,270 C290,290 260,300 220,290 C200,240 200,190 220,150 C190,190 190,230 220,290 C170,290 130,280 100,240 C120,270 160,280 220,290 Z' opacity='0.7'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-size: contain;
+  opacity: 0.22;
+  z-index: -3;
+}
+
+.heading-row h2,
+.section-head h2 {
+  position: relative;
+  display: inline-block;
+}
+
+.heading-row h2::after,
+.section-head h2::after {
+  content: "";
+  position: absolute;
+  left: -40px;
+  top: -25px;
+  width: 350px;
+  height: 120px;
+  background: radial-gradient(ellipse, rgba(67, 122, 255, 0.14), transparent);
+  filter: blur(20px);
+  z-index: -1;
+  pointer-events: none;
+}

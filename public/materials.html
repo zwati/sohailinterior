@@ -26,58 +26,73 @@
   <main style="position: relative;">
 
     <!-- ============ MATERIALS CATALOG VIEW ============ -->
-    <div class="page active" id="materialsPage">
-      <div class="page-band">
-        <div class="crumb mono">Home / Materials</div>
-      </div>
+    <div class="page active materials" id="materialsPage">
+      <div class="bg-layer gradient"></div>
+      <div class="bg-layer blueprint"></div>
+      <div class="bg-layer marble"></div>
+      <div class="bg-layer waves"></div>
+      <div class="bg-layer glow glow-left"></div>
+      <div class="bg-layer glow glow-right"></div>
+      <div class="bg-layer glass glass-1"></div>
+      <div class="bg-layer glass glass-2"></div>
+      <div class="bg-layer dots dots-1"></div>
+      <div class="bg-layer dots dots-2"></div>
+      <div class="bg-layer plant"></div>
 
-      <div class="toolbar">
-        <div class="toolbar-left">
-          <div class="view-toggle">
-            <button class="active" id="viewGrid4" onclick="setGridCols(4, this)" aria-label="4 Column View"><svg
-                viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <rect x="3" y="3" width="7" height="7" />
-                <rect x="14" y="3" width="7" height="7" />
-                <rect x="3" y="14" width="7" height="7" />
-                <rect x="14" y="14" width="7" height="7" />
-              </svg></button>
-            <button id="viewGrid3" onclick="setGridCols(3, this)" aria-label="3 Column View"><svg viewBox="0 0 24 24"
-                fill="none" stroke="currentColor" stroke-width="2">
-                <rect x="3" y="3" width="5" height="18" />
-                <rect x="10" y="3" width="5" height="18" />
-                <rect x="17" y="3" width="4" height="18" />
-              </svg></button>
-            <button id="viewGrid2" onclick="setGridCols(2, this)" aria-label="2 Column View"><svg viewBox="0 0 24 24"
-                fill="none" stroke="currentColor" stroke-width="2">
-                <rect x="3" y="3" width="8" height="18" />
-                <rect x="13" y="3" width="8" height="18" />
-              </svg></button>
+      <div style="position: relative; z-index: 2;">
+        <div class="page-band">
+          <div class="crumb mono">Home / Materials</div>
+        </div>
+
+        <div class="toolbar">
+          <div class="toolbar-left">
+            <div class="view-toggle">
+              <button class="active" id="viewGrid4" onclick="setGridCols(4, this)" aria-label="4 Column View"><svg
+                  viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <rect x="3" y="3" width="7" height="7" />
+                  <rect x="14" y="3" width="7" height="7" />
+                  <rect x="3" y="14" width="7" height="7" />
+                  <rect x="14" y="14" width="7" height="7" />
+                </svg></button>
+              <button id="viewGrid3" onclick="setGridCols(3, this)" aria-label="3 Column View"><svg viewBox="0 0 24 24"
+                  fill="none" stroke="currentColor" stroke-width="2">
+                  <rect x="3" y="3" width="5" height="18" />
+                  <rect x="10" y="3" width="5" height="18" />
+                  <rect x="17" y="3" width="4" height="18" />
+                </svg></button>
+              <button id="viewGrid2" onclick="setGridCols(2, this)" aria-label="2 Column View"><svg viewBox="0 0 24 24"
+                  fill="none" stroke="currentColor" stroke-width="2">
+                  <rect x="3" y="3" width="8" height="18" />
+                  <rect x="13" y="3" width="8" height="18" />
+                </svg></button>
+            </div>
+            <button id="slideshowToggleBtn" onclick="toggleSlideshow()" aria-label="Toggle Slideshow"
+              style="background: #fff; border: 1px solid var(--line); border-radius: 5px; height: 26px; padding: 0 10px; font-size: 11px; font-weight: 600; color: var(--navy); cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 4px; transition: 0.2s;">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M5 3l14 9-14 9V3z" />
+              </svg> Slideshow: OFF
+            </button>
           </div>
-          <button id="slideshowToggleBtn" onclick="toggleSlideshow()" aria-label="Toggle Slideshow"
-            style="background: #fff; border: 1px solid var(--line); border-radius: 5px; height: 26px; padding: 0 10px; font-size: 11px; font-weight: 600; color: var(--navy); cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 4px; transition: 0.2s;">
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <path d="M5 3l14 9-14 9V3z" />
-            </svg> Slideshow: OFF
-          </button>
+          <select class="sort-select" id="sortSelect" onchange="handleSortChange(this.value)">
+            <option value="best">Default Order</option>
+            <option value="alphabetical">Alphabetically, A–Z</option>
+          </select>
         </div>
-        <select class="sort-select" id="sortSelect" onchange="handleSortChange(this.value)">
-          <option value="best">Default Order</option>
-          <option value="alphabetical">Alphabetically, A–Z</option>
-        </select>
-      </div>
 
-      <!-- Grid -->
-      <div class="catalog-wrap">
-        <div class="pgrid" id="catalogGrid">
-          <!-- Populated dynamically by materials.js -->
+        <!-- Grid -->
+        <div class="catalog-wrap">
+          <div class="pgrid" id="catalogGrid">
+            <!-- Populated dynamically by materials.js -->
+          </div>
         </div>
-      </div>
 
-      <!-- Pagination -->
-      <div class="pagination" id="catalogPagination">
-        <!-- Rendered by materials.js -->
+        <!-- Pagination -->
+        <div class="pagination" id="catalogPagination">
+          <!-- Rendered by materials.js -->
+        </div>
       </div>
     </div>
+
 
     <!-- ============ CATEGORY DETAIL VIEW ============ -->
     <div class="page" id="detailPage" style="display: none;">

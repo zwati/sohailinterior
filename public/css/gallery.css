@@ -1,7 +1,8 @@
 /* Gallery Page Specific Styling */
 body {
-  background: url('/images/varity-bg.jpg') center/cover no-repeat fixed !important;
+  background: var(--canvas);
 }
+
 
 .page-band {
   background: var(--gray-band);

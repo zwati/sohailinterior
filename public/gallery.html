@@ -29,21 +29,36 @@
         <div class="crumb mono">Home / Gallery</div>
       </div>
 
-      <section class="section" style="padding-top:40px;">
-        <!-- Filter chips populated dynamically by gallery.js -->
-        <div class="filter-row" id="galleryFilters">
-          <div class="chip active" onclick="filterGallery('all', this)">All</div>
-        </div>
+      <section class="section luxury-bg-section" style="padding-top:40px;">
+        <div class="bg-layer gradient"></div>
+        <div class="bg-layer blueprint"></div>
+        <div class="bg-layer marble"></div>
+        <div class="bg-layer waves"></div>
+        <div class="bg-layer glow glow-left"></div>
+        <div class="bg-layer glow glow-right"></div>
+        <div class="bg-layer glass glass-1"></div>
+        <div class="bg-layer glass glass-2"></div>
+        <div class="bg-layer dots dots-1"></div>
+        <div class="bg-layer dots dots-2"></div>
+        <div class="bg-layer plant"></div>
 
-        <!-- Gallery Grid -->
-        <div class="gallery" id="galleryGrid">
-          <div style="grid-column: span 3; text-align:center; padding: 60px; color: #6b7f97;">Loading gallery folders
-            from Google Drive...</div>
-        </div>
+        <div style="position: relative; z-index: 2;">
+          <!-- Filter chips populated dynamically by gallery.js -->
+          <div class="filter-row" id="galleryFilters">
+            <div class="chip active" onclick="filterGallery('all', this)">All</div>
+          </div>
 
-        <!-- Pagination -->
-        <div class="pagination" id="galleryPagination"></div>
+          <!-- Gallery Grid -->
+          <div class="gallery" id="galleryGrid">
+            <div style="grid-column: span 3; text-align:center; padding: 60px; color: #6b7f97;">Loading gallery folders
+              from Google Drive...</div>
+          </div>
+
+          <!-- Pagination -->
+          <div class="pagination" id="galleryPagination"></div>
+        </div>
       </section>
+
     </div>
   </main>
 
