@@ -841,3 +841,187 @@ document.addEventListener("mousemove", (e) => {
   });
 });
 
+
+// ─── PWA Service Worker Registration & Custom Install Prompt ────────────────────
+let deferredPrompt = null;
+
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/sw.js')
+      .then(reg => console.log('PWA Service Worker registered:', reg.scope))
+      .catch(err => console.log('PWA Service Worker registration failed:', err));
+  });
+}
+
+window.addEventListener('beforeinstallprompt', (e) => {
+  // Prevent mini-infobar from appearing on mobile
+  e.preventDefault();
+  // Stash the event so it can be triggered later
+  deferredPrompt = e;
+  // Trigger custom install prompt modal
+  showPwaInstallModal();
+});
+
+function showPwaInstallModal() {
+  let modal = document.getElementById('pwaInstallModal');
+  if (!modal) {
+    modal = document.createElement('div');
+    modal.id = 'pwaInstallModal';
+    modal.className = 'pwa-modal-overlay';
+    modal.innerHTML = `
+      <div class="pwa-modal-card">
+        <button class="pwa-modal-close" onclick="hidePwaModal()">&times;</button>
+        <img src="/logo/SI_square.png" alt="Sohail Interior App Logo" class="pwa-app-logo">
+        <h3>Install Sohail Interior</h3>
+        <p>Get fast full-resolution access to our premium catalog, offline portfolio, and direct consultant support.</p>
+        <div class="pwa-modal-buttons">
+          <button class="pwa-btn pwa-btn-primary" id="pwaInstallBtn">Install App</button>
+          <button class="pwa-btn pwa-btn-ghost" onclick="hidePwaModal()">Later</button>
+        </div>
+      </div>
+    `;
+    
+    // Inject self-contained styles for the modal
+    const style = document.createElement('style');
+    style.innerHTML = `
+      .pwa-modal-overlay {
+        position: fixed;
+        inset: 0;
+        background: rgba(13, 35, 64, 0.6);
+        backdrop-filter: blur(8px);
+        z-index: 99999;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 20px;
+        animation: pwaFadeIn 0.3s ease;
+      }
+      .pwa-modal-card {
+        background: #ffffff;
+        border-radius: 18px;
+        padding: 34px 28px;
+        width: 100%;
+        max-width: 360px;
+        box-shadow: 0 12px 34px rgba(13, 35, 64, 0.22);
+        border: 1px solid rgba(255, 255, 255, 0.25);
+        text-align: center;
+        position: relative;
+        animation: pwaSlideIn 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      }
+      .pwa-modal-close {
+        position: absolute;
+        top: 15px;
+        right: 18px;
+        background: none;
+        border: none;
+        font-size: 24px;
+        font-weight: 300;
+        color: #7c92ab;
+        cursor: pointer;
+        line-height: 1;
+      }
+      .pwa-app-logo {
+        width: 64px;
+        height: 64px;
+        border-radius: 14px;
+        object-fit: contain;
+        margin-bottom: 16px;
+        box-shadow: 0 4px 12px rgba(18, 52, 92, 0.08);
+      }
+      .pwa-modal-card h3 {
+        font-size: 19px;
+        color: #0d2340;
+        font-weight: 600;
+        margin: 0 0 8px;
+        font-family: 'Inter', sans-serif;
+      }
+      .pwa-modal-card p {
+        font-size: 12.5px;
+        line-height: 1.6;
+        color: #5a738e;
+        margin: 0 0 24px;
+        font-family: 'Inter', sans-serif;
+      }
+      .pwa-modal-buttons {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+      }
+      .pwa-btn {
+        width: 100%;
+        padding: 11px 20px;
+        border-radius: 9px;
+        font-size: 13px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        font-family: 'Inter', sans-serif;
+      }
+      .pwa-btn-primary {
+        background: #0d2340;
+        color: #ffffff;
+        border: 1px solid #0d2340;
+      }
+      .pwa-btn-primary:hover {
+        background: #1d3c63;
+        border-color: #1d3c63;
+      }
+      .pwa-btn-ghost {
+        background: transparent;
+        color: #7c92ab;
+        border: 1px solid transparent;
+      }
+      .pwa-btn-ghost:hover {
+        background: rgba(13, 35, 64, 0.04);
+        color: #0d2340;
+      }
+      @keyframes pwaFadeIn {
+        from { opacity: 0; }
+        to { opacity: 1; }
+      }
+      @keyframes pwaSlideIn {
+        from { transform: translateY(20px); opacity: 0; }
+        to { transform: translateY(0); opacity: 1; }
+      }
+    `;
+    document.head.appendChild(style);
+    document.body.appendChild(modal);
+  }
+
+  const installBtn = document.getElementById('pwaInstallBtn');
+  if (installBtn) {
+    installBtn.onclick = () => {
+      if (deferredPrompt) {
+        deferredPrompt.prompt();
+        deferredPrompt.userChoice.then((choiceResult) => {
+          if (choiceResult.outcome === 'accepted') {
+            console.log('User accepted the PWA install prompt');
+          }
+          deferredPrompt = null;
+          window.hidePwaModal();
+        });
+      }
+    };
+  }
+
+  modal.style.display = 'flex';
+  document.body.style.overflow = 'hidden'; // prevent scrolling behind
+}
+
+window.hidePwaModal = function() {
+  const modal = document.getElementById('pwaInstallModal');
+  if (modal) {
+    modal.style.display = 'none';
+  }
+  document.body.style.overflow = '';
+};
+
+// Close modal if clicked outside card
+document.addEventListener('click', (e) => {
+  const modal = document.getElementById('pwaInstallModal');
+  if (e.target === modal) {
+    window.hidePwaModal();
+  }
+});
+
+
