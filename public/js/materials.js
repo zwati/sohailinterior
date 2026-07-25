@@ -766,15 +766,178 @@ window.changeGalleryPage = function (page, slug) {
   }
 };
 
+let modalQty = 1;
+
 window.selectGalleryItem = function (slug, itemId) {
   const cat = categoriesData.find(c => c.slug === slug);
   if (!cat) return;
   const item = cat.items.find(it => it.id === itemId);
   if (item) {
     activeItem = item;
-    syncActiveItemState(cat);
+    modalQty = 1; // Reset stepper qty in modal
+    openItemModal(cat, item);
   }
 };
+
+function openItemModal(cat, item) {
+  const modal = document.getElementById("itemModal");
+  if (!modal) return;
+
+  // 1. Populate Name and item count details
+  document.getElementById("mName").textContent = cat.name;
+  
+  const countEl = document.getElementById("mItemCount");
+  if (countEl) {
+    countEl.textContent = cat.items.length > 0
+      ? `${cat.items.length} items in this collection`
+      : 'Collection coming soon';
+  }
+
+  // 2. Load Item pricing details dynamically
+  const materialsItem = window.materialsData.find(m => m.id === item.id) || {
+    priceText: 'Contact for pricing'
+  };
+
+  const meta = STATIC_METADATA[cat.slug] || {};
+  const priceEl = document.getElementById("mPrice");
+  if (priceEl) {
+    if (cat.slug === 'blinds') {
+      priceEl.textContent = selectedFinish === 'Zebra' ? 'Rs.360 / sqft' : 'Rs.250 / sqft';
+    } else {
+      priceEl.textContent = materialsItem.priceText || meta.priceText || 'Contact for pricing';
+    }
+  }
+
+  // Setup category name and item descriptions
+  document.getElementById("mCat").textContent = cat.name;
+  document.getElementById("mDesc").textContent = meta.desc || `Premium quality ${cat.name} collection from Sohail Interior.`;
+
+  // 3. Render Media Image / Video
+  const mediaEl = document.getElementById("mMainMedia");
+  if (mediaEl) {
+    if (item.type === 'video') {
+      mediaEl.innerHTML = `<video src="${item.src}" controls autoplay muted style="width:100%;height:100%;object-fit:cover;border-radius:14px;"></video>`;
+      mediaEl.style.backgroundImage = '';
+    } else {
+      mediaEl.innerHTML = '';
+      mediaEl.style.backgroundImage = `url('${item.src}')`;
+      mediaEl.style.backgroundSize = 'cover';
+      mediaEl.style.backgroundPosition = 'center';
+    }
+  }
+
+  // 4. Populate Finishes options
+  const finishArea = document.getElementById("mFinishArea");
+  const finishesContainer = document.getElementById("mFinishes");
+  if (finishArea && finishesContainer) {
+    if (meta.finishes && meta.finishes.length > 0) {
+      finishArea.style.display = 'block';
+      finishesContainer.innerHTML = meta.finishes.map(f => `
+        <button class="opt-btn ${f === selectedFinish ? 'active' : ''}" onclick="selectModalFinish(this, '${f}', '${cat.slug}', '${item.id}')">${f}</button>
+      `).join('');
+    } else {
+      finishArea.style.display = 'none';
+    }
+  }
+
+  // 5. Quantity Stepper
+  const qtyEl = document.getElementById("mQty");
+  if (qtyEl) qtyEl.textContent = modalQty;
+
+  // 6. Bind Wishlist Button State
+  const wishBtn = document.getElementById("mWishlistBtn");
+  const updateWishButtonState = () => {
+    if (wishBtn) {
+      const saved = window.Wishlist.get();
+      if (saved.includes(item.id)) {
+        wishBtn.textContent = '♥ Saved';
+        wishBtn.style.color = '#d9534f';
+      } else {
+        wishBtn.textContent = '♥ Save';
+        wishBtn.style.color = '';
+      }
+    }
+  };
+  updateWishButtonState();
+
+  if (wishBtn) {
+    wishBtn.onclick = () => {
+      window.Wishlist.toggle(item.id);
+      updateWishButtonState();
+    };
+  }
+
+  // 7. Bind Quote click
+  const addQuoteBtn = document.getElementById("mAddQuoteBtn");
+  if (addQuoteBtn) {
+    addQuoteBtn.onclick = () => {
+      window.QuoteCart.add(item.id, selectedFinish, selectedColor, modalQty);
+      if (window.showToast) {
+        window.showToast(`"${item.name}" added to quote list successfully!`);
+      }
+    };
+  }
+
+  // 8. Bind WhatsApp click handler
+  const waBtn = document.getElementById("mWhatsAppBtn");
+  if (waBtn) {
+    waBtn.onclick = () => {
+      const displayPrice = (cat.slug === 'blinds' && selectedFinish === 'Zebra') ? 'Rs.360 / sqft' : ((cat.slug === 'blinds') ? 'Rs.250 / sqft' : (materialsItem.priceText || meta.priceText || 'Contact for pricing'));
+      const finishDetail = (selectedFinish && selectedFinish !== 'Standard Finish') ? ` (${selectedFinish} Finish)` : '';
+      const cleanName = formatFileName(item.name);
+      const msg = `Hi Sohail Interior, I'm interested in your ${cat.name} collection - Item: ${cleanName}${finishDetail} (Price: ${displayPrice}). Could you share details?`;
+      window.open(`https://wa.me/923115813505?text=${encodeURIComponent(msg)}`, '_blank');
+    };
+  }
+
+  // Show Modal Overlay
+  modal.style.display = "flex";
+  document.body.style.overflow = "hidden"; // disable background scroll
+}
+
+window.stepModalQty = function (delta) {
+  modalQty = Math.max(1, modalQty + delta);
+  const el = document.getElementById("mQty");
+  if (el) el.textContent = modalQty;
+};
+
+window.selectModalFinish = function (btn, finish, slug, itemId) {
+  selectedFinish = finish;
+  const buttons = btn.parentElement.querySelectorAll(".opt-btn");
+  buttons.forEach(b => b.classList.remove("active"));
+  btn.classList.add("active");
+
+  if (slug === 'blinds') {
+    const priceEl = document.getElementById("mPrice");
+    if (priceEl) {
+      priceEl.textContent = finish === 'Zebra' ? 'Rs.360 / sqft' : 'Rs.250 / sqft';
+    }
+  }
+};
+
+window.closeItemModal = function () {
+  const modal = document.getElementById("itemModal");
+  if (modal) {
+    modal.style.display = "none";
+    // Pause any playing modal video
+    const video = modal.querySelector("video");
+    if (video) video.pause();
+  }
+  document.body.style.overflow = ""; // restore scroll
+};
+
+// Bind click outside modal-container to close
+document.addEventListener("DOMContentLoaded", () => {
+  const modal = document.getElementById("itemModal");
+  if (modal) {
+    modal.addEventListener("click", (e) => {
+      if (e.target === modal) {
+        window.closeItemModal();
+      }
+    });
+  }
+});
+
 
 // ─── Qty stepper ─────────────────────────────────────────────────────────────
 window.stepQty = function (delta) {

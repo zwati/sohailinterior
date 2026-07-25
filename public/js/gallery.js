@@ -24,19 +24,19 @@ function renderFilters() {
       </div>
       <div class="split-menu" id="gallerySplitMenu">
         ${categories.map(cat => {
-          const isActive = cat.slug === activeGalleryCategory;
-          return `
+    const isActive = cat.slug === activeGalleryCategory;
+    return `
             <button class="split-item ${isActive ? 'active' : ''}" onclick="filterGallery('${cat.slug}')">
               ${cat.name}
             </button>
           `;
-        }).join('')}
+  }).join('')}
       </div>
     </div>
   `;
 }
 
-window.toggleGalleryFilterMenu = function(e) {
+window.toggleGalleryFilterMenu = function (e) {
   e.stopPropagation();
   const menu = document.getElementById('gallerySplitMenu');
   if (menu) {
@@ -52,7 +52,7 @@ document.addEventListener('click', () => {
 });
 
 // 3. Filter category trigger
-window.filterGallery = function(cat) {
+window.filterGallery = function (cat) {
   // Update state
   activeGalleryCategory = cat;
   currentGalleryPage = 1;
@@ -74,7 +74,7 @@ window.filterGallery = function(cat) {
   renderGalleryGrid();
 };
 
-window.changeGalleryPage = function(page) {
+window.changeGalleryPage = function (page) {
   currentGalleryPage = page;
   renderGalleryGrid();
   document.getElementById("galleryPage").scrollIntoView({ behavior: "smooth" });
@@ -119,13 +119,12 @@ function renderGalleryGrid() {
         ${item.isNew ? '<div class="new-pill mono">New</div>' : ''}
         <div class="loading-glass"></div>
         ${isVideo
-          ? `<video src="${item.src}" muted playsinline></video>`
-          : `<img src="${item.src}" alt="${item.name || 'Sohail Interior'}">`
-        }
+        ? `<video src="${item.src}" muted playsinline></video>`
+        : `<img src="${item.src}" alt="${item.name || 'Sohail Interior'}">`
+      }
         <div class="overlay">
           <div class="cat mono">${item.categoryName}</div>
           <h4>${item.name || 'Sohail Interior'}</h4>
-          <div class="meta">Live synced project from Google Drive</div>
         </div>
       </div>
     `;

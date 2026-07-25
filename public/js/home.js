@@ -161,7 +161,7 @@ const slidesData = [
   },
   {
     type: 'image',
-    imageSrc: '/images/hero/hero-slideshow-1.jpg',
+    imageSrc: '/images/hero/hero-slideshow-1.png',
     title: 'Crafted <em>Interior Finishes</em>',
     description: 'Bespoke architectural wall and ceiling paneling engineered for modern aesthetic living in Sahiwal & Lahore.',
     btnText: 'Explore Gallery',
@@ -183,7 +183,7 @@ const slidesData = [
     title: 'Signature <em>Design & Execution</em>',
     description: 'Full site consultation, custom measurement, and professional guaranteed installation for your space.',
     btnText: 'Book Consultation',
-    btnLink: '/portfolio',
+    btnLink: 'https://wa.me/923115813505?text=Hi%20Sohail%20Interior%2C%20I%20would%20like%20to%20book%20a%20consultation%20for%20my%20space.',
     duration: 6000
   }
 ];
@@ -210,40 +210,96 @@ function triggerTextEffects(slide) {
     <h1 style="animation: wipeIn 0.7s ease 0.15s forwards; opacity: 0;">${slide.title}</h1>
     <p style="animation: popUp 0.7s cubic-bezier(0.175, 0.885, 0.32, 1.275) 0.25s forwards; opacity: 0;">${slide.description}</p>
     <div class="btn-row" style="margin-top: 24px; animation: fadeIn 0.7s ease 0.35s forwards; opacity: 0;">
-      <button class="btn btn-primary" onclick="window.location.href='${slide.btnLink || '/materials'}'">
+      <button class="btn btn-primary" onclick="${(slide.btnLink || '').startsWith('http') ? `window.open('${slide.btnLink}', '_blank')` : `window.location.href='${slide.btnLink || '/materials'}'`}">
         ${slide.btnText}
       </button>
     </div>
   `;
 }
 
+function getTransitionClass(fromIdx, toIdx) {
+  if (toIdx === 1) return "transition-flip";
+  if (toIdx === 2) return "transition-switch";
+  if (toIdx === 3) return "transition-gallery";
+  return "transition-flip";
+}
+
 function renderSlide(slideIdx, immediate = false) {
   const nextIdx = (slideIdx + slidesData.length) % slidesData.length;
   const copyEl = document.getElementById("heroCopy");
-  const bgImg = document.getElementById("heroBgImg");
-  const bgVideo = document.getElementById("heroBgVideo");
+  const container = document.getElementById("heroSlidesContainer");
+  const slides = container ? container.querySelectorAll(".hero-slide") : [];
+
+  if (slides.length === 0) return;
 
   const performDOMUpdate = () => {
+    const fromIdx = currentSlideIdx;
     currentSlideIdx = nextIdx;
     const slide = slidesData[currentSlideIdx];
     const dots = document.querySelectorAll("#heroDots span");
 
-    if (slide.type === 'video') {
-      if (bgVideo && (bgVideo.readyState >= 2 || videoReadyHandled)) {
-        bgVideo.classList.add("active-media");
-        bgVideo.loop = false; // Video plays ONCE
-        try {
-          bgVideo.currentTime = 0;
-          bgVideo.play();
-        } catch (_) {}
-      } else if (bgImg) {
-        bgImg.style.backgroundImage = "url('/images/hero/hero-img.png')";
+    if (immediate || fromIdx === nextIdx) {
+      // Immediate slide swap (no animation)
+      slides.forEach((s, idx) => {
+        if (idx === nextIdx) {
+          s.classList.add("active");
+          const video = s.querySelector("video");
+          if (video) {
+            video.currentTime = 0;
+            video.play().catch(() => {});
+          }
+        } else {
+          s.classList.remove("active");
+          const video = s.querySelector("video");
+          if (video) video.pause();
+        }
+        s.classList.remove("outgoing", "incoming");
+      });
+      if (container) {
+        container.className = "hero-slides-container";
       }
     } else {
-      if (bgVideo) bgVideo.classList.remove("active-media");
-      if (bgImg && slide.imageSrc) {
-        bgImg.style.backgroundImage = `url('${slide.imageSrc}')`;
+      // 3D Animated transition
+      const transitionClass = getTransitionClass(fromIdx, nextIdx);
+      if (container) {
+        container.className = `hero-slides-container ${transitionClass}`;
       }
+
+      slides.forEach((s, idx) => {
+        if (idx === fromIdx) {
+          s.classList.remove("active");
+          s.classList.add("outgoing");
+        } else if (idx === nextIdx) {
+          s.classList.add("incoming");
+          const video = s.querySelector("video");
+          if (video) {
+            video.currentTime = 0;
+            video.play().catch(() => {});
+          }
+        } else {
+          s.classList.remove("active", "outgoing", "incoming");
+        }
+      });
+
+      // Cleanup after animation completes (1.2s = 1200ms)
+      setTimeout(() => {
+        slides.forEach((s, idx) => {
+          if (idx === nextIdx) {
+            s.classList.add("active");
+          } else {
+            s.classList.remove("active");
+            // Pause video if it is the outgoing slide
+            if (idx === 0) {
+              const video = s.querySelector("video");
+              if (video) video.pause();
+            }
+          }
+          s.classList.remove("outgoing", "incoming");
+        });
+        if (container) {
+          container.className = "hero-slides-container";
+        }
+      }, 1200);
     }
 
     // Update dots indicator
@@ -270,7 +326,6 @@ function renderSlide(slideIdx, immediate = false) {
   } else {
     // Closing phase: fade out copy
     if (copyEl) copyEl.classList.add("copy-closing");
-
     setTimeout(performDOMUpdate, 320);
   }
 }
@@ -311,9 +366,6 @@ function setupVideoReadyListener() {
   const onVideoReady = () => {
     if (videoReadyHandled) return;
     videoReadyHandled = true;
-
-    // Transition to video background when ready
-    bgVideo.classList.add("active-media");
 
     // If currently on slide 0 (video slide), re-trigger text effects & entrance as requested
     if (currentSlideIdx === 0) {

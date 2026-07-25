@@ -1,16 +1,21 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Admin Dashboard — Sohail Interior</title>
-  <meta name="description" content="Admin panel for managing and uploading portfolio project photos and designs straight to Google Drive.">
+  <meta name="description"
+    content="Admin panel for managing and uploading portfolio project photos and designs straight to Google Drive.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,500&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,500&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap"
+    rel="stylesheet">
   <link rel="stylesheet" href="/css/common.css">
   <link rel="icon" type="image/png" href="/logo/SI_square.png">
   <link rel="stylesheet" href="/css/admin.css">
 </head>
+
 <body>
 
   <page-loader glass></page-loader>
@@ -19,25 +24,27 @@
 
   <!-- Main Content -->
   <main>
-    
+
     <!-- Login Screen -->
     <div class="login-wrap" id="loginStage">
-      <div class="blob b1" style="opacity:.12; width: 240px; height: 240px; position: absolute; border-radius: 50%; filter: blur(2px); background: linear-gradient(135deg, var(--sky), var(--blue)); top: -50px; right: 6%;"></div>
+      <div class="blob b1"
+        style="opacity:.12; width: 240px; height: 240px; position: absolute; border-radius: 50%; filter: blur(2px); background: linear-gradient(135deg, var(--sky), var(--blue)); top: -50px; right: 6%;">
+      </div>
       <div class="login-card" id="loginCard">
-        <img src="/logo/SI_square.png" alt="Sohail Interior Square Logo" class="brand-mark" style="object-fit: contain; margin:0 auto 16px;">
+        <img src="/logo/SI_square.png" alt="Sohail Interior Square Logo" class="brand-mark"
+          style="object-fit: contain; margin:0 auto 16px;">
         <h2>Admin sign in</h2>
         <p class="sub">Publish new articles &mdash; Sohail's account, not the client's.</p>
         <div class="field">
           <label for="adminEmail">Email</label>
-          <input type="email" id="adminEmail" placeholder="sohail@sohailinterior.com">
+          <input type="email" id="adminEmail" placeholder="Enter your ID">
         </div>
         <div class="field">
           <label for="adminPassword">Password</label>
-          <input type="password" id="adminPassword" placeholder="••••••••••">
+          <input type="password" id="adminPassword" placeholder="Password">
         </div>
-        <button class="btn btn-primary" style="width:100%; justify-content:center;" onclick="enterDashboard()">Sign in &rarr;</button>
-        <div class="divider mono">backend status</div>
-        <button class="drive-btn" disabled>🔒 Google Drive &middot; connected via service account</button>
+        <button class="btn btn-primary" style="width:100%; justify-content:center;" onclick="enterDashboard()">Sign in
+          &rarr;</button>
       </div>
     </div>
 
@@ -47,45 +54,28 @@
         <h2>Sohail's Dashboard</h2>
         <div class="conn-pill"><span class="dotpulse"></span>Drive synced &middot; connected</div>
       </div>
-      
+
       <!-- Tab Controls -->
-      <div class="admin-tabs" style="display: flex; gap: 12px; margin: 0 auto 24px; max-width: 1220px; width: 100%; border-bottom: 1px solid var(--line); padding-bottom: 12px;">
-        <button class="chip active" id="tabGalleryBtn" onclick="switchAdminTab('gallery')" style="border-radius: 8px; padding: 8px 18px; font-size: 13px; font-weight: 600; cursor: pointer; border: 1px solid var(--line); background: white; transition: all 0.2s;">Gallery Management</button>
-        <button class="chip" id="tabPortfolioBtn" onclick="switchAdminTab('portfolio')" style="border-radius: 8px; padding: 8px 18px; font-size: 13px; font-weight: 600; cursor: pointer; border: 1px solid var(--line); background: white; transition: all 0.2s;">Portfolio Management</button>
-        <button class="chip" id="tabControlsBtn" onclick="switchAdminTab('controls')" style="border-radius: 8px; padding: 8px 18px; font-size: 13px; font-weight: 600; cursor: pointer; border: 1px solid var(--line); background: white; transition: all 0.2s;">Site Controls</button>
+      <div class="admin-tabs"
+        style="display: flex; gap: 12px; margin: 0 auto 24px; max-width: 1220px; width: 100%; border-bottom: 1px solid var(--line); padding-bottom: 12px;">
+        <button class="chip active" id="tabGalleryBtn" onclick="switchAdminTab('gallery')"
+          style="border-radius: 8px; padding: 8px 18px; font-size: 13px; font-weight: 600; cursor: pointer; border: 1px solid var(--line); background: white; transition: all 0.2s;">Gallery
+          Management</button>
+        <button class="chip" id="tabPortfolioBtn" onclick="switchAdminTab('portfolio')"
+          style="border-radius: 8px; padding: 8px 18px; font-size: 13px; font-weight: 600; cursor: pointer; border: 1px solid var(--line); background: white; transition: all 0.2s;">Portfolio
+          Management</button>
       </div>
 
       <div class="dash-grid">
-        <!-- GALLERY VIEW (UPLOAD CARD + TABLE CARD) -->
-        <div id="galleryUploadContainer" class="upload-card">
-          <h3>Publish new article</h3>
-          <p class="hint">Uploads push straight to Drive &mdash; full resolution, no loss.</p>
-          <div class="dropzone" id="dropzone">
-            ⤒ Drop photos here, or tap to browse<br>
-            <span style="opacity:.6;">full resolution, no limit</span>
-          </div>
-          <input type="file" id="fileInput" multiple style="display:none;">
-          <div id="filePreviews" style="display:flex; gap:8px; margin-bottom:12px; overflow-x:auto;"></div>
-          <div class="select-row">
-            <input type="text" id="projectTitle" placeholder="Project title" aria-label="Project title">
-          </div>
-          <div class="select-row">
-            <select id="projectCategory" aria-label="Category Selection">
-              <option value="Residential">Residential</option>
-              <option value="Commercial">Commercial</option>
-              <option value="Ceiling Work">Ceiling Work</option>
-            </select>
-          </div>
-          <button class="btn btn-primary" id="uploadBtn" style="width:100%; justify-content:center;" onclick="uploadArticle()">Publish to Gallery</button>
-          <p id="uploadStatus" style="font-size:11px; margin-top:8px; text-align:center; font-family:monospace;"></p>
-        </div>
-
-        <div id="galleryTableContainer" class="table-card">
+        <div id="galleryTableContainer" class="table-card" style="grid-column: 1 / -1;">
           <!-- Search by ID -->
           <div style="padding: 16px; border-bottom: 1px solid var(--line); display: flex; gap: 10px;">
-            <input type="text" id="adminSearchId" placeholder="Search by ID (e.g. img-si-blinds-1)" style="flex: 1; padding: 8px 12px; border-radius: 8px; border: 1px solid var(--line); font-size: 13px; outline: none; box-sizing: border-box; height: 38px;">
-            <button class="btn btn-primary" onclick="searchAdminItemById()" style="padding: 0 16px; font-size: 13px; height: 38px; justify-content: center; display: inline-flex; align-items: center;">Search</button>
-            <button class="btn btn-ghost" onclick="clearAdminSearch()" style="padding: 0 12px; font-size: 13px; border-color: var(--line); height: 38px; justify-content: center; display: inline-flex; align-items: center;">Clear</button>
+            <input type="text" id="adminSearchId" placeholder="Search by ID (e.g. img-si-blinds-1)"
+              style="flex: 1; padding: 8px 12px; border-radius: 8px; border: 1px solid var(--line); font-size: 13px; outline: none; box-sizing: border-box; height: 38px;">
+            <button class="btn btn-primary" onclick="searchAdminItemById()"
+              style="padding: 0 16px; font-size: 13px; height: 38px; justify-content: center; display: inline-flex; align-items: center;">Search</button>
+            <button class="btn btn-ghost" onclick="clearAdminSearch()"
+              style="padding: 0 12px; font-size: 13px; border-color: var(--line); height: 38px; justify-content: center; display: inline-flex; align-items: center;">Clear</button>
           </div>
 
           <div class="thead">
@@ -100,9 +90,10 @@
         <!-- PORTFOLIO VIEW (EDIT CARD + TABLE CARD) -->
         <div id="portfolioEditContainer" class="upload-card" style="display: none;">
           <h3>Edit Portfolio Project</h3>
-          <p class="hint">Select a project folder from the table to edit its details. Changes save directly to Google Drive as metadata.json.</p>
+          <p class="hint">Select a project folder from the table to edit its details. Changes save directly to Google
+            Drive as metadata.json.</p>
           <input type="hidden" id="editProjectId">
-          
+
           <div class="field">
             <label for="editProjectName">Project Title / Name</label>
             <input type="text" id="editProjectName" placeholder="e.g. Stepped PVC Updown Ceiling">
@@ -141,11 +132,15 @@
 
           <div class="field" style="margin-top: 14px;">
             <label for="editProjectDesc">Description</label>
-            <textarea id="editProjectDesc" rows="4" style="width: 100%; padding: 12px 14px; border-radius: 10px; border: 1px solid var(--line); font-family: 'Inter', sans-serif; font-size: 13.5px; outline: none; resize: vertical;" placeholder="Enter project description..."></textarea>
+            <textarea id="editProjectDesc" rows="4"
+              style="width: 100%; padding: 12px 14px; border-radius: 10px; border: 1px solid var(--line); font-family: 'Inter', sans-serif; font-size: 13.5px; outline: none; resize: vertical;"
+              placeholder="Enter project description..."></textarea>
           </div>
 
-          <button class="btn btn-primary" id="saveProjectBtn" style="width:100%; justify-content:center;" onclick="saveProjectMetadata()" disabled>Save Details to Drive</button>
-          <p id="saveProjectStatus" style="font-size:11px; margin-top:8px; text-align:center; font-family:monospace;"></p>
+          <button class="btn btn-primary" id="saveProjectBtn" style="width:100%; justify-content:center;"
+            onclick="saveProjectMetadata()" disabled>Save Details to Drive</button>
+          <p id="saveProjectStatus" style="font-size:11px; margin-top:8px; text-align:center; font-family:monospace;">
+          </p>
         </div>
 
         <div id="portfolioTableContainer" class="table-card" style="display: none;">
@@ -160,33 +155,6 @@
 
         <div id="adminPagination" class="pagination-container"></div>
 
-        <!-- SITE CONTROLS PANEL -->
-        <div id="siteControlsContainer" style="display:none; grid-column: 1 / -1;">
-          <div class="upload-card" style="max-width: 560px; margin: 0 auto;">
-            <h3 style="margin-bottom: 6px;">Site Controls</h3>
-            <p class="hint" style="margin-bottom: 24px;">Manage live visibility of pages and features across the site.</p>
-
-            <!-- Materials Catalog Lock -->
-            <div style="display:flex; align-items:center; justify-content:space-between; padding: 18px 20px; border: 1px solid var(--line); border-radius: 12px; background: #f8fafc;">
-              <div>
-                <div style="font-size:14px; font-weight:600; color:var(--navy); margin-bottom:3px;">Materials Catalog</div>
-                <div style="font-size:12px; color:#6b7f97;">Show or hide the glass lock overlay on the Materials page.</div>
-              </div>
-              <label id="materialsLockLabel" style="display:flex; align-items:center; gap:10px; cursor:pointer; flex-shrink:0;">
-                <span id="materialsLockStatusText" style="font-size:12px; font-weight:600; font-family:monospace; color:#6b7f97;">LOCKED</span>
-                <div style="position:relative; width:44px; height:24px;">
-                  <input type="checkbox" id="materialsLockToggle" onchange="toggleMaterialsLock(this.checked)"
-                    style="opacity:0; width:0; height:0; position:absolute;">
-                  <span id="materialsLockTrack" style="position:absolute; inset:0; border-radius:999px; background:#cbd5e1; transition:.25s; cursor:pointer;" onclick="document.getElementById('materialsLockToggle').click();"></span>
-                  <span id="materialsLockThumb" style="position:absolute; top:3px; left:3px; width:18px; height:18px; border-radius:50%; background:#fff; box-shadow:0 1px 4px rgba(0,0,0,.18); transition:.25s; cursor:pointer;" onclick="document.getElementById('materialsLockToggle').click();"></span>
-                </div>
-              </label>
-            </div>
-
-            <p id="materialsLockSaveStatus" style="font-size:11px; margin-top:10px; text-align:center; font-family:monospace; color:#6b7f97;"></p>
-          </div>
-        </div>
-
       </div>
     </div>
 
@@ -199,4 +167,5 @@
   <script src="/js/common.js" defer></script>
   <script src="/js/admin.js" defer></script>
 </body>
+
 </html>

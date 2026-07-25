@@ -317,11 +317,11 @@ class SiteFooter extends HTMLElement {
             <h5>Get in touch</h5>
             <div class="contact-line">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 6-9 12-9 12S3 16 3 10a9 9 0 0 1 18 0Z"/><circle cx="12" cy="10" r="3"/></svg>
-              Farid Town, Sahiwal, Punjab, Pakistan
+              Furniture Bazar, Sohail Interiors, Sahiwal
             </div>
             <div class="contact-line">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16v16H4z"/><path d="m4 4 8 8 8-8"/></svg>
-              hello@sohailinterior.pk
+              sohailinteriors7@gmail.com
             </div>
             <div class="contact-line">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3 19.5 19.5 0 0 1-6-6 19.8 19.8 0 0 1-3-8.7A2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1 1 .3 2 .6 3a2 2 0 0 1-.5 2.1L8 10a16 16 0 0 0 6 6l1.2-1.2a2 2 0 0 1 2.1-.5c1 .3 2 .5 3 .6a2 2 0 0 1 1.7 2Z"/></svg>
@@ -340,7 +340,7 @@ class SiteFooter extends HTMLElement {
             <h5>Our Location</h5>
             <a href="https://maps.app.goo.gl/uCmiaGv23uXGmtD89?g_st=awb" target="_blank" rel="noopener noreferrer" style="display: block; width: 100%; height: 160px; border-radius: 10px; overflow: hidden; position: relative;">
               <iframe
-                src="https://maps.google.com/maps?q=Sohail%20Interior,%20Farid%20Town,%20Sahiwal&t=&z=13&ie=UTF8&iwloc=&output=embed"
+                src="https://maps.google.com/maps?q=Sohail%20Interiors,%20Furniture%20Bazar,%20Sahiwal&t=&z=13&ie=UTF8&iwloc=&output=embed"
                 width="100%"
                 height="100%"
                 style="border:0; filter: contrast(1.1) saturate(1.1); pointer-events: none;"
@@ -361,7 +361,7 @@ class WhatsAppFloat extends HTMLElement {
   connectedCallback() {
     this.innerHTML = `
       <div class="wa-float">
-        <div class="wa-tip">We are here!</div>
+      
         <a href="https://wa.me/923115813505" target="_blank" rel="noopener noreferrer" class="wa-btn" title="Chat on WhatsApp" aria-label="Chat on WhatsApp">
           <svg viewBox="0 0 24 24"><path d="M12 2a10 10 0 0 0-8.5 15.3L2 22l4.9-1.3A10 10 0 1 0 12 2Zm5.4 14.2c-.2.6-1.3 1.2-1.9 1.3-.5.1-1.1.1-1.8-.1-.4-.1-1-.3-1.6-.6-2.9-1.2-4.7-4.1-4.9-4.3-.1-.2-1.2-1.6-1.2-3s.7-2.1 1-2.4c.3-.3.6-.3.8-.3h.6c.2 0 .4 0 .6.5.2.6.8 2 .9 2.1.1.2.1.4 0 .6-.1.2-.2.3-.4.5l-.5.6c-.2.2-.3.4-.1.7.2.3.8 1.3 1.7 2.1 1.2 1 2.2 1.4 2.5 1.5.3.1.5.1.7-.1.2-.2.7-.8.9-1.1.2-.3.4-.2.7-.1.3.1 1.9.9 2.2 1 .3.2.5.2.6.4.1.2.1.9-.1 1.5Z"/></svg>
         </a>

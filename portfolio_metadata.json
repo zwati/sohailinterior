@@ -5,5 +5,12 @@
     "location": "Sahiwal",
     "desc": "Completed installation by Sohail Interior.",
     "texture": "t-gypsum"
+  },
+  "1ddg3bw8flnvYM75lKxIRkCVyst58vfBu": {
+    "name": "New Testing",
+    "category": "residential",
+    "location": "Sahiwal",
+    "desc": "Completed installation by Sohail Interior.",
+    "texture": "t-pop"
   }
 }

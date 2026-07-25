@@ -28,10 +28,16 @@
 
       <!-- Hero Section -->
       <section class="hero" id="heroSection">
-        <div class="hero-bg-img" id="heroBgImg" style="background-image: url('/images/hero/hero-img.png');"></div>
-        <video autoplay muted playsinline preload="metadata" class="hero-bg-video" id="heroBgVideo">
-          <source src="/videos/hero.mp4" type="video/mp4">
-        </video>
+        <div class="hero-slides-container" id="heroSlidesContainer">
+          <div class="hero-slide active" data-index="0">
+            <video id="heroBgVideo" autoplay muted playsinline preload="metadata" class="hero-bg-video">
+              <source src="/videos/hero.mp4" type="video/mp4">
+            </video>
+          </div>
+          <div class="hero-slide" data-index="1" style="background-image: url('/images/hero/hero-slideshow-1.png');"></div>
+          <div class="hero-slide" data-index="2" style="background-image: url('/images/hero/hero-slideshow-2.jpg');"></div>
+          <div class="hero-slide" data-index="3" style="background-image: url('/images/hero/hero-slideshow-3.jpg');"></div>
+        </div>
         <div class="hero-banner reveal">
           <div class="hero-copy" id="heroCopy">
             <div class="eyebrow mono"><span class="dot"></span>New This Season</div>

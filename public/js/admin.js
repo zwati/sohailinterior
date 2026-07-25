@@ -10,6 +10,10 @@ window.enterDashboard = function () {
     alert("Please fill in both email and password fields.");
     return;
   }
+  if (email.trim().toLowerCase() !== "sohail@sohailinteriors.com" || password !== "sohailmughal") {
+    alert("Incorrect email or password.");
+    return;
+  }
   document.getElementById('loginStage').style.display = 'none';
   document.getElementById('dashStage').style.display = 'block';
 
@@ -40,21 +44,21 @@ window.switchAdminTab = function (tab) {
   [galleryUpload, galleryTable, portfolioEdit, portfolioTable, siteControls].forEach(el => el && (el.style.display = 'none'));
 
   if (tab === 'gallery') {
-    galleryBtn.classList.add('active');
-    galleryUpload.style.display = 'block';
-    galleryTable.style.display  = 'block';
+    if (galleryBtn) galleryBtn.classList.add('active');
+    if (galleryUpload) galleryUpload.style.display = 'block';
+    if (galleryTable) galleryTable.style.display  = 'block';
     if (pagination) pagination.style.display = '';
     renderAdminCategoryOptions();
     renderAdminTable();
   } else if (tab === 'portfolio') {
-    portfolioBtn.classList.add('active');
-    portfolioEdit.style.display  = 'block';
-    portfolioTable.style.display = 'block';
+    if (portfolioBtn) portfolioBtn.classList.add('active');
+    if (portfolioEdit) portfolioEdit.style.display  = 'block';
+    if (portfolioTable) portfolioTable.style.display = 'block';
     if (pagination) pagination.style.display = 'none';
     loadAdminPortfolio(1);
   } else if (tab === 'controls') {
-    controlsBtn.classList.add('active');
-    siteControls.style.display = 'block';
+    if (controlsBtn) controlsBtn.classList.add('active');
+    if (siteControls) siteControls.style.display = 'block';
     if (pagination) pagination.style.display = 'none';
     syncMaterialsLockUI();
   }

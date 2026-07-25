@@ -159,6 +159,54 @@
       </div>
     </div>
 
+
+    <!-- Item Details Modal -->
+    <div id="itemModal" class="modal-overlay" style="display: none;">
+      <div class="modal-container">
+        <button class="modal-close" onclick="closeItemModal()" aria-label="Close modal">✕</button>
+        <div class="modal-content">
+          <!-- Left: Image / Video Column -->
+          <div class="modal-media-col">
+            <div class="modal-main-media" id="mMainMedia"></div>
+          </div>
+          
+          <!-- Right: Info Column -->
+          <div class="modal-info-col">
+            <h2 id="mName">Item Name</h2>
+            <div class="modal-item-count mono" id="mItemCount">Items count</div>
+            
+            <div class="modal-price" id="mPrice">Contact for pricing</div>
+            
+            <!-- Finish Selection -->
+            <div id="mFinishArea" style="display: none; margin-bottom: 20px;">
+              <div class="opt-label">SELECT FINISH</div>
+              <div class="opt-row" id="mFinishes"></div>
+            </div>
+            
+            <!-- Qty & Buttons -->
+            <div class="qty-row">
+              <div class="qty-stepper">
+                <button onclick="stepModalQty(-1)">&minus;</button>
+                <span id="mQty">1</span>
+                <button onclick="stepModalQty(1)">+</button>
+              </div>
+              <button class="btn btn-primary" id="mAddQuoteBtn">Add to Quote</button>
+              <button class="btn btn-ghost" id="mWishlistBtn" title="Save to Wishlist">♥ Save</button>
+              <button class="btn btn-ghost" id="mWhatsAppBtn">💬 Enquire on WhatsApp</button>
+            </div>
+            
+            <p class="modal-desc" id="mDesc">Description.</p>
+            
+            <div class="meta-list">
+              <div><b>Vendor:</b> Sohail Interior</div>
+              <div><b>Category:</b> <span id="mCat"></span></div>
+              <div><b>Availability:</b> In Stock &mdash; ready to schedule</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
   </main>
 
   <site-footer></site-footer>

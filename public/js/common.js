@@ -551,16 +551,40 @@ window.QuoteCart = {
     const cart = this.get();
     if (cart.length === 0) return;
 
-    let text = "Hi Sohail Interior, I would like to get a quote for the following materials:\n\n";
-    cart.forEach((c, idx) => {
+    // Group items by category label
+    const groups = {};
+    cart.forEach(c => {
       const item = window.materialsData.find(m => m.id === c.id);
-      if (!item) return;
-      text += `${idx + 1}. ${item.name} (${item.id})\n`;
-      text += `   - Finish: ${c.finish}\n`;
-      text += `   - Tone: ${c.color}\n`;
-      text += `   - Quantity: ${c.qty}\n\n`;
+      const catLabel = item ? (item.catLabel || "Other Materials") : "Other Materials";
+      const name = item ? item.name : c.id;
+
+      if (!groups[catLabel]) {
+        groups[catLabel] = [];
+      }
+      groups[catLabel].push({
+        name: name,
+        finish: c.finish,
+        color: c.color,
+        qty: c.qty
+      });
     });
-    text += "Please let me know the pricing and availability. Thank you!";
+
+    // Construct professional WhatsApp message
+    let text = "*Sohail Interior — Material Quote Request*\n\n";
+    text += "Dear Sohail Interior,\nI would like to request a professional quote for the following materials:\n\n";
+
+    Object.keys(groups).forEach(catLabel => {
+      text += `*${catLabel}*:\n`;
+      groups[catLabel].forEach((item, index) => {
+        text += `  ${index + 1}. ${item.name}\n`;
+        text += `     - Finish: ${item.finish}\n`;
+        text += `     - Tone: ${item.color}\n`;
+        text += `     - Quantity: ${item.qty}\n`;
+      });
+      text += "\n";
+    });
+
+    text += "Please let me know the pricing, estimated delivery timeline, and availability. Thank you!";
 
     window.open(`https://wa.me/923115813505?text=${encodeURIComponent(text)}`, '_blank');
   }
