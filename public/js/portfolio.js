@@ -61,6 +61,21 @@ slideshowStyles.textContent = `
 document.head.appendChild(slideshowStyles);
 
 async function loadPortfolioProjects() {
+  // 1. Try to load from localStorage cache first for instant load
+  const cached = localStorage.getItem('cachedPortfolioProjects');
+  if (cached) {
+    try {
+      const parsed = JSON.parse(cached);
+      if (parsed && parsed.length > 0) {
+        projectsData = parsed;
+        renderPortfolioGrid();
+      }
+    } catch (err) {
+      console.error("Failed to parse cached portfolio projects:", err);
+    }
+  }
+
+  // 2. Fetch fresh data from network in background
   try {
     const res = await fetch("/api/portfolio-projects");
     if (!res.ok) {
@@ -70,18 +85,26 @@ async function loadPortfolioProjects() {
     if (json.ok) {
       if (json.projects && json.projects.length > 0) {
         projectsData = json.projects;
+        // Save to cache
+        localStorage.setItem('cachedPortfolioProjects', JSON.stringify(projectsData));
+        
+        // Render updated data
+        renderPortfolioGrid();
       } else {
         console.warn("Portfolio projects from drive are empty.");
         projectsData = [];
+        if (!cached) renderPortfolioGrid();
       }
     } else {
       throw new Error(json.error || "Unknown server error");
     }
   } catch (err) {
     console.error("Failed to load portfolio projects from Drive:", err);
-    projectsData = [];
+    if (!cached) {
+      projectsData = [];
+      renderPortfolioGrid();
+    }
   }
-  renderPortfolioGrid();
 }
 
 function renderFilters() {

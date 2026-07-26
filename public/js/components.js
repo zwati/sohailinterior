@@ -351,7 +351,11 @@ class SiteFooter extends HTMLElement {
             </a>
           </div>
         </div>
-        <div class="footer-bottom">&copy; 2026 Sohail Interior. All rights reserved. &mdash; Sahiwal, Pakistan</div>
+        <div class="footer-bottom">
+          &copy; 2026 Sohail Interior. All rights reserved. &mdash; Sahiwal, Pakistan
+          <br>
+          Developed by <a href="mailto:zwatisolutions@gmail.com" style="color: var(--navy); font-weight: 600; text-decoration: underline;">ZWATI Solutions</a>
+        </div>
       </footer>
     `;
   }

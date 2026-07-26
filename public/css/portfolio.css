@@ -18,15 +18,16 @@
 #portfolioPage {
   max-width: 1220px;
   margin: 0 auto;
-  padding: 20px 40px 80px;
+  padding: 20px 40px;
 }
 
 /* Portfolio Layout styles */
 .portfolio-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(320px, 380px));
   gap: 30px;
   margin-top: 30px;
+  justify-content: center;
 }
 
 /* Project Card */
@@ -277,9 +278,10 @@
 
 
   .portfolio-grid {
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
     gap: 8px;
     padding: 0;
+    justify-content: center;
   }
 
   .project-card {

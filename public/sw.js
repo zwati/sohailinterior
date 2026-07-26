@@ -1,4 +1,4 @@
-const CACHE_VERSION = 'v3';
+const CACHE_VERSION = 'v5';
 const STATIC_CACHE = `sohail-interior-static-${CACHE_VERSION}`;
 const DYNAMIC_CACHE = `sohail-interior-dynamic-${CACHE_VERSION}`;
 const MEDIA_CACHE = `sohail-interior-media-${CACHE_VERSION}`;

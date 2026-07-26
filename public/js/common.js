@@ -115,8 +115,83 @@ function extractPrice(filename) {
   return { price, priceText };
 }
 
+function processCategories(categories) {
+  globalCategories = categories;
+
+  // Assign sequential, category-folder prefixed IDs to every file
+  if (globalCategories && globalCategories.length > 0) {
+    globalCategories.forEach(cat => {
+      let itemIndex = 1;
+      cat.items.forEach(file => {
+        file.id = `img-si-${cat.slug}-${itemIndex++}`;
+      });
+    });
+  }
+
+  renderNavbar();
+
+  // Dynamically build materialsData from Google Drive categories response
+  if (globalCategories && globalCategories.length > 0) {
+    const dynamicMaterials = [];
+    globalCategories.forEach(cat => {
+      cat.items.forEach(file => {
+        const cleanName = formatFileName(file.name);
+        let { price, priceText } = extractPrice(file.name);
+
+        // Fallback to category level price if no price tag is in the filename
+        const hasPriceTag = file.name.match(/(?:rs|Rs|RS)\.?\s*\d+\S*/i) || file.name.match(/\d+\s*(?:rs|Rs|RS)/i);
+        if (!hasPriceTag) {
+          const catItem = window.materialsData.find(m => m.id === cat.slug);
+          if (catItem) {
+            price = catItem.price;
+            priceText = catItem.priceText;
+          }
+        }
+
+        dynamicMaterials.push({
+          id: file.id,
+          name: cleanName,
+          cat: cat.slug,
+          catLabel: cat.name,
+          price: price,
+          priceText: priceText,
+          texture: file.src, // Google Drive stream URL
+          desc: `Premium quality ${cleanName} from our ${cat.name} collection. Durable, moisture-resistant, and professionally installed.`,
+          finishes: ['Standard Finish', 'Premium Texture'],
+          colors: ['#eaf2fa', '#c9d6e4', '#aebfd2', '#f5f0e6', '#e7d3ae']
+        });
+      });
+    });
+
+    if (dynamicMaterials.length > 0) {
+      // Avoid duplicate appending if loaded twice (cache then network)
+      const existingIds = new Set(window.materialsData.map(m => m.id));
+      const filteredNew = dynamicMaterials.filter(m => !existingIds.has(m.id));
+      window.materialsData = [...window.materialsData, ...filteredNew];
+    }
+  }
+
+  // Dispatch custom event for page-specific scripts that wait for categories
+  window.dispatchEvent(new CustomEvent("categoriesLoaded", { detail: globalCategories }));
+}
+
 async function loadGlobalNavbar() {
   renderNavbar();
+
+  // 1. Try to load from localStorage cache first for instant load
+  const cached = localStorage.getItem('cachedCategories');
+  if (cached) {
+    try {
+      const parsed = JSON.parse(cached);
+      if (parsed && parsed.length > 0) {
+        processCategories(parsed);
+      }
+    } catch (err) {
+      console.error("Failed to parse cached categories:", err);
+    }
+  }
+
+  // 2. Fetch fresh data from network in background
   try {
     const res = await fetch("/api/categories");
     if (!res.ok) {
@@ -124,66 +199,19 @@ async function loadGlobalNavbar() {
     }
     const json = await res.json();
     if (json.ok) {
-      globalCategories = json.categories;
-
-      // Assign sequential, category-folder prefixed IDs to every file
-      if (globalCategories && globalCategories.length > 0) {
-        globalCategories.forEach(cat => {
-          let itemIndex = 1;
-          cat.items.forEach(file => {
-            file.id = `img-si-${cat.slug}-${itemIndex++}`;
-          });
-        });
-      }
-
-      renderNavbar();
-
-      // Dynamically build materialsData from Google Drive categories response
-      if (globalCategories && globalCategories.length > 0) {
-        const dynamicMaterials = [];
-        globalCategories.forEach(cat => {
-          cat.items.forEach(file => {
-            const cleanName = formatFileName(file.name);
-            let { price, priceText } = extractPrice(file.name);
-
-            // Fallback to category level price if no price tag is in the filename
-            const hasPriceTag = file.name.match(/(?:rs|Rs|RS)\.?\s*\d+\S*/i) || file.name.match(/\d+\s*(?:rs|Rs|RS)/i);
-            if (!hasPriceTag) {
-              const catItem = window.materialsData.find(m => m.id === cat.slug);
-              if (catItem) {
-                price = catItem.price;
-                priceText = catItem.priceText;
-              }
-            }
-
-            dynamicMaterials.push({
-              id: file.id,
-              name: cleanName,
-              cat: cat.slug,
-              catLabel: cat.name,
-              price: price,
-              priceText: priceText,
-              texture: file.src, // Google Drive stream URL
-              desc: `Premium quality ${cleanName} from our ${cat.name} collection. Durable, moisture-resistant, and professionally installed.`,
-              finishes: ['Standard Finish', 'Premium Texture'],
-              colors: ['#eaf2fa', '#c9d6e4', '#aebfd2', '#f5f0e6', '#e7d3ae']
-            });
-          });
-        });
-
-        if (dynamicMaterials.length > 0) {
-          window.materialsData = [...window.materialsData, ...dynamicMaterials];
-        }
-      }
-
-      // Dispatch custom event for page-specific scripts that wait for categories
-      window.dispatchEvent(new CustomEvent("categoriesLoaded", { detail: globalCategories }));
+      // Save fresh data to cache
+      localStorage.setItem('cachedCategories', JSON.stringify(json.categories));
+      
+      // Process fresh data (will update UI dynamically if different)
+      processCategories(json.categories);
     } else {
       throw new Error(json.error || "Unknown server error");
     }
   } catch (err) {
     console.error("Failed to load Google Drive categories:", err);
-    renderNavbar();
+    if (!cached) {
+      renderNavbar();
+    }
   }
 }
 
@@ -858,8 +886,17 @@ window.addEventListener('beforeinstallprompt', (e) => {
   e.preventDefault();
   // Stash the event so it can be triggered later
   deferredPrompt = e;
-  // Trigger custom install prompt modal
-  showPwaInstallModal();
+
+  // Only show custom install prompt on the Home page and only once per session
+  const isHomePage = window.location.pathname === '/' || 
+                     window.location.pathname.endsWith('/index.html') || 
+                     window.location.pathname === '';
+  const hasShownThisSession = sessionStorage.getItem('pwaModalShown');
+
+  if (isHomePage && !hasShownThisSession) {
+    showPwaInstallModal();
+    sessionStorage.setItem('pwaModalShown', 'true');
+  }
 });
 
 function showPwaInstallModal() {

@@ -8,6 +8,8 @@
   position: relative;
   overflow: hidden;
   background: radial-gradient(500px 300px at 20% 0%, rgba(125, 185, 232, .3), transparent 60%), linear-gradient(180deg, #fff, var(--mist));
+  padding: 60px 20px;
+  box-sizing: border-box;
 }
 
 .login-card {
@@ -104,7 +106,9 @@
 
 /* Dashboard States */
 .login-wrap.stage-dash {
-  align-items: flex-start;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
   min-height: auto;
   padding: 50px 40px 90px;
 }
@@ -294,10 +298,15 @@
   color: #b98a4e;
 }
 
-/* Responsiveness overrides */
 @media (max-width: 980px) {
   .dash-grid {
     grid-template-columns: 1fr;
+  }
+  .table-card,
+  .upload-card,
+  .pagination-container {
+    grid-column: auto !important;
+    width: 100% !important;
   }
 }
 
@@ -309,9 +318,32 @@
     display: none;
   }
   .trow {
-    grid-template-columns: 1fr;
-    row-gap: 6px;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 8px;
     padding: 18px 20px;
+  }
+  .trow .status,
+  .trow span:not(.title-cell) {
+    align-self: flex-start;
+  }
+  .trow .title-cell {
+    width: 100%;
+  }
+  .admin-search-row {
+    flex-wrap: wrap !important;
+    gap: 8px !important;
+  }
+  .admin-search-row input {
+    flex: 1 1 100% !important;
+    margin-bottom: 4px;
+    width: 100% !important;
+  }
+  .admin-search-row button {
+    flex: 1 1 calc(50% - 4px) !important;
+    justify-content: center;
+    width: auto !important;
   }
 }
 
